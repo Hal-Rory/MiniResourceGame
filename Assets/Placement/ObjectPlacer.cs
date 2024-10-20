@@ -13,11 +13,11 @@ public class ObjectPlacer : MonoBehaviour
 
     public int PlaceObject(TownObj objBase, Vector3 position)
     {
-        TownLot newLot = Instantiate(objBase.ObjLot);
-        newLot.Create(objBase);
-        newLot.transform.position = position;
+        TownLot newLot = Instantiate(objBase.ObjLot, position, Quaternion.identity);
         _placedGameObjects.Add(newLot);
         newLot.SetID(_placedGameObjects.Count - 1);
+        newLot.Create(objBase);
+        newLot.ConnectLots();
         OnLotAdded?.Invoke(newLot);
         return _placedGameObjects.Count - 1;
     }
@@ -28,6 +28,7 @@ public class ObjectPlacer : MonoBehaviour
             || !_placedGameObjects[gameObjectIndex].gameObject)
             return;
         OnLotRemoved?.Invoke(_placedGameObjects[gameObjectIndex]);
+        _placedGameObjects[gameObjectIndex].DisconnectLots();
         Destroy(_placedGameObjects[gameObjectIndex].gameObject);
         _placedGameObjects[gameObjectIndex] = null;
     }
@@ -42,6 +43,6 @@ public class ObjectPlacer : MonoBehaviour
     }
     public List<T> GetLots<T>(int[] ids)
     {
-        return _placedGameObjects.FindAll(lot => ids.Contains(lot.PlacementID)) as List<T>;
+        return _placedGameObjects.FindAll(lot => lot != null && ids.Contains(lot.PlacementID)) as List<T>;
     }
 }

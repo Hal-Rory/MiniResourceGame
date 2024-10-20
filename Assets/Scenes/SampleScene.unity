@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 380720758}
   - component: {fileID: 380720757}
   - component: {fileID: 380720759}
+  - component: {fileID: 380720760}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -484,6 +485,35 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!60 &380720760
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380720756}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.475, y: 0.5}
+      - {x: -0.5, y: 0.5}
+      - {x: -0.5, y: -0.475}
+      - {x: 0.475, y: -0.475}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,7 +1092,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788172212}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1110,11 +1140,11 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 787276678, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
+  m_DrawMode: 2
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -1211,7 +1241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 2074384197}
   _mouseIndicator: {fileID: 1990250012}
-  _cellIndicator: {fileID: 193482105}
+  _cellIndicator: {fileID: 1788172214}
   _currentCell: {x: 0, y: 0, z: 0}
   _worldGrid: {fileID: 1827157022}
 --- !u!1 &1867915626
@@ -1454,6 +1484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d7f918575f93844092381f91bd0f7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gridCollider: {fileID: 380720760}
 --- !u!1 &2082797076
 GameObject:
   m_ObjectHideFlags: 0

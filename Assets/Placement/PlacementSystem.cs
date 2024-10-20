@@ -8,7 +8,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
 
     [SerializeField] private GameObject _mouseIndicator;
-    [SerializeField] private GameObject _cellIndicator;
+    [SerializeField] private SpriteRenderer _cellIndicator;
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
 
@@ -29,7 +29,18 @@ public class PlacementSystem : MonoBehaviour
         _mouseIndicator.transform.position = mousePosition;
         mousePosition.y = Mathf.Ceil(mousePosition.y);
         _currentCell = _worldGrid.LocalToCell(mousePosition);
-        _cellIndicator.transform.position = _currentCell;
+        _cellIndicator.transform.parent.position = _currentCell;
+        PreviewCell();
+    }
+
+    private void PreviewCell()
+    {
+        if (!_objectManager.CurrentObject) return;
+        Vector2Int size = _objectManager.CurrentObject.LotSize;
+        if(size.x > 0 || size.y > 0)
+        {
+            _cellIndicator.size = size;
+        }
     }
 
     private void PlaceObject()
