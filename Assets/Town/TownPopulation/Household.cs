@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Town.TownPopulation;
+using UnityEngine;
+
+[Serializable]
+public class Household
+{
+    [SerializeField] private List<Person> _inhabitants = new List<Person>();
+    public int MemberCount => _inhabitants.Count;
+    public int HouseID { get; private set; }
+    public bool Homeless => HouseID == -1;
+
+    public void SetHouseID(int id)
+    {
+        HouseID = id;
+    }
+
+    public void AddInhabitant(Person person)
+    {
+        _inhabitants.Add(person);
+    }
+
+    public Person[] GetInhabitants()
+    {
+        return _inhabitants.ToArray();
+    }
+
+    public int GetHouseholdIncome()
+    {
+        return _inhabitants.Sum(person => person.IncomeContribution);
+    }
+}
