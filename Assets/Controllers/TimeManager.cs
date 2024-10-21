@@ -7,11 +7,17 @@ public class TimeManager : MonoBehaviour
 {
     private List<ITimeListener> _listeners;
     private DateTime _gameTime;
+    [SerializeField] private string _startDateTime;
     private event Action<int> _onClockUpdate;
     private Coroutine _clockUpdating;
     [SerializeField] private float _tickDelta;
     public float TimeMultiplier;
     public bool TimeActive { get; private set; }
+
+    private void Start()
+    {
+        _gameTime = DateTime.Parse(_startDateTime);
+    }
 
     public void SetTimeActive(bool active)
     {
@@ -46,5 +52,15 @@ public class TimeManager : MonoBehaviour
     public void UnregisterListener(ITimeListener listener)
     {
         _onClockUpdate -= listener.ClockUpdate;
+    }
+
+    public string GetDate()
+    {
+        return _gameTime.ToShortDateString();
+    }
+
+    public string GetTime()
+    {
+        return _gameTime.ToShortTimeString();
     }
 }

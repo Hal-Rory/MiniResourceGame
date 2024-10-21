@@ -1,18 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private TimeManager _timeManager => GameController.Instance.TimeManager;
+    private MoneyManager _moneyManager => GameController.Instance.MoneyManager;
+    public Text CurrentDate;
+    public Text CurrentTime;
+    public Text CurrentIncome;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        CurrentDate.text = _timeManager.GetDate();
+        CurrentTime.text = _timeManager.GetTime();
+
+        CurrentIncome.text = $"{_moneyManager.CurrentIncome}(+{_moneyManager.CurrentIncomeTotal})";
     }
 }

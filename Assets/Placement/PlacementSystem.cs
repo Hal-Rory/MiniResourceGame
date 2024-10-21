@@ -54,7 +54,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceObject()
     {
-        if (!_placementActive || _townObjectManager.CurrentObject == null) return;
+        if (_inputManager.IsPointerOverUI() || !_placementActive || _townObjectManager.CurrentObject == null) return;
         _gridManager.AddLot(_townObjectManager.CurrentObject, _currentCell);
     }
 

@@ -6,12 +6,17 @@ using UnityEngine;
 public class TownObjectManager : MonoBehaviour
 {
     [SerializeField] private List<ObjectCollection> _objectCollections;
-    [SerializeField] private ObjectCollection _currentCollection;
+    private ObjectCollection _currentCollection;
     private int _currentObject = 0;
     public TownObj CurrentObject => _currentCollection.Objects.Count == 0 || _currentObject < 0 ? null : _currentCollection.Objects[_currentObject];
     public event Action OnCollectionChanged;
     public event Action OnSelectionChanged;
     public event Action<bool> OnSelectionStateChanged;
+
+    private void Start()
+    {
+        _currentCollection = _objectCollections.Count > 0 ? _objectCollections[0] : null;
+    }
 
     public void SetObjectSelection(int index)
     {

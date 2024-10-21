@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1132846189541350440, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
       propertyPath: <IncomeContribution>k__BackingField
-      value: -5
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1423548500209092692, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
       propertyPath: m_Size.x
@@ -82,6 +82,18 @@ PrefabInstance:
     - target: {fileID: 1423548501804831387, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
       propertyPath: m_Name
       value: House2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750601840041811953, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
+      propertyPath: m_SpriteTilingProperty.drawMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750601840041811953, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750601840041811953, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfd7fde1accef174395b508546a74dbc, type: 3}

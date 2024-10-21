@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 8750601840041811953}
-  <IncomeContribution>k__BackingField: -3
+  <IncomeContribution>k__BackingField: -5
   <CanContribute>k__BackingField: 1
   <HouseholdSize>k__BackingField: 3
   <Household>k__BackingField:

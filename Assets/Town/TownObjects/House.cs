@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 public class House : TownLot, IIncomeContributor
@@ -14,7 +13,6 @@ public class House : TownLot, IIncomeContributor
     public void SetHousehold(Household household)
     {
         Household = household;
-        IncomeContribution = household.GetInhabitants().Sum(person => person.IncomeContribution);
     }
 
     public int GetIncomeContribution()
