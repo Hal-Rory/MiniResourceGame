@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 
     public PopulationManager PopulationManager;
     public InputManager InputManager;
-    public ObjectManager ObjectManager;
+    public TownObjectManager TownObjectManager;
     public WorkplaceManager WorkplaceManager;
     public ObjectPlacer ObjectPlacer;
     public TimeManager TimeManager;

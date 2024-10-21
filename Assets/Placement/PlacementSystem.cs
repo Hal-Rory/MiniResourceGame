@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlacementSystem : MonoBehaviour
 {
     private InputManager _inputManager => GameController.Instance.InputManager;
-    private ObjectManager _objectManager => GameController.Instance.ObjectManager;
+    private TownObjectManager _townObjectManager => GameController.Instance.TownObjectManager;
     [SerializeField] private GridManager _gridManager;
 
     [SerializeField] private GameObject _mouseIndicator;
@@ -12,14 +12,25 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
 
+    private bool _placementActive;
+
     private void Start()
     {
         _inputManager.OnSelectPrimary += PlaceObject;
         _inputManager.OnSelectSecondary += RemoveObject;
+        _townObjectManager.OnSelectionStateChanged += DoSelectionStateChanged;
+    }
+
+    private void DoSelectionStateChanged(bool started)
+    {
+        _placementActive = started;
+        if(started)
+            PreviewCell();
     }
 
     private void Update()
     {
+        if(!_placementActive) return;
         PlaceCell();
     }
 
@@ -30,14 +41,12 @@ public class PlacementSystem : MonoBehaviour
         mousePosition.y = Mathf.Ceil(mousePosition.y);
         _currentCell = _worldGrid.LocalToCell(mousePosition);
         _cellIndicator.transform.parent.position = _currentCell;
-        PreviewCell();
     }
 
     private void PreviewCell()
     {
-        if (!_objectManager.CurrentObject) return;
-        Vector2Int size = _objectManager.CurrentObject.LotSize;
-        if(size.x > 0 || size.y > 0)
+        Vector2Int size = _townObjectManager.CurrentObject ? _townObjectManager.CurrentObject.LotSize: Vector2Int.one;
+        if(size.magnitude > 1)
         {
             _cellIndicator.size = size;
         }
@@ -45,12 +54,13 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceObject()
     {
-        if (_objectManager.CurrentObject == null) return;
-        _gridManager.AddLot(_objectManager.CurrentObject, _currentCell);
+        if (!_placementActive || _townObjectManager.CurrentObject == null) return;
+        _gridManager.AddLot(_townObjectManager.CurrentObject, _currentCell);
     }
 
     private void RemoveObject()
     {
+        if (!_placementActive || _townObjectManager.CurrentObject != null) return;
         _gridManager.RemoveLot(_currentCell);
     }
 }
