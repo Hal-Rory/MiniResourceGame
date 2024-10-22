@@ -28,16 +28,21 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    public float GetClockSpeed()
+    {
+        return _tickDelta * TimeMultiplier;
+    }
+
     private IEnumerator Tick()
     {
         while (TimeActive)
         {
             yield return new WaitForSeconds(_tickDelta * TimeMultiplier);
-            if (_gameTime.AddHours(1).Day != _gameTime.Day)
+            if (_gameTime.AddDays(1).Day != _gameTime.Day)
             {
                 //new day
             }
-            _gameTime = _gameTime.AddHours(1);
+            _gameTime = _gameTime.AddDays(1);
             _onClockUpdate?.Invoke(1);
         }
 

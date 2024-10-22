@@ -15,4 +15,4 @@ MonoBehaviour:
   Name: Road
   LotSize: {x: 1, y: 1}
   ObjLot: {fileID: 6805459395915589914, guid: e7812d86171f1024fad2195b1104703d, type: 3}
-  ObjPreview: {fileID: -1894703295, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  ObjPreview: {fileID: -2088419132, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}

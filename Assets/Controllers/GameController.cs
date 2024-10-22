@@ -16,6 +16,10 @@ public class GameController : MonoBehaviour
     public MoneyManager MoneyManager;
     public TownLotSelectionManager Selection;
 
+    public GameObject Game;
+    public GameObject GameStart;
+    public bool GameHasStarted;
+
     public bool PlacementMode { get; private set; }
 
     private int _population;
@@ -33,14 +37,25 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private IEnumerator Start()
+    {
+        Game.SetActive(true);
+        if (GameStart.activeSelf)
+        {
+            yield return new WaitUntil(() => GameHasStarted);
+        }
+        GameStart.SetActive(false);
+        TimeManager.SetTimeActive(true);
+    }
+
+    public void StartGame()
+    {
+        GameHasStarted = true;
+    }
+
     private void SetPlacementMode(bool active)
     {
         PlacementMode = active;
-    }
-
-    private void OnEnable()
-    {
-        TimeManager.SetTimeActive(true);
     }
 
     public TownLot GetLot(int id)

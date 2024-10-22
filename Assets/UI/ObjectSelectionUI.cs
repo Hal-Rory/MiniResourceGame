@@ -24,11 +24,17 @@ public class ObjectSelectionUI : MonoBehaviour
     {
         SetOpenMenuDisplay(false);
         SetOpenCurrentObject(false);
-        GameController.Instance.InputManager.OnExit += ReturnToMenu;
+        GameController.Instance.InputManager.OnExit += OnExiting;
         _townObjectManager.OnCollectionChanged += DoOnCollectionChanged;
         _townObjectManager.OnSelectionChanged += DoSelectionChanged;
 
         SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
+    }
+
+    private void OnExiting()
+    {
+        if (!_menuOpen) return;
+        ToggleMenu_Button();
     }
 
     /// <summary>
