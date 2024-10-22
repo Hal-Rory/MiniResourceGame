@@ -45,7 +45,7 @@ public class House : TownLot, IIncomeContributor
         string inhabitants = string.Empty;
         foreach (Person inhabitant in Household.GetInhabitants())
         {
-            inhabitants += $"\n{inhabitant.Name}(Income:{inhabitant.IncomeContribution:+0;-#})";
+            inhabitants += $"\n{inhabitant}";
         }
 
         return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})" +

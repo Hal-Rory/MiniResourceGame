@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     public TimeManager TimeManager;
     public MoneyManager MoneyManager;
     public TownLotSelectionManager Selection;
+    public UIManager UI;
 
     public GameObject Game;
     public GameObject GameStart;

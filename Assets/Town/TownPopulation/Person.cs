@@ -2,7 +2,6 @@ using System;
 
 namespace Town.TownPopulation
 {
-    public enum PersonAgeGroup { Child, Teen, Adult, Elder, Deceased }
     [Serializable]
     public class Person : ITimeListener
     {
@@ -61,6 +60,11 @@ namespace Town.TownPopulation
             {
                 Unemploy();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} | {AgeGroup} (Income:{IncomeContribution:+0;-#})";
         }
     }
 }

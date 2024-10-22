@@ -1,11 +1,33 @@
+using System;
 using System.Collections.Generic;
+using Common.Utility;
 using Town.TownPopulation;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PopulationManager : MonoBehaviour
 {
     [field:SerializeField] public List<Household> PopulationHouseholds { get; private set; }
     [field:SerializeField] public List<Person> Population { get; private set; }
+    public event Action OnPopulationChanged;
+    private List<string> _nameCollection = new List<string>
+    {
+        "Alice",
+        "Bob",
+        "Charlie",
+        "Diana",
+        "Ethan",
+        "Fiona",
+        "George",
+        "Hannah",
+        "Isaac",
+        "Julia",
+        "Kevin",
+        "Lily",
+        "Michael",
+        "Nina",
+        "Oscar"
+    };
 
     private void OnEnable()
     {
@@ -22,6 +44,7 @@ public class PopulationManager : MonoBehaviour
         if (obj is House house)
         {
             CreateHouse(house);
+            OnPopulationChanged?.Invoke();
         }
     }
 
@@ -30,6 +53,7 @@ public class PopulationManager : MonoBehaviour
         if (obj is House house)
         {
             OrphanHousehold(house.Household);
+            OnPopulationChanged?.Invoke();
         }
     }
 
@@ -50,13 +74,13 @@ public class PopulationManager : MonoBehaviour
         {
             householdMember = new Person
             {
-                Name = $"Peter{household.MemberCount}",
+                Name = $"{_nameCollection.GetRandomIndex()}",
                 AgeGroup = (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1),
                 HouseholdIndex = PopulationHouseholds.Count,
                 JobIndex = -1,
                 Homeless = false
             };
-            print($"{householdMember.Name} is a(n) {householdMember.AgeGroup}");
+            print($"{householdMember.Name} is {householdMember.AgeGroup.ToNoun()}");
             householdMember.SetAge();
             GameController.Instance.TimeManager.RegisterListener(householdMember);
             household.AddInhabitant(householdMember);
@@ -67,13 +91,13 @@ public class PopulationManager : MonoBehaviour
         {
             householdMember = new Person
             {
-                Name = $"Peter's child{household.MemberCount}",
+                Name = $"{_nameCollection.GetRandomIndex()}",
                 AgeGroup = (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1),
                 HouseholdIndex = PopulationHouseholds.Count,
                 JobIndex = -1,
                 Homeless = false
             };
-            print($"{householdMember.Name} is a(n) {householdMember.AgeGroup}");
+            print($"{householdMember.Name} is {householdMember.AgeGroup.ToNoun()}");
             householdMember.SetAge();
             GameController.Instance.TimeManager.RegisterListener(householdMember);
             household.AddInhabitant(householdMember);

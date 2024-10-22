@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+public class ObjectSelectionUI : MonoBehaviour, IUIControl
 {
     private InputManager _inputManager => GameController.Instance.InputManager;
     private TownObjectManager _townObjectManager => GameController.Instance.TownObjectManager;
@@ -129,6 +126,8 @@ using UnityEngine.UI;
 
     private void SetMenuOpen(bool open)
     {
+        if (!_menuOpen && !GameController.Instance.UI.TrySetActive(this)) return;
+        if (!open) GameController.Instance.UI.EndControl(this);
         _menuOpen = open;
         SetOpenCurrentObject(false);
         SetOpenMenuDisplay(open);

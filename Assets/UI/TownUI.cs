@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TownUI : MonoBehaviour
+public class TownUI : MonoBehaviour, IUIControl
 {
     public Text Banner;
     public Text Description;
@@ -18,11 +18,13 @@ public class TownUI : MonoBehaviour
 
     private void TownLotDeselected(TownLot lot)
     {
-        Panel.SetActive(false);
+        GameController.Instance.UI.EndControl(this);
+            Panel.SetActive(false);
     }
 
     private void TownLotSelected(TownLot lot)
     {
+        if (!GameController.Instance.UI.TrySetActive(this)) return;
         Banner.text = lot.name;
         Description.text = lot.ToString();
         Icon.sprite = lot.GetDepiction();
