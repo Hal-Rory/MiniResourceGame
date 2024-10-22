@@ -41,7 +41,7 @@ public class WorkplaceManager : MonoBehaviour
     public bool Hire(Person person)
     {
         if (Workplaces.Count == 0) return false;
-        List<Workplace> workplaces = Workplaces.FindAll(workplace => workplace.AgeGroups.Contains(person.AgeGroup));
+        List<Workplace> workplaces = Workplaces.FindAll(workplace => workplace.CanHire(person));
         if (workplaces.Count == 0) return false;
         int job = Random.Range(0, workplaces.Count);
         Workplaces[job].Employ(person);

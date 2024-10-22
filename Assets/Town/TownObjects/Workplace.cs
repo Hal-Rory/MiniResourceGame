@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Town.TownPopulation;
 using UnityEngine;
 
@@ -8,10 +9,15 @@ public class Workplace : TownLot, IIncomeContributor
     private int _wages;
     [field: SerializeField] public int IncomeContribution { get; private set; }
     [SerializeField] private GameObject _hoverBG;
-
+    private int _employeeLimit;
     [field: SerializeField] public bool CanContribute { get; private set; }
     [SerializeField] private List<Person> _employees = new List<Person>();
     [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
+
+    public bool CanHire(Person person)
+    {
+        return _employees.Count <= _employeeLimit && AgeGroups.Contains(person.AgeGroup);
+    }
 
     public override void StartHovering()
     {
@@ -64,5 +70,6 @@ public class Workplace : TownLot, IIncomeContributor
         WorkplaceObj workplace = obj as WorkplaceObj;
         AgeGroups = workplace.AgeGroups;
         _wages = workplace.Wages;
+        _employeeLimit = workplace.EmployeeLimit;
     }
 }

@@ -18,3 +18,4 @@ MonoBehaviour:
   ObjPreview: {fileID: -1204978394, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
   Wages: 15
   AgeGroups: 02000000
+  EmployeeLimit: 2

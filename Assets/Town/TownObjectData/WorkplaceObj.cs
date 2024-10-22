@@ -6,4 +6,5 @@ public class WorkplaceObj : TownObj
 {
     public int Wages;
     public PersonAgeGroup[] AgeGroups;
+    public int EmployeeLimit;
 }
