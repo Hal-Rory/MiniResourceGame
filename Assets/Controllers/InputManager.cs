@@ -1,34 +1,24 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
+[Serializable]
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera _activeCamera;
     private Vector3 _lastPosition;
-    public event Action OnSelectPrimary;
-    public event Action OnSelectSecondary;
-    public event Action<Vector2> OnScroll;
-    public event Action OnExit;
-
-    private void Update()
-    {
-        if (Input.mouseScrollDelta.y != 0)
-            OnScroll?.Invoke(Input.mouseScrollDelta);
-        if (Input.GetMouseButtonDown(0))
-            OnSelectPrimary?.Invoke();
-        if (Input.GetMouseButtonDown(1))
-            OnSelectSecondary?.Invoke();
-        if (Input.GetKeyDown(KeyCode.Escape))
-            OnExit?.Invoke();
-    }
+    private Vector2 _mousePosition;
+    public event Action PrimaryPressed;
+    public event Action SecondaryPressed;
+    public event Action ExitPressed;
 
     public bool IsPointerOverUI()
         => EventSystem.current.IsPointerOverGameObject();
 
     public Vector3 GetSelectionPosition(LayerMask layer, out Collider2D col)
     {
-        Vector3 mousePos = Input.mousePosition;
+        Vector3 mousePos = _mousePosition;
         mousePos.z = _activeCamera.nearClipPlane;
         Ray ray = _activeCamera.ScreenPointToRay(mousePos);
         RaycastHit2D
@@ -41,5 +31,28 @@ public class InputManager : MonoBehaviour
         col = hit.collider;
         Debug.DrawLine(_activeCamera.transform.position, hit.point);
         return _lastPosition;
+    }
+
+    public void PressPrimary(InputAction.CallbackContext context)
+    {
+        int value = (int)context.ReadValue<float>();
+        if(context.started && value == 1) PrimaryPressed?.Invoke();
+    }
+
+    public void PressSecondary(InputAction.CallbackContext context)
+    {
+        int value = (int)context.ReadValue<float>();
+        if(context.started && value == 1) SecondaryPressed?.Invoke();
+    }
+
+    public void PressExit(InputAction.CallbackContext context)
+    {
+        int value = (int)context.ReadValue<float>();
+        if(context.started && value == 1) ExitPressed?.Invoke();
+    }
+
+    public void MousePosition(InputAction.CallbackContext context)
+    {
+        _mousePosition = context.ReadValue<Vector2>();
     }
 }

@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class ObjectSelectionUI : MonoBehaviour
 {
+    private InputManager _inputManager => GameController.Instance.InputManager;
     private TownObjectManager _townObjectManager => GameController.Instance.TownObjectManager;
 
     public Image CurrentObjectDisplay;
@@ -24,10 +25,9 @@ public class ObjectSelectionUI : MonoBehaviour
     {
         SetOpenMenuDisplay(false);
         SetOpenCurrentObject(false);
-        GameController.Instance.InputManager.OnExit += OnExiting;
         _townObjectManager.OnCollectionChanged += DoOnCollectionChanged;
         _townObjectManager.OnSelectionChanged += DoSelectionChanged;
-
+        _inputManager.ExitPressed += OnExiting;
         SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
     }
 

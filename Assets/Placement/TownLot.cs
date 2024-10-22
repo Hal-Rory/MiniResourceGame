@@ -56,5 +56,8 @@ public abstract class TownLot : MonoBehaviour
         PlacementID = ID;
     }
 
+    public abstract void StartHovering();
+    public abstract void EndHovering();
+
     public abstract void Create(TownObj obj);
 }

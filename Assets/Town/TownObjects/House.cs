@@ -11,6 +11,8 @@ public class House : TownLot, IIncomeContributor
 
     [field: SerializeField] public Household Household { get; private set; }
 
+    [SerializeField] private GameObject _hoverBG;
+
     public void SetHousehold(Household household)
     {
         Household = household;
@@ -20,6 +22,16 @@ public class House : TownLot, IIncomeContributor
     {
         CanContribute = Household != null;
         return IncomeContribution + Household?.GetHouseholdIncome() ?? 0;
+    }
+
+    public override void StartHovering()
+    {
+        _hoverBG.SetActive(true);
+    }
+
+    public override void EndHovering()
+    {
+        _hoverBG.SetActive(false);
     }
 
     public override void Create(TownObj obj)

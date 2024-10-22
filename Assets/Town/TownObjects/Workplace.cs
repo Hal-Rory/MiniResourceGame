@@ -7,15 +7,26 @@ public class Workplace : TownLot, IIncomeContributor
 {
     private int _wages;
     [field: SerializeField] public int IncomeContribution { get; private set; }
+    [SerializeField] private GameObject _hoverBG;
+
+    [field: SerializeField] public bool CanContribute { get; private set; }
+    [SerializeField] private List<Person> _employees = new List<Person>();
+    [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
+
+    public override void StartHovering()
+    {
+        _hoverBG.SetActive(true);
+    }
+
+    public override void EndHovering()
+    {
+        _hoverBG.SetActive(false);
+    }
 
     public int GetIncomeContribution()
     {
         return IncomeContribution;
     }
-
-    [field: SerializeField] public bool CanContribute { get; private set; }
-    [SerializeField] private List<Person> _employees = new List<Person>();
-    [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
 
     public void Employ(Person person)
     {

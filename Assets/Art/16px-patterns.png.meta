@@ -5945,6 +5945,69 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: 16px-patterns_277
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 465
+        width: 48
+        height: 47
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 8, y: 8, z: 8, w: 7}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eed6088e435cbda4ab5a1209dc919a17
+      internalID: -1651915827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 16px-patterns_278
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 408
+        width: 48
+        height: 48
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 8, y: 8, z: 8, w: 8}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b17c91eade40c124f9bbcf531aac98a7
+      internalID: 745313328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 16px-patterns_279
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 352
+        width: 48
+        height: 48
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 9, y: 9, z: 9, w: 9}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21a927700bc5b33428ac0f8b0e71258b
+      internalID: 2101142832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -5995,25 +6058,26 @@ TextureImporter:
       16px-patterns_121: -1663905646
       16px-patterns_248: -1003265714
       16px-patterns_97: -1044037255
+      16px-patterns_278: 745313328
       16px-patterns_95: -1286075919
       16px-patterns_250: 1829364126
       16px-patterns_17: 416410295
       16px-patterns_111: -1215411487
       16px-patterns_230: 1489401272
       16px-patterns_181: 80769468
-      16px-patterns_129: 173514469
-      16px-patterns_73: -707245624
-      16px-patterns_245: 2091760308
       16px-patterns_124: -323063444
+      16px-patterns_245: 2091760308
+      16px-patterns_58: -133385500
       16px-patterns_176: 1259677113
-      16px-patterns_138: 2107329342
       16px-patterns_105: -1491237251
+      16px-patterns_138: 2107329342
+      16px-patterns_129: 173514469
       16px-patterns_77: -2047199515
       16px-patterns_263: -869627786
       16px-patterns_62: -492017109
-      16px-patterns_194: -1777812337
+      16px-patterns_73: -707245624
       16px-patterns_26: -1153721474
-      16px-patterns_58: -133385500
+      16px-patterns_194: -1777812337
       16px-patterns_12: 456926466
       16px-patterns_21: 400112223
       16px-patterns_43: 1763913274
@@ -6076,21 +6140,23 @@ TextureImporter:
       16px-patterns_122: 586691980
       16px-patterns_63: -2140079459
       16px-patterns_31: -2088419132
-      16px-patterns_195: -1428938599
+      16px-patterns_279: 2101142832
       16px-patterns_36: 934510605
       16px-patterns_131: 283308257
-      16px-patterns_112: -636784830
-      16px-patterns_256: -1035861752
-      16px-patterns_4: -350569163
-      16px-patterns_205: 1801612849
-      16px-patterns_269: -86876046
-      16px-patterns_72: 2085755390
-      16px-patterns_7: -21920555
-      16px-patterns_170: -1204978394
       16px-patterns_241: -1876107946
+      16px-patterns_195: -1428938599
+      16px-patterns_256: -1035861752
+      16px-patterns_277: -1651915827
+      16px-patterns_269: -86876046
+      16px-patterns_4: -350569163
+      16px-patterns_112: -636784830
+      16px-patterns_205: 1801612849
+      16px-patterns_170: -1204978394
+      16px-patterns_72: 2085755390
       16px-patterns_244: 1477093848
-      16px-patterns_91: -1811491037
       16px-patterns_216: 1101293210
+      16px-patterns_91: -1811491037
+      16px-patterns_7: -21920555
       16px-patterns_83: 462675682
       16px-patterns_69: -934844505
       16px-patterns_39: 1201010228

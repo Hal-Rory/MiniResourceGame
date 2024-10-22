@@ -6,25 +6,52 @@ public class TownLotSelectionManager : MonoBehaviour
     private InputManager _inputManager => GameController.Instance.InputManager;
     public event Action<TownLot> OnTownObjectSelected;
     public event Action<TownLot> OnTownObjectDeselected;
-    private TownLot _lastSelected;
-    void Start()
+    private TownLot _lastFound;
+    private bool _selected;
+
+    private void Start()
     {
-        _inputManager.OnSelectPrimary += SelectTownLot;
-        _inputManager.OnSelectSecondary += DeselectTownLot;
+        _inputManager.SecondaryPressed+= DeselectTownLot;
+        _inputManager.PrimaryPressed += SelectTownLot;
     }
 
     private void DeselectTownLot()
     {
-        if (!_lastSelected) return;
-        OnTownObjectDeselected?.Invoke(_lastSelected);
+        _selected = false;
+        if (!_lastFound) return;
+        OnTownObjectDeselected?.Invoke(_lastFound);
+    }
+
+    private void Update()
+    {
+        TryHover();
+    }
+
+    private void TryHover()
+    {
+        if (_inputManager.IsPointerOverUI() || GameController.Instance.PlacementMode || _selected) return;
+
+        _inputManager.GetSelectionPosition(1 << LayerMask.NameToLayer("TownLot"), out Collider2D col);
+
+        if (!col || !(col.transform.parent.TryGetComponent(out TownLot lot) && lot))
+        {
+            if (!_lastFound) return;
+            _lastFound.EndHovering();
+            _lastFound = null;
+        }
+        else
+        {
+            if (lot == _lastFound) return;
+            if(_lastFound) _lastFound.EndHovering();
+            _lastFound = lot;
+            lot.StartHovering();
+        }
     }
 
     private void SelectTownLot()
     {
-        if (_inputManager.IsPointerOverUI() || GameController.Instance.PlacementMode) return;
-        _inputManager.GetSelectionPosition(1<<LayerMask.NameToLayer("TownLot"), out Collider2D col);
-        if (!col || !(col.transform.parent.TryGetComponent(out TownLot lot) && lot)) return;
-        _lastSelected = lot;
-        OnTownObjectSelected?.Invoke(_lastSelected);
+        if (_inputManager.IsPointerOverUI() || GameController.Instance.PlacementMode || !_lastFound) return;
+        OnTownObjectSelected?.Invoke(_lastFound);
+        _selected = true;
     }
 }

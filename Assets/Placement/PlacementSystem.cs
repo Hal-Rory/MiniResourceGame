@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlacementSystem : MonoBehaviour
 {
@@ -15,20 +16,19 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         PreviewCell(false);
-        _inputManager.OnSelectPrimary += PlaceObject;
-        _inputManager.OnSelectSecondary += RemoveObject;
         _townObjectManager.OnStateChanged += DoStateChanged;
+        _inputManager.PrimaryPressed += PlaceObject;
+        _inputManager.SecondaryPressed += RemoveObject;
+    }
+    private void Update()
+    {
+        if(!_placementActive) return;
+        PlaceCell();
     }
 
     private void DoStateChanged(bool started)
     {
         PreviewCell(started);
-    }
-
-    private void Update()
-    {
-        if(!_placementActive) return;
-        PlaceCell();
     }
 
     private void PlaceCell()
