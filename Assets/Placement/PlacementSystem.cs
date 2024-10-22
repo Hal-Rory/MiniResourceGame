@@ -11,21 +11,18 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private SpriteRenderer _cellIndicator;
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
-
-    private bool _placementActive;
-
+    private bool _placementActive => GameController.Instance.PlacementMode;
     private void Start()
     {
+        PreviewCell(false);
         _inputManager.OnSelectPrimary += PlaceObject;
         _inputManager.OnSelectSecondary += RemoveObject;
-        _townObjectManager.OnSelectionStateChanged += DoSelectionStateChanged;
+        _townObjectManager.OnStateChanged += DoStateChanged;
     }
 
-    private void DoSelectionStateChanged(bool started)
+    private void DoStateChanged(bool started)
     {
-        _placementActive = started;
-        if(started)
-            PreviewCell();
+        PreviewCell(started);
     }
 
     private void Update()
@@ -36,15 +33,17 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceCell()
     {
-        Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
+        Vector3 mousePosition = _inputManager.GetSelectionPosition(1, out Collider2D _);
         _mouseIndicator.transform.position = mousePosition;
         mousePosition.y = Mathf.Ceil(mousePosition.y);
         _currentCell = _worldGrid.LocalToCell(mousePosition);
         _cellIndicator.transform.parent.position = _currentCell;
     }
 
-    private void PreviewCell()
+    private void PreviewCell(bool visible)
     {
+        _cellIndicator.gameObject.SetActive(visible);
+        if (!visible) return;
         Vector2Int size = _townObjectManager.CurrentObject ? _townObjectManager.CurrentObject.LotSize: Vector2Int.one;
         if(size.magnitude > 1)
         {

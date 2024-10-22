@@ -1,3 +1,4 @@
+using Town.TownPopulation;
 using UnityEngine;
 
 public class House : TownLot, IIncomeContributor
@@ -23,5 +24,22 @@ public class House : TownLot, IIncomeContributor
 
     public override void Create(TownObj obj)
     {
+        _lotDescription = obj.Name;
+        _lotDepiction = obj.ObjPreview;
+    }
+
+    public override string ToString()
+    {
+        string inhabitants = string.Empty;
+        foreach (Person inhabitant in Household.GetInhabitants())
+        {
+            inhabitants += $"\n{inhabitant.Name}(Income:{inhabitant.IncomeContribution:+0;-#})";
+        }
+
+        return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})" +
+               (!string.IsNullOrEmpty(inhabitants)
+                   ? $"\nResidents:" +
+                     $"{inhabitants}"
+                   : "Currently Vacant");
     }
 }

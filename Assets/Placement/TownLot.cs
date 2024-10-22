@@ -9,6 +9,9 @@ public abstract class TownLot : MonoBehaviour
 
     [SerializeField] private Collider2D _collider;
 
+    protected string _lotDescription;
+    protected Sprite _lotDepiction;
+
     public void ConnectLots()
     {
         Connections = new List<int>();
@@ -41,6 +44,11 @@ public abstract class TownLot : MonoBehaviour
             lot.Connections.Remove(PlacementID);
             lot.DisconnectFromLot(PlacementID);
         }
+    }
+
+    public Sprite GetDepiction()
+    {
+        return _lotDepiction;
     }
 
     public void SetID(int ID)

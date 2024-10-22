@@ -15,6 +15,6 @@ public class GameUI : MonoBehaviour
         CurrentDate.text = _timeManager.GetDate();
         CurrentTime.text = _timeManager.GetTime();
 
-        CurrentIncome.text = $"{_moneyManager.CurrentIncome}(+{_moneyManager.CurrentIncomeTotal})";
+        CurrentIncome.text = $"{_moneyManager.CurrentIncome}({_moneyManager.CurrentIncomeTotal:+0;-#})";
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class ObjectSelectionUI : MonoBehaviour
     public Text CurrentObjectLabel;
     public GameObject CurrentObject;
 
+    public Toggle[] Tabs;
+
     private bool _menuOpen;
     private bool _duringSelection;
     public GameObject SelectionMenuDisplay;
@@ -19,11 +22,40 @@ public class ObjectSelectionUI : MonoBehaviour
 
     private void Start()
     {
-        SetMenuOpen(false);
+        SetOpenMenuDisplay(false);
         SetOpenCurrentObject(false);
         GameController.Instance.InputManager.OnExit += ReturnToMenu;
         _townObjectManager.OnCollectionChanged += DoOnCollectionChanged;
         _townObjectManager.OnSelectionChanged += DoSelectionChanged;
+
+        SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
+    }
+
+    /// <summary>
+    /// Performing Toggle groups job because Unity's toggle group is incredibly noisy
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="silent"></param>
+    private void SetCurrentTab(int index, bool silent)
+    {
+        void setToggle(bool value, Toggle t)
+        {
+            if (silent)
+                t.SetIsOnWithoutNotify(value);
+            else
+                t.isOn = value;
+        }
+
+        for (int i = 0; i < Tabs.Length; i++)
+        {
+            if (i == index)
+            {
+                setToggle(true, Tabs[i]);
+                continue;
+            }
+
+            setToggle(false, Tabs[i]);
+        }
     }
 
     private void ReturnToMenu()
@@ -54,6 +86,7 @@ public class ObjectSelectionUI : MonoBehaviour
 
     private void DoOnCollectionChanged()
     {
+        SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
         ModifyList(false);
         ModifyList(_menuOpen);
     }
@@ -125,6 +158,7 @@ public class ObjectSelectionUI : MonoBehaviour
 
     public void ChangeCollection_Toggle(int selection)
     {
+        if (!_menuOpen) return;
         _townObjectManager.ChangeCollection(selection);
     }
 }

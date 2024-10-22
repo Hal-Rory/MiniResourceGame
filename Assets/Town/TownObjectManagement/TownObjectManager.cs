@@ -6,27 +6,32 @@ using UnityEngine;
 public class TownObjectManager : MonoBehaviour
 {
     [SerializeField] private List<ObjectCollection> _objectCollections;
-    private ObjectCollection _currentCollection;
-    private int _currentObject = 0;
-    public TownObj CurrentObject => _currentCollection.Objects.Count == 0 || _currentObject < 0 ? null : _currentCollection.Objects[_currentObject];
+    private int _currentCollection;
+    private int _currentObject;
+    public TownObj CurrentObject => _objectCollections[_currentCollection].Objects.Count == 0 || _currentObject < 0 ? null : _objectCollections[_currentCollection].Objects[_currentObject];
     public event Action OnCollectionChanged;
     public event Action OnSelectionChanged;
-    public event Action<bool> OnSelectionStateChanged;
+    public event Action<bool> OnStateChanged;
 
     private void Start()
     {
-        _currentCollection = _objectCollections.Count > 0 ? _objectCollections[0] : null;
+        _currentCollection = 0;
+    }
+
+    public int GetCurrentCollection()
+    {
+        return _currentCollection;
     }
 
     public void SetObjectSelection(int index)
     {
-        _currentObject = index == -1 ? -1 : (int)Mathf.Repeat(index, _currentCollection.Objects.Count);
+        _currentObject = index == -1 ? -1 : (int)Mathf.Repeat(index, _objectCollections[_currentCollection].Objects.Count);
         OnSelectionChanged?.Invoke();
     }
 
     public TownObj[] GetObjectsInCollection()
     {
-        return _currentCollection.Objects.ToArray();
+        return _objectCollections[_currentCollection].Objects.ToArray();
     }
 
     public void ChangeCollection(int index)
@@ -38,12 +43,12 @@ public class TownObjectManager : MonoBehaviour
         }
 
         _currentObject = 0;
-        _currentCollection = _objectCollections[index];
+        _currentCollection = index;
         OnCollectionChanged?.Invoke();
     }
 
     public void StartSelection(bool started)
     {
-        OnSelectionStateChanged?.Invoke(started);
+        OnStateChanged?.Invoke(started);
     }
 }

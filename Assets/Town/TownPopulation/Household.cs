@@ -15,6 +15,10 @@ public class Household
     public void SetHouseID(int id)
     {
         HouseID = id;
+        foreach (Person inhabitant in _inhabitants)
+        {
+            inhabitant.Homeless = Homeless;
+        }
     }
 
     public void AddInhabitant(Person person)

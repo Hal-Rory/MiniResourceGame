@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     public ObjectPlacer ObjectPlacer;
     public TimeManager TimeManager;
     public MoneyManager MoneyManager;
+    public TownLotSelectionManager Selection;
+
+    public bool PlacementMode { get; private set; }
 
     private int _population;
 
@@ -22,11 +25,17 @@ public class GameController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            TownObjectManager.OnStateChanged += SetPlacementMode;
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private void SetPlacementMode(bool active)
+    {
+        PlacementMode = active;
     }
 
     private void OnEnable()

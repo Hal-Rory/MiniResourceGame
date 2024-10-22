@@ -6,7 +6,6 @@ public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera _activeCamera;
     private Vector3 _lastPosition;
-    [SerializeField] private LayerMask _placementLayers;
     public event Action OnSelectPrimary;
     public event Action OnSelectSecondary;
     public event Action<Vector2> OnScroll;
@@ -27,18 +26,19 @@ public class InputManager : MonoBehaviour
     public bool IsPointerOverUI()
         => EventSystem.current.IsPointerOverGameObject();
 
-    public Vector3 GetSelectedMapPosition()
+    public Vector3 GetSelectionPosition(LayerMask layer, out Collider2D col)
     {
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = _activeCamera.nearClipPlane;
         Ray ray = _activeCamera.ScreenPointToRay(mousePos);
         RaycastHit2D
-            hit = Physics2D.Raycast(ray.origin, ray.direction, 100, _placementLayers);
+            hit = Physics2D.Raycast(ray.origin, ray.direction, 100, layer);
         if (hit.collider)
         {
             _lastPosition = hit.point;
         }
 
+        col = hit.collider;
         Debug.DrawLine(_activeCamera.transform.position, hit.point);
         return _lastPosition;
     }
