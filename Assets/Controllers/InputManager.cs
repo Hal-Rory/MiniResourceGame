@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,14 +8,42 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera _activeCamera;
-    private Vector3 _lastPosition;
+    [SerializeField] private PlayerInput _playerInput;
+
+    private InputAction _primaryAction;
+    private InputAction _secondaryAction;
+    private InputAction _exitAction;
+    private InputAction _menuAction;
+    private InputAction _pointAction;
     private Vector2 _mousePosition;
-    public event Action PrimaryPressed;
-    public event Action SecondaryPressed;
-    public event Action ExitPressed;
+
+    private Vector3 _lastPosition;
+    public bool PrimaryPressed;
+    public bool SecondaryPressed;
+    public bool ExitPressed;
+    public bool MenuPressed;
+    public string ControlScheme;
 
     public bool IsPointerOverUI()
         => EventSystem.current.IsPointerOverGameObject();
+
+    private void Start()
+    {
+        _primaryAction = _playerInput.actions["Primary"];
+        _secondaryAction = _playerInput.actions["Secondary"];
+        _menuAction = _playerInput.actions["Menu"];
+        _exitAction = _playerInput.actions["Exit"];
+        _pointAction = _playerInput.actions["Point"];
+    }
+
+    private void Update()
+    {
+        _mousePosition = _pointAction.ReadValue<Vector2>();
+        PrimaryPressed = _primaryAction.WasPressedThisFrame();
+        SecondaryPressed = _secondaryAction.WasPressedThisFrame();
+        ExitPressed = _exitAction.WasPressedThisFrame();
+        MenuPressed = _menuAction.WasPressedThisFrame();
+    }
 
     public Vector3 GetSelectionPosition(LayerMask layer, out Collider2D col)
     {
@@ -31,28 +60,5 @@ public class InputManager : MonoBehaviour
         col = hit.collider;
         Debug.DrawLine(_activeCamera.transform.position, hit.point);
         return _lastPosition;
-    }
-
-    public void PressPrimary(InputAction.CallbackContext context)
-    {
-        int value = (int)context.ReadValue<float>();
-        if(context.started && value == 1) PrimaryPressed?.Invoke();
-    }
-
-    public void PressSecondary(InputAction.CallbackContext context)
-    {
-        int value = (int)context.ReadValue<float>();
-        if(context.started && value == 1) SecondaryPressed?.Invoke();
-    }
-
-    public void PressExit(InputAction.CallbackContext context)
-    {
-        int value = (int)context.ReadValue<float>();
-        if(context.started && value == 1) ExitPressed?.Invoke();
-    }
-
-    public void MousePosition(InputAction.CallbackContext context)
-    {
-        _mousePosition = context.ReadValue<Vector2>();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,8 +25,15 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
         SetOpenCurrentObject(false);
         _townObjectManager.OnCollectionChanged += DoOnCollectionChanged;
         _townObjectManager.OnSelectionChanged += DoSelectionChanged;
-        _inputManager.ExitPressed += OnExiting;
         SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
+    }
+
+    private void Update()
+    {
+        if (_inputManager.ExitPressed || (_inputManager.SecondaryPressed && !_inputManager.IsPointerOverUI()))
+        {
+            OnExiting();
+        }
     }
 
     private void OnExiting()

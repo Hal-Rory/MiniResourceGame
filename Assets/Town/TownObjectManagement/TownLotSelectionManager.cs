@@ -9,10 +9,18 @@ public class TownLotSelectionManager : MonoBehaviour
     private TownLot _lastFound;
     private bool _selected;
 
-    private void Start()
+    private void Update()
     {
-        _inputManager.SecondaryPressed+= DeselectTownLot;
-        _inputManager.PrimaryPressed += SelectTownLot;
+        TryHover();
+        if (_inputManager.ExitPressed || (_inputManager.SecondaryPressed && !_inputManager.IsPointerOverUI()))
+        {
+            DeselectTownLot();
+        }
+
+        if (_inputManager.PrimaryPressed)
+        {
+            SelectTownLot();
+        }
     }
 
     private void DeselectTownLot()
@@ -22,10 +30,6 @@ public class TownLotSelectionManager : MonoBehaviour
         OnTownObjectDeselected?.Invoke(_lastFound);
     }
 
-    private void Update()
-    {
-        TryHover();
-    }
 
     private void TryHover()
     {

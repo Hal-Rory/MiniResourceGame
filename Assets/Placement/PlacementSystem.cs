@@ -17,13 +17,20 @@ public class PlacementSystem : MonoBehaviour
     {
         PreviewCell(false);
         _townObjectManager.OnStateChanged += DoStateChanged;
-        _inputManager.PrimaryPressed += PlaceObject;
-        _inputManager.SecondaryPressed += RemoveObject;
     }
     private void Update()
     {
         if(!_placementActive) return;
         PlaceCell();
+        if (_inputManager.PrimaryPressed)
+        {
+            PlaceObject();
+        }
+
+        if (_inputManager.SecondaryPressed)
+        {
+            RemoveObject();
+        }
     }
 
     private void DoStateChanged(bool started)
