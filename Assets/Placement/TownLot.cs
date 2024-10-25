@@ -18,7 +18,6 @@ public abstract class TownLot : MonoBehaviour
         RaycastHit2D[] lots = Physics2D.BoxCastAll(_collider.bounds.center, Vector2.one * 2.5f, 0, Vector2.zero, 0, 1 << LayerMask.NameToLayer("TownLot"));
         foreach (RaycastHit2D lot in lots)
         {
-            //TODO: WebGL go boom
             float magnitude = (lot.transform.position - transform.position).magnitude;
             if (!lot.transform.parent.TryGetComponent(out TownLot townLot) || townLot.PlacementID == PlacementID || !Mathf.Approximately(magnitude, 1)) continue;
             Connections.Add(townLot.PlacementID);
@@ -59,5 +58,5 @@ public abstract class TownLot : MonoBehaviour
     public abstract void StartHovering();
     public abstract void EndHovering();
 
-    public abstract void Create(TownObj obj);
+    public abstract void Create(TownLotObj lotObj);
 }

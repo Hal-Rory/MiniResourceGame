@@ -8,7 +8,8 @@ public class TimeManager : MonoBehaviour
     private List<ITimeListener> _listeners;
     private DateTime _gameTime;
     [SerializeField] private string _startDateTime;
-    private event Action<int> _onClockUpdate;
+    private Action<int> _onEarlyClockUpdate;
+    private Action<int> _onClockUpdate;
     private Coroutine _clockUpdating;
     [SerializeField] private float _tickDelta;
     public float TimeMultiplier;
@@ -43,19 +44,30 @@ public class TimeManager : MonoBehaviour
                 //new day
             }
             _gameTime = _gameTime.AddDays(1);
+            _onEarlyClockUpdate?.Invoke(1);
             _onClockUpdate?.Invoke(1);
         }
 
         _clockUpdating = null;
     }
 
-    public void RegisterListener(ITimeListener listener)
+    public void RegisterListener(ITimeListener listener, bool earlyUpdate = false)
     {
+        if(earlyUpdate)
+        {
+            _onEarlyClockUpdate += listener.ClockUpdate;
+            return;
+        }
         _onClockUpdate += listener.ClockUpdate;
     }
 
-    public void UnregisterListener(ITimeListener listener)
+    public void UnregisterListener(ITimeListener listener, bool earlyUpdate = false)
     {
+        if(earlyUpdate)
+        {
+            _onEarlyClockUpdate += listener.ClockUpdate;
+            return;
+        }
         _onClockUpdate -= listener.ClockUpdate;
     }
 

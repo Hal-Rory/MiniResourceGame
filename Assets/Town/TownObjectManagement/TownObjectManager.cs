@@ -8,7 +8,7 @@ public class TownObjectManager : MonoBehaviour
     [SerializeField] private List<ObjectCollection> _objectCollections;
     private int _currentCollection;
     private int _currentObject;
-    public TownObj CurrentObject => _objectCollections[_currentCollection].Objects.Count == 0 || _currentObject < 0 ? null : _objectCollections[_currentCollection].Objects[_currentObject];
+    public TownLotObj CurrentObject => _objectCollections[_currentCollection].Objects.Count == 0 || _currentObject < 0 ? null : _objectCollections[_currentCollection].Objects[_currentObject];
     public event Action OnCollectionChanged;
     public event Action OnSelectionChanged;
     public event Action<bool> OnStateChanged;
@@ -29,7 +29,7 @@ public class TownObjectManager : MonoBehaviour
         OnSelectionChanged?.Invoke();
     }
 
-    public TownObj[] GetObjectsInCollection()
+    public TownLotObj[] GetObjectsInCollection()
     {
         return _objectCollections[_currentCollection].Objects.ToArray();
     }

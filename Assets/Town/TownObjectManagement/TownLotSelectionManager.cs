@@ -12,7 +12,7 @@ public class TownLotSelectionManager : MonoBehaviour
     private void Update()
     {
         TryHover();
-        if (_inputManager.ExitPressed || (_inputManager.SecondaryPressed && !_inputManager.IsPointerOverUI()))
+        if (_inputManager.ExitPressed)
         {
             DeselectTownLot();
         }

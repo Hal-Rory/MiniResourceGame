@@ -151,7 +151,7 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
         if (fill)
         {
-            TownObj[] townObjs = _townObjectManager.GetObjectsInCollection();
+            TownLotObj[] townObjs = _townObjectManager.GetObjectsInCollection();
             for (int t = 0; t < townObjs.Length; t++)
             {
                 ButtonCard card = SelectionDisplay.SpawnItem(t.ToString(), townObjs[t].Name, SelectionButtonPrefab) as ButtonCard;

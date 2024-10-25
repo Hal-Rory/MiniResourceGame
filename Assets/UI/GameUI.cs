@@ -10,7 +10,7 @@ public class GameUI : MonoBehaviour
 {
     private TimeManager _timeManager => GameController.Instance.TimeManager;
     private MoneyManager _moneyManager => GameController.Instance.MoneyManager;
-    private PopulationManager _populationManager => GameController.Instance.PopulationManager;
+    private PopulationFactory _populationFactory => GameController.Instance.PopulationFactory;
     public Text CurrentDate;
     public Text CurrentPopulation;
     public Text CurrentIncome;
@@ -23,23 +23,23 @@ public class GameUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _populationManager.OnPopulationChanged += CheckHomeless;
+        _populationFactory.OnPopulationChanged += CheckHomeless;
     }
 
     private void OnDisable()
     {
-        if(_populationManager) _populationManager.OnPopulationChanged -= CheckHomeless;
+        if(GameController.Instance) _populationFactory.OnPopulationChanged -= CheckHomeless;
     }
 
     public void CheckHomeless()
     {
-        _currentHousing = _populationManager.PopulationHouseholds.Sum(household => household.Homeless ? 1 : 0);
+        _currentHousing = _populationFactory.PopulationHouseholds.Sum(household => household.Homeless ? 1 : 0);
     }
 
     private void Update()
     {
         CurrentDate.text = _timeManager.GetDate();
-        CurrentPopulation.text = $"Current Population: {_populationManager.Population.Count} Homeless: {_currentHousing}";
+        CurrentPopulation.text = $"Current Population: {_populationFactory.Population.Count} Homeless: {_currentHousing}";
 
         CurrentIncome.text = $"{_moneyManager.CurrentIncome}({_moneyManager.CurrentIncomeTotal:+0;-#})";
     }

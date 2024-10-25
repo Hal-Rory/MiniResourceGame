@@ -1,17 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Town.TownPopulation;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
 
-    public PopulationManager PopulationManager;
+    public PopulationFactory PopulationFactory;
     public InputManager InputManager;
     public TownObjectManager TownObjectManager;
     public WorkplaceManager WorkplaceManager;
-    public ObjectPlacer ObjectPlacer;
+    public ObjectFactory ObjectFactory;
     public TimeManager TimeManager;
     public MoneyManager MoneyManager;
     public TownLotSelectionManager Selection;
@@ -25,12 +26,15 @@ public class GameController : MonoBehaviour
 
     private int _population;
 
+    private Dictionary<PopulationStockpiles, float> _populationStockpiles;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             TownObjectManager.OnStateChanged += SetPlacementMode;
+            PopulationFactory = new PopulationFactory();
         }
         else
         {
@@ -45,6 +49,7 @@ public class GameController : MonoBehaviour
         {
             yield return new WaitUntil(() => GameHasStarted);
         }
+        PopulationFactory.Start();
         GameStart.SetActive(false);
         TimeManager.SetTimeActive(true);
     }
@@ -61,28 +66,28 @@ public class GameController : MonoBehaviour
 
     public TownLot GetLot(int id)
     {
-        return ObjectPlacer.GetLot(id);
+        return ObjectFactory.GetLot(id);
     }
 
     public List<T> GetLots<T>(string id)
     {
-        return ObjectPlacer.GetLots<T>(id);
+        return ObjectFactory.GetLots<T>(id);
     }
 
     public List<T> GetLots<T>(int[] ids)
     {
-        return ObjectPlacer.GetLots<T>(ids);
+        return ObjectFactory.GetLots<T>(ids);
     }
 
     public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
     {
-        if(creationListener != null) ObjectPlacer.OnLotAdded += creationListener;
-        if(destructionListener != null) ObjectPlacer.OnLotRemoved += destructionListener;
+        if(creationListener != null) ObjectFactory.OnLotAdded += creationListener;
+        if(destructionListener != null) ObjectFactory.OnLotRemoved += destructionListener;
     }
 
     public void UnregisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
     {
-        if(creationListener != null) ObjectPlacer.OnLotAdded -= creationListener;
-        if(destructionListener != null) ObjectPlacer.OnLotRemoved -= destructionListener;
+        if(creationListener != null) ObjectFactory.OnLotAdded -= creationListener;
+        if(destructionListener != null) ObjectFactory.OnLotRemoved -= destructionListener;
     }
 }

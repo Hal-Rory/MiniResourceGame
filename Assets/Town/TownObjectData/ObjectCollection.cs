@@ -5,5 +5,5 @@ using UnityEngine;
 public class ObjectCollection : ScriptableObject
 {
     public string Name;
-    public List<TownObj> Objects;
+    public List<TownLotObj> Objects;
 }

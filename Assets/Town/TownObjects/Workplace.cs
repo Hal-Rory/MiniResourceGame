@@ -14,6 +14,8 @@ public class Workplace : TownLot, IIncomeContributor
     [SerializeField] private List<Person> _employees = new List<Person>();
     [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
 
+    private EmploymentSpeciality _jobSpeciality;
+
     public bool CanHire(Person person)
     {
         return _employees.Count <= _employeeLimit && AgeGroups.Contains(person.AgeGroup);
@@ -37,7 +39,7 @@ public class Workplace : TownLot, IIncomeContributor
     public void Employ(Person person)
     {
         _employees.Add(person);
-        person.Employ(PlacementID, _wages);
+        person.Employ(PlacementID, _wages, _jobSpeciality);
     }
 
     public void Unemploy(Person person)
@@ -65,11 +67,28 @@ public class Workplace : TownLot, IIncomeContributor
         CanContribute = _employees.Count != 0;
     }
 
-    public override void Create(TownObj obj)
+    public override string ToString()
     {
-        WorkplaceObj workplace = obj as WorkplaceObj;
-        AgeGroups = workplace.AgeGroups;
-        _wages = workplace.Wages;
-        _employeeLimit = workplace.EmployeeLimit;
+        string employees = string.Join("\n", _employees.Select(e => e.ToString()));
+        string criteria = string.Join(", ", AgeGroups.Select(a => a.Plural()));
+
+        return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})\n" +
+               $"Currently hiring: {char.ToUpper(criteria[0]) + criteria.Substring(1)}\n" +
+               (!string.IsNullOrEmpty(employees)
+                   ? $"Employees:\n" +
+                     $"{employees}"
+                   : "No Workforce.");
+
+    }
+
+    public override void Create(TownLotObj lotObj)
+    {
+        WorkplaceLotObj workplaceLot = lotObj as WorkplaceLotObj;
+        AgeGroups = workplaceLot.AgeGroups;
+        _wages = workplaceLot.Wages;
+        _employeeLimit = workplaceLot.EmployeeLimit;
+        _jobSpeciality = workplaceLot.JobSpeciality;
+        _lotDescription = lotObj.Name;
+        _lotDepiction = lotObj.ObjPreview;
     }
 }

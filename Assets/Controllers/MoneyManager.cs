@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoneyManager : MonoBehaviour,ITimeListener
+public class MoneyManager : ITimeListener
 {
     private HashSet<IIncomeContributor> _incomeContributors = new HashSet<IIncomeContributor>();
     public float CurrentIncome { get; private set; }
@@ -11,13 +11,13 @@ public class MoneyManager : MonoBehaviour,ITimeListener
     private void OnEnable()
     {
         GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.TimeManager.RegisterListener(this);
+        GameController.Instance.TimeManager.RegisterListener(this, true);
     }
 
     private void OnDisable()
     {
         GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.TimeManager.UnregisterListener(this);
+        GameController.Instance.TimeManager.UnregisterListener(this, true);
     }
 
     private void ObjectPlacerOnOnLotAdded(TownLot obj)

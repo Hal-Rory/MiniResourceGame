@@ -31,6 +31,14 @@ public class Household
         return _inhabitants.ToArray();
     }
 
+    public void FinalizeHousehold()
+    {
+        foreach (Person inhabitant in _inhabitants)
+        {
+            inhabitant.AddRelationship(_inhabitants.Select(i => i.ID).ToArray());
+        }
+    }
+
     public int GetHouseholdIncome()
     {
         return _inhabitants.Sum(person => person.IncomeContribution);

@@ -34,10 +34,10 @@ public class House : TownLot, IIncomeContributor
         _hoverBG.SetActive(false);
     }
 
-    public override void Create(TownObj obj)
+    public override void Create(TownLotObj lotObj)
     {
-        _lotDescription = obj.Name;
-        _lotDepiction = obj.ObjPreview;
+        _lotDescription = lotObj.Name;
+        _lotDepiction = lotObj.ObjPreview;
     }
 
     public override string ToString()

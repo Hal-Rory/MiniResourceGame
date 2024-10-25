@@ -1,11 +1,17 @@
 using System.Collections.Generic;
-using System.Linq;
 using Town.TownPopulation;
 using UnityEngine;
 
-public class WorkplaceManager : MonoBehaviour
+public class WorkplaceManager : ITimeListener
 {
     public List<Workplace> Workplaces { get; private set; } = new List<Workplace>();
+
+    private PopulationFactory _populationFactory => GameController.Instance.PopulationFactory;
+
+    private void Start()
+    {
+        GameController.Instance.TimeManager.RegisterListener(this, true);
+    }
 
     private void OnEnable()
     {
@@ -52,5 +58,21 @@ public class WorkplaceManager : MonoBehaviour
     {
         Workplaces.Remove(workplace);
         workplace.UnemployAll();
+    }
+
+    public void HireUnemployed()
+    {
+        List<Person> unemployed = _populationFactory.Population.FindAll(person => person.JobIndex == -1 && person.CanWork);
+        if (unemployed.Count == 0) return;
+        foreach (Person person in unemployed)
+        {
+            if(Hire(person))
+                Debug.Log($"{person.Name} from household {person.HouseholdIndex} was just hired");
+        }
+    }
+
+    public void ClockUpdate(int tick)
+    {
+        HireUnemployed();
     }
 }

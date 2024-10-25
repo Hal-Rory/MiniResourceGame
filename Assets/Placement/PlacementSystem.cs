@@ -12,6 +12,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private SpriteRenderer _cellIndicator;
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
+    private bool _canPlace;
     private bool _placementActive => GameController.Instance.PlacementMode;
     private void Start()
     {
@@ -40,7 +41,8 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceCell()
     {
-        Vector3 mousePosition = _inputManager.GetSelectionPosition(1, out Collider2D _);
+        Vector3 mousePosition = _inputManager.GetSelectionPosition(1, out Collider2D col);
+        _canPlace = col != null;
         _mouseIndicator.transform.position = mousePosition;
         mousePosition.y = Mathf.Ceil(mousePosition.y);
         _currentCell = _worldGrid.LocalToCell(mousePosition);
@@ -60,7 +62,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceObject()
     {
-        if (_inputManager.IsPointerOverUI() || !_placementActive || _townObjectManager.CurrentObject == null) return;
+        if (_inputManager.IsPointerOverUI() || !_placementActive || _townObjectManager.CurrentObject == null || !_canPlace) return;
         _gridManager.AddLot(_townObjectManager.CurrentObject, _currentCell);
     }
 

@@ -11,7 +11,7 @@ public class Road : TownLot
     {
     }
 
-    public override void Create(TownObj obj)
+    public override void Create(TownLotObj lotObj)
     {
 
     }

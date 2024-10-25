@@ -16,7 +16,11 @@ namespace Common.Utility
         {
             return thisValue >= Mathf.Min(value1, value2) && thisValue <= Mathf.Max(value1, value2);
         }
-        
+
+        public static float Clamp(this float value, float min, float max)
+        {
+            return Mathf.Clamp(value, min, max);
+        }
     }
     [Serializable]
     public struct RangeFloat
