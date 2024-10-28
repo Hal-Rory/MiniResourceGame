@@ -8,4 +8,5 @@ public class WorkplaceLotObj : TownLotObj
     public PersonAgeGroup[] AgeGroups;
     public int EmployeeLimit;
     public EmploymentSpeciality JobSpeciality;
+    public TownResource JobResource;
 }

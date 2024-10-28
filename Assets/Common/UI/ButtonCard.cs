@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class ButtonCard : Card
 {
-    [SerializeField] private Button Selectable;    
+    [SerializeField] private Button Selectable;
     private Color LabelColorActive;
     public Color LabelColorInactive = Color.white;
     private void Awake()
     {
-        if (Label != null)
-            LabelColorActive = Label.color;
+        if (_label != null)
+            LabelColorActive = _label.color;
         Interactable = Selectable.interactable;
     }
     public bool Interactable
@@ -25,8 +25,8 @@ public class ButtonCard : Card
 
     public void SetLabelInteractable(bool value)
     {
-        if (Label != null)
-            Label.color = value ? LabelColorActive : LabelColorInactive;
+        if (_label != null)
+            _label.color = value ? LabelColorActive : LabelColorInactive;
     }
 
     public void Set(string ID, string label = "", Sprite icon = null, UnityAction callback = null)

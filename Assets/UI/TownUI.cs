@@ -9,23 +9,36 @@ public class TownUI : MonoBehaviour, IUIControl
     public Image Icon;
     public GameObject Panel;
     private TownLot _current;
+
+    public HousingUI Housing;
     void Start()
     {
         Panel.SetActive(false);
         GameController.Instance.Selection.OnTownObjectSelected += TownLotSelected;
         GameController.Instance.Selection.OnTownObjectDeselected += TownLotDeselected;
+        GameController.Instance.RegisterPlacementListener(null, OnRemoveLot);
+    }
+    private void OnRemoveLot(TownLot obj)
+    {
+        if (_current != obj) return;
+        TownLotDeselected(null);
     }
 
     private void Update()
     {
         if (!_current) return;
+        SetDisplay();
+    }
+
+    private void SetDisplay()
+    {
         Banner.text = _current.name;
         Description.text = _current.ToString();
         Icon.sprite = _current.GetDepiction();
         Icon.gameObject.SetActive(Icon.sprite);
     }
 
-    private void TownLotDeselected(TownLot lot)
+    private void TownLotDeselected(TownLot _)
     {
         GameController.Instance.UI.EndControl(this);
             Panel.SetActive(false);
@@ -34,8 +47,19 @@ public class TownUI : MonoBehaviour, IUIControl
 
     private void TownLotSelected(TownLot lot)
     {
+        if (lot == null) return;
         if (!GameController.Instance.UI.TrySetActive(this)) return;
-        Panel.SetActive(true);
         _current = lot;
+        if (lot is House house)
+        {
+            Housing.DisplayHousehold(house);
+            Housing.gameObject.SetActive(true);
+        }
+        else
+        {
+            Housing.gameObject.SetActive(false);
+        }
+        SetDisplay();
+        Panel.SetActive(true);
     }
 }

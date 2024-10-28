@@ -16,49 +16,54 @@ public class AutoAnchor : MonoBehaviour
     private static void SetAnchorsToSize()
     {
         RectTransform trans = (Selection.activeObject as GameObject)?.GetComponent<RectTransform>();
+        RectTransform parent = trans.parent.transform is RectTransform ? trans.parent.transform as RectTransform : null;
+        if (parent == null)
+        {
+            Debug.LogError("RectTransform missing parent RectTransform");
+        }
         Vector2 anchorMin = trans.anchorMin;
         Vector2 anchorMax = trans.anchorMax;
         Vector2 offsetMin = trans.offsetMin;
         Vector2 offsetMax = trans.offsetMax;
-        
+
         if (trans.anchorMin.x == trans.anchorMax.x)
         {
-            anchorMin.x += trans.offsetMin.x / (trans.parent as RectTransform).rect.width;
-            anchorMax.x += trans.offsetMax.x / (trans.parent as RectTransform).rect.width;
-            offsetMin.x = 0;
-            offsetMax.x = 0;
-        } 
-        else if (trans.anchorMin.x != trans.anchorMax.x)
-        {
-            anchorMin.x += trans.offsetMin.x / (trans.parent as RectTransform).rect.width;
-            anchorMax.x += trans.offsetMax.x / (trans.parent as RectTransform).rect.width;
-            float anchorDeltaX = anchorMax.x - anchorMin.x;
-            float posX = (anchorMin.x * (trans.parent as RectTransform).rect.width);
-            float sizeX = (trans.parent as RectTransform).rect.width * anchorDeltaX;
-            float offsetPosX = posX + sizeX;
-            anchorMin.x = posX / (trans.parent as RectTransform).rect.width;
-            anchorMax.x = offsetPosX / (trans.parent as RectTransform).rect.width;
+            anchorMin.x += trans.offsetMin.x / parent.rect.width;
+            anchorMax.x += trans.offsetMax.x / parent.rect.width;
             offsetMin.x = 0;
             offsetMax.x = 0;
         }
-        
+        else if (trans.anchorMin.x != trans.anchorMax.x)
+        {
+            anchorMin.x += trans.offsetMin.x / parent.rect.width;
+            anchorMax.x += trans.offsetMax.x / parent.rect.width;
+            float anchorDeltaX = anchorMax.x - anchorMin.x;
+            float posX = (anchorMin.x * parent.rect.width);
+            float sizeX = parent.rect.width * anchorDeltaX;
+            float offsetPosX = posX + sizeX;
+            anchorMin.x = posX / parent.rect.width;
+            anchorMax.x = offsetPosX / parent.rect.width;
+            offsetMin.x = 0;
+            offsetMax.x = 0;
+        }
+
         if (trans.anchorMin.y == trans.anchorMax.y)
         {
-            anchorMin.y += trans.offsetMin.y / (trans.parent as RectTransform).rect.height;
-            anchorMax.y += trans.offsetMax.y / (trans.parent as RectTransform).rect.height;
+            anchorMin.y += trans.offsetMin.y / parent.rect.height;
+            anchorMax.y += trans.offsetMax.y / parent.rect.height;
             offsetMin.y = 0;
             offsetMax.y = 0;
-        } 
+        }
         else if (trans.anchorMin.y != trans.anchorMax.y)
         {
-            anchorMin.y += trans.offsetMin.y / (trans.parent as RectTransform).rect.height;
-            anchorMax.y += trans.offsetMax.y / (trans.parent as RectTransform).rect.height;
+            anchorMin.y += trans.offsetMin.y / parent.rect.height;
+            anchorMax.y += trans.offsetMax.y / parent.rect.height;
             float anchorDeltaY = anchorMax.y - anchorMin.y;
-            float posY = (anchorMin.y * (trans.parent as RectTransform).rect.height);
-            float sizeY = (trans.parent as RectTransform).rect.height * anchorDeltaY;
+            float posY = (anchorMin.y * parent.rect.height);
+            float sizeY = parent.rect.height * anchorDeltaY;
             float offsetPosY = posY + sizeY;
-            anchorMin.y = posY / (trans.parent as RectTransform).rect.height;
-            anchorMax.y = offsetPosY / (trans.parent as RectTransform).rect.height;
+            anchorMin.y = posY / parent.rect.height;
+            anchorMax.y = offsetPosY / parent.rect.height;
             offsetMin.y = 0;
             offsetMax.y = 0;
         }
@@ -73,23 +78,28 @@ public class AutoAnchor : MonoBehaviour
     private static void ToggleAnchorsAndSize()
     {
         RectTransform trans = (Selection.activeObject as GameObject)?.GetComponent<RectTransform>();
+        RectTransform parent = trans.parent.transform is RectTransform ? trans.parent.transform as RectTransform : null;
+        if (parent == null)
+        {
+            Debug.LogError("RectTransform missing parent RectTransform");
+        }
         Vector2 anchorMin = trans.anchorMin;
         Vector2 anchorMax = trans.anchorMax;
         Vector2 offsetMin = trans.offsetMin;
         Vector2 offsetMax = trans.offsetMax;
-        
+
         if (trans.anchorMin.x == trans.anchorMax.x)
         {
-            anchorMin.x += trans.offsetMin.x / (trans.parent as RectTransform).rect.width;
-            anchorMax.x += trans.offsetMax.x / (trans.parent as RectTransform).rect.width;
+            anchorMin.x += trans.offsetMin.x / parent.rect.width;
+            anchorMax.x += trans.offsetMax.x / parent.rect.width;
             offsetMin.x = 0;
             offsetMax.x = 0;
-        } 
+        }
         else
         {
             float anchorDelta = trans.anchorMax.x - trans.anchorMin.x;
-            float pos = (trans.anchorMin.x * (trans.parent as RectTransform).rect.width);
-            float size = (trans.parent as RectTransform).rect.width * anchorDelta;
+            float pos = (trans.anchorMin.x * parent.rect.width);
+            float size = parent.rect.width * anchorDelta;
             float offsetPos = pos + size;
             anchorMin.x = 0;
             anchorMax.x = 0;
@@ -99,16 +109,16 @@ public class AutoAnchor : MonoBehaviour
 
         if (trans.anchorMin.y == trans.anchorMax.y)
         {
-            anchorMin.y += trans.offsetMin.y / (trans.parent as RectTransform).rect.height;
-            anchorMax.y += trans.offsetMax.y / (trans.parent as RectTransform).rect.height;
+            anchorMin.y += trans.offsetMin.y / parent.rect.height;
+            anchorMax.y += trans.offsetMax.y / parent.rect.height;
             offsetMin.y = 0;
             offsetMax.y = 0;
         }
         else
         {
             float anchorDelta = trans.anchorMax.y - trans.anchorMin.y;
-            float pos = (trans.anchorMin.y * (trans.parent as RectTransform).rect.height);
-            float size = (trans.parent as RectTransform).rect.height * anchorDelta;
+            float pos = (trans.anchorMin.y * parent.rect.height);
+            float size = parent.rect.height * anchorDelta;
             float offsetPos = pos + size;
             anchorMin.y = 0;
             anchorMax.y = 0;

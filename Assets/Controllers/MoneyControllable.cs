@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoneyManager : ITimeListener
+public class MoneyControllable : ITimeListener, IControllable
 {
     private HashSet<IIncomeContributor> _incomeContributors = new HashSet<IIncomeContributor>();
     public float CurrentIncome { get; private set; }
     public float CurrentIncomeTotal { get; private set; }
-    private void OnEnable()
+
+    public void SetUp()
     {
         GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.TimeManager.RegisterListener(this, true);
+        GameController.Instance.GameTime.RegisterListener(this, true);
     }
 
-    private void OnDisable()
+    public void SetDown()
     {
         GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.TimeManager.UnregisterListener(this, true);
+        GameController.Instance.GameTime.UnregisterListener(this, true);
     }
 
     private void ObjectPlacerOnOnLotAdded(TownLot obj)

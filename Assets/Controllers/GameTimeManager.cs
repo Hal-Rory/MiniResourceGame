@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeManager : MonoBehaviour
+public class GameTimeManager : MonoBehaviour
 {
     private List<ITimeListener> _listeners;
     private DateTime _gameTime;

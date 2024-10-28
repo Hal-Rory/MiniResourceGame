@@ -2,25 +2,29 @@ using System.Collections.Generic;
 using Town.TownPopulation;
 using UnityEngine;
 
-public class WorkplaceManager : ITimeListener
+public class WorkplaceManager : ITimeListener, IControllable
 {
     public List<Workplace> Workplaces { get; private set; } = new List<Workplace>();
 
-    private PopulationFactory _populationFactory => GameController.Instance.PopulationFactory;
+    private PopulationFactory _population => GameController.Instance.Population;
 
-    private void Start()
-    {
-        GameController.Instance.TimeManager.RegisterListener(this, true);
-    }
-
-    private void OnEnable()
+    public void SetUp()
     {
         GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
+        GameController.Instance.GameTime.RegisterListener(this, true);
+        _population.OnPopulationChanged += PopulationCheck;
     }
 
-    private void OnDisable()
+    public void SetDown()
     {
         GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
+        GameController.Instance.GameTime.UnregisterListener(this, true);
+        _population.OnPopulationChanged -= PopulationCheck;
+    }
+
+    public void PopulationCheck()
+    {
+        //workplaces should fire the homeless here
     }
 
     private void ObjectPlacerOnOnLotAdded(TownLot obj)
@@ -62,7 +66,7 @@ public class WorkplaceManager : ITimeListener
 
     public void HireUnemployed()
     {
-        List<Person> unemployed = _populationFactory.Population.FindAll(person => person.JobIndex == -1 && person.CanWork);
+        List<Person> unemployed = _population.Population.FindAll(person => person.JobIndex == -1 && person.CanWork);
         if (unemployed.Count == 0) return;
         foreach (Person person in unemployed)
         {

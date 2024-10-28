@@ -5,9 +5,32 @@ namespace Town.TownPopulation
 {
     public enum PersonAgeGroup { Child, Teen, Adult, Elder, Deceased }
     public enum PersonStats { Hunger, Happiness, Health }
-    public enum PopulationStockpiles { Hunger, Water, Atmosphere }
-    public enum EmploymentSpeciality { Strength, Intelligence }
 
+    /// <summary>
+    /// One for one with <see cref="TownResource"/>
+    /// </summary>
+    public enum EmploymentSpeciality
+    {
+        Hunting,
+        Gathering,
+        Foraging,
+        Cooking,
+        Healing,
+        Crafting
+    }
+
+    /// <summary>
+    /// One for one with <see cref="EmploymentSpeciality"/>
+    /// </summary>
+    public enum TownResource
+    {
+        Meat,
+        Herbs,
+        Provisions,
+        Meals,
+        Medicine,
+        Constructs
+    }
 
     public static class PopulationUtility
     {

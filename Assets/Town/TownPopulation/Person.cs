@@ -39,10 +39,10 @@ namespace Town.TownPopulation
             int age = (int)AgeGroup;
             int ageMin = AgeGroup == PersonAgeGroup.Child ? 1 : _ageRanges[(int)AgeGroup - 1];
             _age = Random.Range(ageMin,_ageRanges[age]);
-            _stats = PopulationUtility.StatSetup();
             _employmentMatch = false;
             _relationships = new Dictionary<int, float>();
             ID = id;
+            _stats = PopulationUtility.StatSetup();
             _stats[PersonStats.Happiness] = 100;
             _stats[PersonStats.Health] = 100;
             _stats[PersonStats.Hunger] = 100;

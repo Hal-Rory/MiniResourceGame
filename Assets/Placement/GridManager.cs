@@ -6,7 +6,7 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     private Dictionary<Vector3Int, PlacedLot> _placedLots;
-    private ObjectFactory _placementManager => GameController.Instance.ObjectFactory;
+    private TownLotFactory _placementManager => GameController.Instance.TownLot;
     [SerializeField] private Collider2D _gridCollider;
     private void Awake()
     {

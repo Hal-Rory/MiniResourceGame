@@ -7,12 +7,12 @@ public class TimeIcon : MonoBehaviour, ITimeListener
 
     private void Start()
     {
-        GameController.Instance.TimeManager.RegisterListener(this);
+        GameController.Instance.GameTime.RegisterListener(this);
     }
 
     private void Update()
     {
-        Icon.fillAmount += GameController.Instance.TimeManager.GetClockSpeed() * Time.deltaTime / 100;
+        Icon.fillAmount += GameController.Instance.GameTime.GetClockSpeed() * Time.deltaTime / 100;
     }
 
     public void ClockUpdate(int tick)

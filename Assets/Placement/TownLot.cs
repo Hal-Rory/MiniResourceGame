@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class TownLot : MonoBehaviour
 {
+    public Vector3Int CellBlock;
     public int PlacementID { get; private set; }
     public List<int> Connections { get; private set; }
 

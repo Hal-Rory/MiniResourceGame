@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Town.TownPopulation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,9 +9,9 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-    private TimeManager _timeManager => GameController.Instance.TimeManager;
-    private MoneyManager _moneyManager => GameController.Instance.MoneyManager;
-    private PopulationFactory _populationFactory => GameController.Instance.PopulationFactory;
+    private GameTimeManager _gameTime => GameController.Instance.GameTime;
+    private MoneyControllable _money => GameController.Instance.Money;
+    private PopulationFactory _population => GameController.Instance.Population;
     public Text CurrentDate;
     public Text CurrentPopulation;
     public Text CurrentIncome;
@@ -23,25 +24,25 @@ public class GameUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _populationFactory.OnPopulationChanged += CheckHomeless;
+        _population.OnPopulationChanged += PopulationCheck;
     }
 
     private void OnDisable()
     {
-        if(GameController.Instance) _populationFactory.OnPopulationChanged -= CheckHomeless;
+        if(GameController.Instance) _population.OnPopulationChanged -= PopulationCheck;
     }
 
-    public void CheckHomeless()
+    public void PopulationCheck()
     {
-        _currentHousing = _populationFactory.PopulationHouseholds.Sum(household => household.Homeless ? 1 : 0);
+        _currentHousing = _population.PopulationHouseholds.Sum(household => household.Homeless ? 1 : 0);
     }
 
     private void Update()
     {
-        CurrentDate.text = _timeManager.GetDate();
-        CurrentPopulation.text = $"Current Population: {_populationFactory.Population.Count} Homeless: {_currentHousing}";
+        CurrentDate.text = _gameTime.GetDate();
+        CurrentPopulation.text = $"Current Population: {_population.Population.Count} Homeless: {_currentHousing}";
 
-        CurrentIncome.text = $"{_moneyManager.CurrentIncome}({_moneyManager.CurrentIncomeTotal:+0;-#})";
+        CurrentIncome.text = $"{_money.CurrentIncome}({_money.CurrentIncomeTotal:+0;-#})";
     }
 
     public void SetControls_Button(bool enable)

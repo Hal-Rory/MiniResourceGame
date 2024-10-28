@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Common.Utility;
 using UnityEngine;
 
-public class TownObjectManager : MonoBehaviour
+[Serializable]
+public class TownObjectManager : IControllable
 {
     [SerializeField] private List<ObjectCollection> _objectCollections;
     private int _currentCollection;
@@ -13,9 +14,14 @@ public class TownObjectManager : MonoBehaviour
     public event Action OnSelectionChanged;
     public event Action<bool> OnStateChanged;
 
-    private void Start()
+    public void SetUp()
     {
+        _objectCollections = new List<ObjectCollection>(Resources.LoadAll<ObjectCollection>("TownObjects"));
         _currentCollection = 0;
+    }
+
+    public void SetDown()
+    {
     }
 
     public int GetCurrentCollection()

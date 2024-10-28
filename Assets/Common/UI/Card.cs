@@ -5,35 +5,35 @@ namespace Common.UI
 {
     public class Card : MonoBehaviour
     {
-        [SerializeField] protected Text Label;
-        [SerializeField] protected Image Icon;
-        [SerializeField] private Sprite EmptyImage;
+        [SerializeField] protected Text _label;
+        [SerializeField] protected Image _icon;
+        [SerializeField] private Sprite _emptyImage;
 
         [field:SerializeField] public string ID { get; private set; }
-        public string LabelText => Label != null ? Label.text : string.Empty;
-        public Sprite IconSprite => Icon != null ? Icon.sprite : null;
+        public string LabelText => _label != null ? _label.text : string.Empty;
+        public Sprite IconSprite => _icon != null ? _icon.sprite : null;
         public void SetLabel(string label)
         {
-            if (Label == null)
+            if (_label == null)
             {
                 return;
             }
-            Label.text = label;
+            _label.text = label;
         }
         public void SetIcon(Sprite sprite)
         {
-            if (Icon == null)
+            if (_icon == null)
             {
                 return;
             }
             if (sprite == null)
             {
-                Icon.enabled = false;
+                _icon.enabled = false;
             }
             else
             {
-                Icon.enabled = true;
-                Icon.sprite = sprite;
+                _icon.enabled = true;
+                _icon.sprite = sprite;
             }
         }
         public void Set(string id)
@@ -49,8 +49,13 @@ namespace Common.UI
         public virtual void SetEmpty(string label = "")
         {
             ID = string.Empty;
-            SetIcon(EmptyImage);
-            Label.text = label;
+            SetIcon(_emptyImage);
+            _label.text = label;
+        }
+
+        public void SetIconActive(bool active)
+        {
+            _icon.gameObject.SetActive(active);
         }
     }
 }

@@ -4,9 +4,8 @@ using UnityEngine.InputSystem;
 
 public class PlacementSystem : MonoBehaviour
 {
-    private InputManager _inputManager => GameController.Instance.InputManager;
-    private TownObjectManager _townObjectManager => GameController.Instance.TownObjectManager;
-    [SerializeField] private GridManager _gridManager;
+    private InputManager _input => GameController.Instance.Input;
+    private TownObjectManager _townObject => GameController.Instance.TownObject;
 
     [SerializeField] private GameObject _mouseIndicator;
     [SerializeField] private SpriteRenderer _cellIndicator;
@@ -17,18 +16,18 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         PreviewCell(false);
-        _townObjectManager.OnStateChanged += DoStateChanged;
+        _townObject.OnStateChanged += DoStateChanged;
     }
     private void Update()
     {
         if(!_placementActive) return;
         PlaceCell();
-        if (_inputManager.PrimaryPressed)
+        if (_input.PrimaryPressed)
         {
             PlaceObject();
         }
 
-        if (_inputManager.SecondaryPressed)
+        if (_input.SecondaryPressed)
         {
             RemoveObject();
         }
@@ -41,7 +40,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceCell()
     {
-        Vector3 mousePosition = _inputManager.GetSelectionPosition(1, out Collider2D col);
+        Vector3 mousePosition = _input.GetSelectionPosition(1, out Collider2D col);
         _canPlace = col != null;
         _mouseIndicator.transform.position = mousePosition;
         mousePosition.y = Mathf.Ceil(mousePosition.y);
@@ -53,7 +52,7 @@ public class PlacementSystem : MonoBehaviour
     {
         _cellIndicator.gameObject.SetActive(visible);
         if (!visible) return;
-        Vector2Int size = _townObjectManager.CurrentObject ? _townObjectManager.CurrentObject.LotSize: Vector2Int.one;
+        Vector2Int size = _townObject.CurrentObject ? _townObject.CurrentObject.LotSize: Vector2Int.one;
         if(size.magnitude > 1)
         {
             _cellIndicator.size = size;
@@ -62,13 +61,13 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceObject()
     {
-        if (_inputManager.IsPointerOverUI() || !_placementActive || _townObjectManager.CurrentObject == null || !_canPlace) return;
-        _gridManager.AddLot(_townObjectManager.CurrentObject, _currentCell);
+        if (_input.IsPointerOverUI() || !_placementActive || _townObject.CurrentObject == null || !_canPlace) return;
+        GameController.Instance.PlaceLot(_townObject.CurrentObject, _currentCell);
     }
 
     private void RemoveObject()
     {
-        if (!_placementActive || _townObjectManager.CurrentObject != null) return;
-        _gridManager.RemoveLot(_currentCell);
+        if (!_placementActive || _townObject.CurrentObject != null) return;
+        GameController.Instance.RemoveLot(_currentCell);
     }
 }

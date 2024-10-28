@@ -1,8 +1,15 @@
-using UnityEngine;
-
-public class UIManager : MonoBehaviour
+public class UIManager : IControllable
 {
     private IUIControl _currentControl;
+
+    public void SetUp()
+    {
+        _currentControl = null;
+    }
+
+    public void SetDown()
+    {
+    }
 
     public bool HasControl(IUIControl control)
     {

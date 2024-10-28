@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ObjectFactory : MonoBehaviour
+public class TownLotFactory : MonoBehaviour
 {
     [SerializeField]
     private List<TownLot> _placedGameObjects = new List<TownLot>();
@@ -11,13 +11,14 @@ public class ObjectFactory : MonoBehaviour
     public event Action<TownLot> OnLotAdded;
     public event Action<TownLot> OnLotRemoved;
 
-    public int PlaceObject(TownLotObj lotObjBase, Vector3 position)
+    public int PlaceObject(TownLotObj lotObjBase, Vector3Int position)
     {
         TownLot newLot = Instantiate(lotObjBase.ObjLot, position, Quaternion.identity);
         _placedGameObjects.Add(newLot);
         newLot.SetID(_placedGameObjects.Count - 1);
         newLot.Create(lotObjBase);
         newLot.ConnectLots();
+        newLot.CellBlock = position;
         OnLotAdded?.Invoke(newLot);
         return _placedGameObjects.Count - 1;
     }

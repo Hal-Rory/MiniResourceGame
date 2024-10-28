@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class ObjectSelectionUI : MonoBehaviour, IUIControl
 {
-    private InputManager _inputManager => GameController.Instance.InputManager;
-    private TownObjectManager _townObjectManager => GameController.Instance.TownObjectManager;
+    private InputManager _input => GameController.Instance.Input;
+    private TownObjectManager _townObject => GameController.Instance.TownObject;
 
     public Image CurrentObjectDisplay;
     public Text CurrentObjectLabel;
@@ -23,14 +23,14 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
         SetOpenMenuDisplay(false);
         SetOpenCurrentObject(false);
-        _townObjectManager.OnCollectionChanged += DoOnCollectionChanged;
-        _townObjectManager.OnSelectionChanged += DoSelectionChanged;
-        SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
+        _townObject.OnCollectionChanged += DoOnCollectionChanged;
+        _townObject.OnSelectionChanged += DoSelectionChanged;
+        SetCurrentTab(_townObject.GetCurrentCollection(), true);
     }
 
     private void Update()
     {
-        if (_inputManager.ExitPressed || (_inputManager.SecondaryPressed && !_inputManager.IsPointerOverUI()))
+        if (_input.ExitPressed)
         {
             OnExiting();
         }
@@ -75,12 +75,12 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
         _duringSelection = false;
         SetOpenMenuDisplay(true);
         SetOpenCurrentObject(false);
-        _townObjectManager.StartSelection(false);
+        _townObject.StartSelection(false);
     }
 
     private void DoSelectionChanged()
     {
-        if (!_townObjectManager.CurrentObject)
+        if (!_townObject.CurrentObject)
         {
             SetOpenMenuDisplay(false);
             SetOpenCurrentObject(false);
@@ -97,22 +97,22 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
 
     private void DoOnCollectionChanged()
     {
-        SetCurrentTab(_townObjectManager.GetCurrentCollection(), true);
+        SetCurrentTab(_townObject.GetCurrentCollection(), true);
         ModifyList(false);
         ModifyList(_menuOpen);
     }
 
     private void UpdateObjectSelection()
     {
-        _townObjectManager.StartSelection(true);
-        CurrentObjectDisplay.sprite = _townObjectManager.CurrentObject ? _townObjectManager.CurrentObject.ObjPreview : null;
-        CurrentObjectLabel.text = _townObjectManager.CurrentObject ? _townObjectManager.CurrentObject.Name : string.Empty;
+        _townObject.StartSelection(true);
+        CurrentObjectDisplay.sprite = _townObject.CurrentObject ? _townObject.CurrentObject.ObjPreview : null;
+        CurrentObjectLabel.text = _townObject.CurrentObject ? _townObject.CurrentObject.Name : string.Empty;
     }
 
     public void RemoveState_Button()
     {
-        _townObjectManager.SetObjectSelection(-1);
-        _townObjectManager.StartSelection(true);
+        _townObject.SetObjectSelection(-1);
+        _townObject.StartSelection(true);
     }
 
     public void ToggleMenu_Button()
@@ -129,7 +129,7 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
 
     private void SetOpenCurrentObject(bool open)
     {
-        CurrentObject.SetActive(_townObjectManager.CurrentObject && open);
+        CurrentObject.SetActive(_townObject.CurrentObject && open);
     }
 
     private void SetMenuOpen(bool open)
@@ -151,14 +151,16 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
         if (fill)
         {
-            TownLotObj[] townObjs = _townObjectManager.GetObjectsInCollection();
+            TownLotObj[] townObjs = _townObject.GetObjectsInCollection();
             for (int t = 0; t < townObjs.Length; t++)
             {
                 ButtonCard card = SelectionDisplay.SpawnItem(t.ToString(), townObjs[t].Name, SelectionButtonPrefab) as ButtonCard;
                 card.AddListener(onSelect);
+                card.SetIcon(townObjs[t].ObjPreview);
+
                 void onSelect()
                 {
-                    _townObjectManager.SetObjectSelection(int.Parse(card.ID));
+                    _townObject.SetObjectSelection(int.Parse(card.ID));
                 }
             }
         }
@@ -172,6 +174,6 @@ public class ObjectSelectionUI : MonoBehaviour, IUIControl
     public void ChangeCollection_Toggle(int selection)
     {
         if (!_menuOpen) return;
-        _townObjectManager.ChangeCollection(selection);
+        _townObject.ChangeCollection(selection);
     }
 }

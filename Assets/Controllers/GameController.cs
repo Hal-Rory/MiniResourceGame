@@ -1,22 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Town.TownPopulation;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
 
-    public PopulationFactory PopulationFactory;
-    public InputManager InputManager;
-    public TownObjectManager TownObjectManager;
-    public WorkplaceManager WorkplaceManager;
-    public ObjectFactory ObjectFactory;
-    public TimeManager TimeManager;
-    public MoneyManager MoneyManager;
+    public PopulationFactory Population;
+    public InputManager Input;
+    public TownObjectManager TownObject;
+    public WorkplaceManager Workplace;
+    public TownLotFactory TownLot;
+    public GameTimeManager GameTime;
+    public MoneyControllable Money;
     public TownLotSelectionManager Selection;
     public UIManager UI;
+    public TownPopulaceManager TownPopulace;
+    [SerializeField] private GridManager _gridManager;
 
     public GameObject Game;
     public GameObject GameStart;
@@ -24,17 +25,24 @@ public class GameController : MonoBehaviour
 
     public bool PlacementMode { get; private set; }
 
-    private int _population;
-
-    private Dictionary<PopulationStockpiles, float> _populationStockpiles;
-
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            TownObjectManager.OnStateChanged += SetPlacementMode;
-            PopulationFactory = new PopulationFactory();
+            TownPopulace = new TownPopulaceManager();
+            TownPopulace.SetUp();
+            TownObject = new TownObjectManager();
+            TownObject.SetUp();
+            UI = new UIManager();
+            UI.SetUp();
+            TownObject.OnStateChanged += SetPlacementMode;
+            Population = new PopulationFactory();
+            Population.SetUp();
+            Workplace = new WorkplaceManager();
+            Workplace.SetUp();
+            Money = new MoneyControllable();
+            Money.SetUp();
         }
         else
         {
@@ -49,9 +57,8 @@ public class GameController : MonoBehaviour
         {
             yield return new WaitUntil(() => GameHasStarted);
         }
-        PopulationFactory.Start();
         GameStart.SetActive(false);
-        TimeManager.SetTimeActive(true);
+        GameTime.SetTimeActive(true);
     }
 
     public void StartGame()
@@ -64,30 +71,30 @@ public class GameController : MonoBehaviour
         PlacementMode = active;
     }
 
-    public TownLot GetLot(int id)
-    {
-        return ObjectFactory.GetLot(id);
-    }
-
-    public List<T> GetLots<T>(string id)
-    {
-        return ObjectFactory.GetLots<T>(id);
-    }
-
     public List<T> GetLots<T>(int[] ids)
     {
-        return ObjectFactory.GetLots<T>(ids);
+        return TownLot.GetLots<T>(ids);
     }
 
     public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
     {
-        if(creationListener != null) ObjectFactory.OnLotAdded += creationListener;
-        if(destructionListener != null) ObjectFactory.OnLotRemoved += destructionListener;
+        if(creationListener != null) TownLot.OnLotAdded += creationListener;
+        if(destructionListener != null) TownLot.OnLotRemoved += destructionListener;
     }
 
     public void UnregisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
     {
-        if(creationListener != null) ObjectFactory.OnLotAdded -= creationListener;
-        if(destructionListener != null) ObjectFactory.OnLotRemoved -= destructionListener;
+        if(creationListener != null) TownLot.OnLotAdded -= creationListener;
+        if(destructionListener != null) TownLot.OnLotRemoved -= destructionListener;
+    }
+
+    public void PlaceLot(TownLotObj townLot, Vector3Int position)
+    {
+        _gridManager.AddLot(townLot, position);
+    }
+
+    public void RemoveLot(Vector3Int position)
+    {
+        _gridManager.RemoveLot(position);
     }
 }

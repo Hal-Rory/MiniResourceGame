@@ -1,3 +1,4 @@
+using System.Linq;
 using Town.TownPopulation;
 using UnityEngine;
 
@@ -43,15 +44,15 @@ public class House : TownLot, IIncomeContributor
     public override string ToString()
     {
         string inhabitants = string.Empty;
-        foreach (Person inhabitant in Household.GetInhabitants())
-        {
-            inhabitants += $"\n{inhabitant}";
-        }
+        if (Household != null)
+            inhabitants = Household.GetInhabitants().Aggregate(
+                inhabitants,
+                (current, inhabitant) => current + $"\n{inhabitant}");
 
-        return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})" +
+
+        return $"{_lotDescription} (Upkeep: {GetIncomeContribution():0;-#})" +
                (!string.IsNullOrEmpty(inhabitants)
-                   ? $"\nResidents:" +
-                     $"{inhabitants}"
-                   : "Currently Vacant");
+                   ? $"\nResidents: {inhabitants}"
+                   : "\nCurrently Vacant");
     }
 }

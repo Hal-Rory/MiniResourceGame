@@ -15,6 +15,7 @@ public class Workplace : TownLot, IIncomeContributor
     [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
 
     private EmploymentSpeciality _jobSpeciality;
+    private TownResource _jobResource;
 
     public bool CanHire(Person person)
     {
@@ -73,10 +74,9 @@ public class Workplace : TownLot, IIncomeContributor
         string criteria = string.Join(", ", AgeGroups.Select(a => a.Plural()));
 
         return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})\n" +
-               $"Currently hiring: {char.ToUpper(criteria[0]) + criteria.Substring(1)}\n" +
+               $"Currently hiring: {criteria.ToUpper()}\n" +
                (!string.IsNullOrEmpty(employees)
-                   ? $"Employees:\n" +
-                     $"{employees}"
+                   ? $"Employees:\n{employees}"
                    : "No Workforce.");
 
     }
@@ -88,6 +88,7 @@ public class Workplace : TownLot, IIncomeContributor
         _wages = workplaceLot.Wages;
         _employeeLimit = workplaceLot.EmployeeLimit;
         _jobSpeciality = workplaceLot.JobSpeciality;
+        _jobResource = workplaceLot.JobResource;
         _lotDescription = lotObj.Name;
         _lotDepiction = lotObj.ObjPreview;
     }
