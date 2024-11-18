@@ -15,32 +15,16 @@ public class GameUI : MonoBehaviour
     public Text CurrentDate;
     public Text CurrentPopulation;
     public Text CurrentIncome;
-    private int _currentHousing;
 
     public GameObject Controls;
     public GameObject ControlsButton;
 
     public RebindActionUI[] _bindings;
 
-    private void OnEnable()
-    {
-        _population.OnPopulationChanged += PopulationCheck;
-    }
-
-    private void OnDisable()
-    {
-        if(GameController.Instance) _population.OnPopulationChanged -= PopulationCheck;
-    }
-
-    public void PopulationCheck()
-    {
-        _currentHousing = _population.PopulationHouseholds.Sum(household => household.Homeless ? 1 : 0);
-    }
-
     private void Update()
     {
         CurrentDate.text = _gameTime.GetDate();
-        CurrentPopulation.text = $"Current Population: {_population.Population.Count} Homeless: {_currentHousing}";
+        CurrentPopulation.text = $"Current Population: {_population.Population.Count}";
 
         CurrentIncome.text = $"{_income.CurrentFunds}({_income.NetIncome:+0;-#})";
     }

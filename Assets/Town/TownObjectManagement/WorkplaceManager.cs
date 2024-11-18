@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Interfaces;
 using Town.TownPopulation;
 using UnityEngine;
 
@@ -22,9 +23,10 @@ public class WorkplaceManager : ITimeListener, IControllable
         _population.OnPopulationChanged -= PopulationCheck;
     }
 
-    public void PopulationCheck()
+    private void PopulationCheck(IPopulation population)
     {
-        //workplaces should fire the homeless here
+        if(population is Person { JobIndex: >= 0 } person)
+            Workplaces.Find(workplace => workplace.PlacementID == person.JobIndex).Unemploy(person);
     }
 
     private void ObjectPlacerOnOnLotAdded(TownLot obj)

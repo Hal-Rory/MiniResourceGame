@@ -48,11 +48,6 @@ public class Workplace : TownLot, IIncomeContributor
         _employees.Clear();
     }
 
-    public Person[] GetEmployees()
-    {
-        return _employees.ToArray();
-    }
-
     public int GetIncomeContribution()
     {
         return _employees.Count != 0 ? _wages * _employees.Count : 0;

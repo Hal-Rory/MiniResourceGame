@@ -1,55 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Town.TownPopulation;
+using Interfaces;
 using UnityEngine;
 
-[Serializable]
-public class Household
+namespace Town.TownPopulation
 {
-    [SerializeField] private List<Person> _inhabitants = new List<Person>();
-    public int MemberCount => _inhabitants.Count;
-    public int HouseID { get; private set; }
-    public int HouseholdID { get; private set; }
-    public bool Homeless => HouseID == -1;
-
-    public void SetHouseID(int id)
+    [Serializable]
+    public class Household : IPopulation
     {
-        HouseID = id;
-        foreach (Person inhabitant in _inhabitants)
+        [SerializeField] private List<Person> _inhabitants = new List<Person>();
+        public int HouseID { get; private set; }
+        public int HouseholdID { get; private set; }
+
+        public Household(int id, int houseID)
         {
-            inhabitant.Homeless = Homeless;
+            HouseholdID = id;
+            HouseID = houseID;
         }
-    }
 
-    public void AddInhabitant(Person person)
-    {
-        _inhabitants.Add(person);
-    }
+        public void AddInhabitant(Person person)
+        {
+            _inhabitants.Add(person);
+        }
 
-    public Person[] GetInhabitants()
-    {
-        return _inhabitants.ToArray();
-    }
+        public Person[] GetInhabitants()
+        {
+            return _inhabitants.ToArray();
+        }
 
-    public void FinalizeHousehold(int id)
-    {
-        HouseholdID = id;
-    }
+        public void ClearHousehold()
+        {
+            HouseholdID = -1;
+        }
 
-    public int GetHouseholdIncome()
-    {
-        return _inhabitants.Sum(person => person.IncomeContribution);
-    }
+        public override string ToString()
+        {
+            string inhabitants = string.Join(", ", _inhabitants.Select(e => e.Name));
 
-    public override string ToString()
-    {
-        string inhabitants = string.Join(", ", _inhabitants.Select(e => e.Name));
-
-        return $"{inhabitants}\n" +
-               $"Currently " +
-               (Homeless
-                   ? "homeless."
-                   : "homed.");
+            return $"{inhabitants}";
+        }
     }
 }
