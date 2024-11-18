@@ -32,6 +32,7 @@ namespace Town.TownPopulation
         public void ClearHousehold()
         {
             HouseholdID = -1;
+            _inhabitants.ForEach(person => person.HouseholdIndex = -1);
         }
 
         public override string ToString()

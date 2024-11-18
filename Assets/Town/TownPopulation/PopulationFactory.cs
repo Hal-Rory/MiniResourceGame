@@ -99,7 +99,6 @@ namespace Town.TownPopulation
                 house.Household.ClearHousehold();
                 foreach (Person person in house.Household.GetInhabitants())
                 {
-                    person.Evict();
                     Population.Remove(person);
                     _orphanedPersons.Push(person);
                 }

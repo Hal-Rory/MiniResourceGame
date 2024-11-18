@@ -56,18 +56,13 @@ namespace Town.TownPopulation
             IncomeContribution = wages;
         }
 
-        public void Evict()
-        {
-            HouseholdIndex = -1;
-        }
-
         public void ClockUpdate(int tick)
         {
             float ageFactor = tick / 100f;
-            if (!IsAlive(ageFactor)) return;
+            AgeUp(ageFactor);
         }
 
-        private bool IsAlive(float ageFactor)
+        private bool AgeUp(float ageFactor)
         {
             if (AgeGroup == PersonAgeGroup.Deceased) return false;
 
