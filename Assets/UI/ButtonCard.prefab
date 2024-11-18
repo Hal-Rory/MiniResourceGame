@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 592244319293333999}
   - component: {fileID: 592244319293333998}
   - component: {fileID: 592244319293333997}
-  - component: {fileID: 7422359438966785801}
+  - component: {fileID: 1926125400501594678}
   m_Layer: 5
   m_Name: ButtonCard
   m_TagString: Untagged
@@ -143,7 +143,7 @@ MonoBehaviour:
   <ID>k__BackingField: 
   Selectable: {fileID: 592244319293333998}
   LabelColorInactive: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
---- !u!114 &7422359438966785801
+--- !u!114 &1926125400501594678
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -156,11 +156,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
+    m_Left: 5
+    m_Right: 5
+    m_Top: 5
+    m_Bottom: 5
+  m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
@@ -205,7 +205,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 178.25, y: 0}
+  m_SizeDelta: {x: 190.1191, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &592244319566420968
 CanvasRenderer:
@@ -275,7 +275,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 592244320744177278}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -285,8 +285,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 24.6875, y: -15}
-  m_SizeDelta: {x: 30, y: 0}
+  m_AnchoredPosition: {x: 22.5, y: -15}
+  m_SizeDelta: {x: 35, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &592244320744177274
 CanvasRenderer:
@@ -316,8 +316,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 769096606, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

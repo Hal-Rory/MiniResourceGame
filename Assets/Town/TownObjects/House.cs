@@ -1,8 +1,7 @@
 using System.Linq;
-using Town.TownPopulation;
 using UnityEngine;
 
-public class House : TownLot, IIncomeContributor
+public class House : TownLot
 {
     [field: SerializeField] public int IncomeContribution { get; private set; }
 
@@ -17,12 +16,6 @@ public class House : TownLot, IIncomeContributor
     public void SetHousehold(Household household)
     {
         Household = household;
-    }
-
-    public int GetIncomeContribution()
-    {
-        CanContribute = Household != null;
-        return IncomeContribution + Household?.GetHouseholdIncome() ?? 0;
     }
 
     public override void StartHovering()
@@ -50,7 +43,12 @@ public class House : TownLot, IIncomeContributor
                 (current, inhabitant) => current + $"\n{inhabitant}");
 
 
-        return $"{_lotDescription} (Upkeep: {GetIncomeContribution():0;-#})" +
+        // return $"{_lotDescription} (Upkeep: {GetIncomeContribution():0;-#})" +
+        //        (!string.IsNullOrEmpty(inhabitants)
+        //            ? $"\nResidents: {inhabitants}"
+        //            : "\nCurrently Vacant");
+
+        return $"{_lotDescription}" +
                (!string.IsNullOrEmpty(inhabitants)
                    ? $"\nResidents: {inhabitants}"
                    : "\nCurrently Vacant");

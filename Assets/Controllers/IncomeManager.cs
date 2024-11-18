@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoneyControllable : ITimeListener, IControllable
+public class IncomeManager : ITimeListener, IControllable
 {
     private HashSet<IIncomeContributor> _incomeContributors = new HashSet<IIncomeContributor>();
-    public float CurrentIncome { get; private set; }
-    public float CurrentIncomeTotal { get; private set; }
+    public int CurrentFunds { get; private set; }
+    public int NetIncome { get; private set; }
 
     public void SetUp()
     {
@@ -39,8 +39,15 @@ public class MoneyControllable : ITimeListener, IControllable
 
     private void CollectPayments()
     {
-        CurrentIncomeTotal = _incomeContributors.Sum(contributor => contributor.CanContribute ? contributor.GetIncomeContribution() : 0);
-        CurrentIncome += CurrentIncomeTotal;
+        NetIncome = _incomeContributors.Sum(contributor => contributor.GetIncomeContribution());
+        CurrentFunds += NetIncome;
+    }
+
+    public bool TryPurchase(int amount)
+    {
+        if (CurrentFunds < amount) return false;
+        CurrentFunds -= amount;
+        return true;
     }
 
     public void RegisterIncomeContributor(IIncomeContributor contributor)

@@ -4,15 +4,16 @@ using UnityEngine.InputSystem;
 
 public class PlacementSystem : MonoBehaviour
 {
-    private InputManager _input => GameController.Instance.Input;
-    private TownObjectManager _townObject => GameController.Instance.TownObject;
+    private GameController _controller => GameController.Instance;
+    private InputManager _input => _controller.Input;
+    private TownObjectManager _townObject => _controller.TownObject;
 
     [SerializeField] private GameObject _mouseIndicator;
     [SerializeField] private SpriteRenderer _cellIndicator;
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
     private bool _canPlace;
-    private bool _placementActive => GameController.Instance.PlacementMode;
+    private bool _placementActive => _controller.PlacementMode;
     private void Start()
     {
         PreviewCell(false);
@@ -62,12 +63,12 @@ public class PlacementSystem : MonoBehaviour
     private void PlaceObject()
     {
         if (_input.IsPointerOverUI() || !_placementActive || _townObject.CurrentObject == null || !_canPlace) return;
-        GameController.Instance.PlaceLot(_townObject.CurrentObject, _currentCell);
+        _controller.PlaceLot(_townObject.CurrentObject, _currentCell);
     }
 
     private void RemoveObject()
     {
         if (!_placementActive || _townObject.CurrentObject != null) return;
-        GameController.Instance.RemoveLot(_currentCell);
+        _controller.RemoveLot(_currentCell);
     }
 }

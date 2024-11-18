@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 public class PopulationFactory: IControllable
 {
     public List<Household> PopulationHouseholds { get; private set; }
+    //find a way to make this a dict<int, person>.
+    //Remove person, leave int, search for first instance of key->value==null and repopulate index
+    //all references to the person is by index in the dict so update references on person exit
     public List<Person> Population { get; private set; }
     public event Action OnPopulationChanged;
     private List<string> _nameCollection = new List<string>
@@ -33,20 +36,13 @@ public class PopulationFactory: IControllable
     {
         Population = new List<Person>();
         PopulationHouseholds = new List<Household>();
-        GameController.Instance.RegisterPlacementListener(OnNewLot, OnRemoveLot);
+        GameController.Instance.RegisterPlacementListener(destructionListener:OnRemoveLot);
     }
 
     public void SetDown()
     {
-        GameController.Instance.UnregisterPlacementListener(OnNewLot, OnRemoveLot);
+        GameController.Instance.UnregisterPlacementListener(destructionListener:OnRemoveLot);
     }
-
-    private void OnNewLot(TownLot obj)
-    {
-        if (obj is not House house) return;
-        TryCreateHome(house);
-    }
-
     private void OnRemoveLot(TownLot obj)
     {
         if (obj is not House house) return;
@@ -59,12 +55,34 @@ public class PopulationFactory: IControllable
             h.Homeless && h.MemberCount <= house.HouseholdSize);
     }
 
+    public bool HomelessMatch(House house, Household household)
+    {
+        return household.Homeless && household.MemberCount <= house.HouseholdSize;
+    }
+
+    public void TryCreateHome(House house, int thisHousehold)
+    {
+        Household household = PopulationHouseholds[thisHousehold];
+
+        house.SetHousehold(household);
+        household.SetHouseID(house.PlacementID);
+        OnPopulationChanged?.Invoke();
+    }
+
     public void TryCreateHome(House house)
     {
         Household household =
             HomelessMatch(house)
                 ?? CreateHousehold(house.HouseholdSize);
 
+        house.SetHousehold(household);
+        household.SetHouseID(house.PlacementID);
+        OnPopulationChanged?.Invoke();
+    }
+
+    public void CreateHome(House house)
+    {
+        Household household = CreateHousehold(house.HouseholdSize);
         house.SetHousehold(household);
         household.SetHouseID(house.PlacementID);
         OnPopulationChanged?.Invoke();
@@ -94,7 +112,7 @@ public class PopulationFactory: IControllable
             Population.Add(householdMember);
         }
 
-        household.FinalizeHousehold();
+        household.FinalizeHousehold(PopulationHouseholds.Count);
         PopulationHouseholds.Add(household);
         return household;
     }

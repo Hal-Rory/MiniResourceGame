@@ -23,9 +23,10 @@ public class UIManager : IControllable
         return true;
     }
 
-    public void EndControl(IUIControl control)
+    public bool EndControl(IUIControl control)
     {
-        if (_currentControl != control) return;
+        if (_currentControl != control) return false;
         _currentControl = null;
+        return true;
     }
 }

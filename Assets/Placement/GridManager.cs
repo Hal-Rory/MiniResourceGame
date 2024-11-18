@@ -17,8 +17,10 @@ public class GridManager : MonoBehaviour
     {
         List<Vector3Int> positions = CalculatePositions(gridPosition, lotObj.LotSize);
         if (!CanPlaceObejctAt(gridPosition, lotObj.LotSize)) return false;
-        PlacedLot lot = new PlacedLot();
-        lot.OccupiedPositions = positions;
+        PlacedLot lot = new PlacedLot
+        {
+            OccupiedPositions = positions
+        };
         foreach (Vector3Int pos in positions)
         {
             _placedLots.Add(pos, lot);

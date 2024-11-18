@@ -7,15 +7,10 @@ using UnityEngine;
 public class Workplace : TownLot, IIncomeContributor
 {
     private int _wages;
-    [field: SerializeField] public int IncomeContribution { get; private set; }
     [SerializeField] private GameObject _hoverBG;
     private int _employeeLimit;
-    [field: SerializeField] public bool CanContribute { get; private set; }
     [SerializeField] private List<Person> _employees = new List<Person>();
     [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
-
-    private EmploymentSpeciality _jobSpeciality;
-    private TownResource _jobResource;
 
     public bool CanHire(Person person)
     {
@@ -32,15 +27,10 @@ public class Workplace : TownLot, IIncomeContributor
         _hoverBG.SetActive(false);
     }
 
-    public int GetIncomeContribution()
-    {
-        return IncomeContribution;
-    }
-
     public void Employ(Person person)
     {
         _employees.Add(person);
-        person.Employ(PlacementID, _wages, _jobSpeciality);
+        person.Employ(PlacementID, _wages);
     }
 
     public void Unemploy(Person person)
@@ -63,9 +53,9 @@ public class Workplace : TownLot, IIncomeContributor
         return _employees.ToArray();
     }
 
-    private void Update()
+    public int GetIncomeContribution()
     {
-        CanContribute = _employees.Count != 0;
+        return _employees.Count != 0 ? _wages * _employees.Count : 0;
     }
 
     public override string ToString()
@@ -73,8 +63,8 @@ public class Workplace : TownLot, IIncomeContributor
         string employees = string.Join("\n", _employees.Select(e => e.ToString()));
         string criteria = string.Join(", ", AgeGroups.Select(a => a.Plural()));
 
-        return $"{_lotDescription} (Upkeep:{IncomeContribution:+0;-#})\n" +
-               $"Currently hiring: {criteria.ToUpper()}\n" +
+        return $"{_lotDescription}\n" +
+               $"Currently hiring: {char.ToUpper(criteria[0]) + criteria[1..]}\n" +
                (!string.IsNullOrEmpty(employees)
                    ? $"Employees:\n{employees}"
                    : "No Workforce.");
@@ -87,8 +77,6 @@ public class Workplace : TownLot, IIncomeContributor
         AgeGroups = workplaceLot.AgeGroups;
         _wages = workplaceLot.Wages;
         _employeeLimit = workplaceLot.EmployeeLimit;
-        _jobSpeciality = workplaceLot.JobSpeciality;
-        _jobResource = workplaceLot.JobResource;
         _lotDescription = lotObj.Name;
         _lotDepiction = lotObj.ObjPreview;
     }

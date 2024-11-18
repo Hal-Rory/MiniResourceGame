@@ -1,51 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Town.TownPopulation
+﻿namespace Town.TownPopulation
 {
     public enum PersonAgeGroup { Child, Teen, Adult, Elder, Deceased }
-    public enum PersonStats { Hunger, Happiness, Health }
-
-    /// <summary>
-    /// One for one with <see cref="TownResource"/>
-    /// </summary>
-    public enum EmploymentSpeciality
-    {
-        Hunting,
-        Gathering,
-        Foraging,
-        Cooking,
-        Healing,
-        Crafting
-    }
-
-    /// <summary>
-    /// One for one with <see cref="EmploymentSpeciality"/>
-    /// </summary>
-    public enum TownResource
-    {
-        Meat,
-        Herbs,
-        Provisions,
-        Meals,
-        Medicine,
-        Constructs
-    }
 
     public static class PopulationUtility
     {
-        public static Dictionary<PersonStats, float> StatSetup()
-        {
-            Dictionary<PersonStats, float> stats = new Dictionary<PersonStats, float>();
-            foreach (PersonStats stat in Enum.GetValues(typeof(PersonStats)))
-            {
-                stats.Add(stat, 0);
-            }
-
-            return stats;
-        }
-
-        public static string ToNoun(this PersonAgeGroup age)
+       public static string ToNoun(this PersonAgeGroup age)
         {
             switch (age)
             {

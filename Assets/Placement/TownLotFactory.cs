@@ -17,7 +17,6 @@ public class TownLotFactory : MonoBehaviour
         _placedGameObjects.Add(newLot);
         newLot.SetID(_placedGameObjects.Count - 1);
         newLot.Create(lotObjBase);
-        newLot.ConnectLots();
         newLot.CellBlock = position;
         OnLotAdded?.Invoke(newLot);
         return _placedGameObjects.Count - 1;
@@ -29,7 +28,6 @@ public class TownLotFactory : MonoBehaviour
             || !_placedGameObjects[gameObjectIndex].gameObject)
             return;
         OnLotRemoved?.Invoke(_placedGameObjects[gameObjectIndex]);
-        _placedGameObjects[gameObjectIndex].DisconnectLots();
         Destroy(_placedGameObjects[gameObjectIndex].gameObject);
         _placedGameObjects[gameObjectIndex] = null;
     }

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class GameUI : MonoBehaviour
 {
     private GameTimeManager _gameTime => GameController.Instance.GameTime;
-    private MoneyControllable _money => GameController.Instance.Money;
+    private IncomeManager _income => GameController.Instance.Income;
     private PopulationFactory _population => GameController.Instance.Population;
     public Text CurrentDate;
     public Text CurrentPopulation;
@@ -42,7 +42,7 @@ public class GameUI : MonoBehaviour
         CurrentDate.text = _gameTime.GetDate();
         CurrentPopulation.text = $"Current Population: {_population.Population.Count} Homeless: {_currentHousing}";
 
-        CurrentIncome.text = $"{_money.CurrentIncome}({_money.CurrentIncomeTotal:+0;-#})";
+        CurrentIncome.text = $"{_income.CurrentFunds}({_income.NetIncome:+0;-#})";
     }
 
     public void SetControls_Button(bool enable)

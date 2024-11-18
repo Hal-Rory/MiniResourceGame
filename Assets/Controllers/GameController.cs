@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
     public WorkplaceManager Workplace;
     public TownLotFactory TownLot;
     public GameTimeManager GameTime;
-    public MoneyControllable Money;
+    public IncomeManager Income;
     public TownLotSelectionManager Selection;
     public UIManager UI;
     public TownPopulaceManager TownPopulace;
@@ -41,8 +41,8 @@ public class GameController : MonoBehaviour
             Population.SetUp();
             Workplace = new WorkplaceManager();
             Workplace.SetUp();
-            Money = new MoneyControllable();
-            Money.SetUp();
+            Income = new IncomeManager();
+            Income.SetUp();
         }
         else
         {
@@ -90,6 +90,7 @@ public class GameController : MonoBehaviour
 
     public void PlaceLot(TownLotObj townLot, Vector3Int position)
     {
+        if (!Income.TryPurchase(townLot.LotPrice)) return;
         _gridManager.AddLot(townLot, position);
     }
 

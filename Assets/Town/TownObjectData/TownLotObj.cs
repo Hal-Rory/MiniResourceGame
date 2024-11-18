@@ -5,6 +5,7 @@ public class TownLotObj : ScriptableObject
 {
     public string Name;
     public Vector2Int LotSize;
+    public int LotPrice;
     public TownLot ObjLot;
     public Sprite ObjPreview;
 }

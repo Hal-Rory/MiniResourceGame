@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TownUI : MonoBehaviour, IUIControl
+public class TownLotUI : MonoBehaviour, IUIControl
 {
     public Text Banner;
     public Text Description;
@@ -10,7 +10,7 @@ public class TownUI : MonoBehaviour, IUIControl
     public GameObject Panel;
     private TownLot _current;
 
-    public HousingUI Housing;
+    public GameObject DemolishButton;
     void Start()
     {
         Panel.SetActive(false);
@@ -40,9 +40,10 @@ public class TownUI : MonoBehaviour, IUIControl
 
     private void TownLotDeselected(TownLot _)
     {
-        GameController.Instance.UI.EndControl(this);
-            Panel.SetActive(false);
-            _current = null;
+        if (!GameController.Instance.UI.EndControl(this)) return;
+        Panel.SetActive(false);
+        _current = null;
+        DemolishButton.gameObject.SetActive(false);
     }
 
     private void TownLotSelected(TownLot lot)
@@ -50,16 +51,13 @@ public class TownUI : MonoBehaviour, IUIControl
         if (lot == null) return;
         if (!GameController.Instance.UI.TrySetActive(this)) return;
         _current = lot;
-        if (lot is House house)
-        {
-            Housing.DisplayHousehold(house);
-            Housing.gameObject.SetActive(true);
-        }
-        else
-        {
-            Housing.gameObject.SetActive(false);
-        }
+        DemolishButton.gameObject.SetActive(true);
         SetDisplay();
         Panel.SetActive(true);
+    }
+
+    public void DemolishLot_Button()
+    {
+        GameController.Instance.RemoveLot(_current.CellBlock);
     }
 }
