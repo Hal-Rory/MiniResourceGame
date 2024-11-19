@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class IncomeManager : ITimeListener, IControllable
+public class IncomeManager : IControllable
 {
     private HashSet<IIncomeContributor> _incomeContributors = new HashSet<IIncomeContributor>();
     public int CurrentFunds { get; private set; }
@@ -12,13 +12,13 @@ public class IncomeManager : ITimeListener, IControllable
     public void SetUp()
     {
         GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.GameTime.RegisterListener(this, true);
+        GameController.Instance.GameTime.RegisterListener(earlyClockUpdate:ClockUpdate);
     }
 
     public void SetDown()
     {
         GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.GameTime.UnregisterListener(this, true);
+        GameController.Instance.GameTime.UnregisterListener(earlyClockUpdate:ClockUpdate);
     }
 
     private void ObjectPlacerOnOnLotAdded(TownLot obj)
@@ -35,11 +35,12 @@ public class IncomeManager : ITimeListener, IControllable
         {
             UnregisterIncomeContributor(contributor);
         }
+        NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
     }
 
     private void CollectPayments()
     {
-        NetIncome = _incomeContributors.Sum(contributor => contributor.GetIncomeContribution());
+        NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
         CurrentFunds += NetIncome;
     }
 

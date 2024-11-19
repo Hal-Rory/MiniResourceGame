@@ -1,70 +1,111 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utility;
-using Town.TownPopulation;
+using Interfaces;
 using UnityEngine;
+using Utility;
 
-[Serializable]
-public class TownPopulaceManager : IControllable, ITimeListener
+namespace Town.TownPopulation
 {
-
-    private float _totalContentedness;
-    private int _totalPopulation;
-    [SerializeField] private float _growthThreshold;
-    private List<int> _availableHousing;
-
-    private PopulationFactory _populationFactory => GameController.Instance.Population;
-    private IncomeManager _incomeManager => GameController.Instance.Income;
-
-
-    public bool CanPopulationGrow()
+    [Serializable]
+    public class TownPopulaceManager : IControllable, IActionBoxHolder
     {
-        return (_incomeManager.NetIncome + _totalContentedness) / 2 >= _growthThreshold;
-    }
+        private float _totalContentedness;
+        private int _totalPopulation;
+        [SerializeField] private float _growthThreshold;
+        private List<int> _availableHousing;
+        [SerializeField] private float _housingWait;
+        private Coroutine _checkForHousingAllowed;
+        private ActionBox HousingCoroutine;
 
-    public void SetUp()
-    {
-        GameController.Instance.GameTime.RegisterListener(this, true);
-        GameController.Instance.RegisterPlacementListener(OnNewLot, OnRemoveLot);
-        _availableHousing = new List<int>();
-    }
+        private PopulationFactory _populationFactory => GameController.Instance.Population;
+        private IncomeManager _incomeManager => GameController.Instance.Income;
 
-    public void SetDown()
-    {
-        GameController.Instance.GameTime.UnregisterListener(this, true);
-        GameController.Instance.UnregisterPlacementListener(OnNewLot, OnRemoveLot);
-    }
+        public bool CanPopulationGrow()
+        {
+            return (_incomeManager.NetIncome + _totalContentedness) / 2 >= _growthThreshold;
+        }
 
-    private void OnNewLot(TownLot obj)
-    {
-        if (obj is not House) return;
-        _availableHousing.Add(obj.PlacementID);
-    }
+        public void SetUp()
+        {
+            GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
+            GameController.Instance.RegisterPlacementListener(OnNewLot, OnRemoveLot);
+            _availableHousing = new List<int>();
+            if (HousingCoroutine != null) return;
+            HousingCoroutine = new ActionBox(() =>
+                {
+                    HousingCoroutine.Running = _checkForHousingAllowed == null;
+                    _checkForHousingAllowed ??= GameController.Instance.StartCoroutine(CheckHousingCO());
+                },
+                () =>
+                {
+                    HousingCoroutine.Running = false;
+                    if (_checkForHousingAllowed == null || !GameController.Instance) return;
+                    GameController.Instance.StopCoroutine(_checkForHousingAllowed);
+                    _checkForHousingAllowed = null;
+                }
+            );
+            GameController.Instance.PickupAction(this, HousingCoroutine);
+        }
 
-    private void OnRemoveLot(TownLot obj)
-    {
-        if (obj is not House) return;
-        _availableHousing.Remove(obj.PlacementID);
-    }
+        public void SetDown()
+        {
+            GameController.Instance.GameTime.UnregisterListener(earlyClockUpdate: ClockUpdate);
+            GameController.Instance.UnregisterPlacementListener(OnNewLot, OnRemoveLot);
+        }
 
-    public void ClockUpdate(int tick)
-    {
-        AdjustStockpiles();
-        CheckHouseholdAvailability();
-    }
+        private void OnNewLot(TownLot obj)
+        {
+            if (obj is not House) return;
+            _availableHousing.Add(obj.PlacementID);
+        }
 
-    private void AdjustStockpiles()
-    {
-        _totalContentedness = _populationFactory.Population.Sum(person => person.Contentedness);
-    }
+        private void OnRemoveLot(TownLot obj)
+        {
+            if (obj is not House) return;
+            _availableHousing.Remove(obj.PlacementID);
+        }
 
-    private void CheckHouseholdAvailability()
-    {
-        if (!CanPopulationGrow() || _availableHousing.Count == 0) return;
-        int nextAvailable = _availableHousing.GetRandomIndex();
-        House house = GameController.Instance.TownLot.GetLot(nextAvailable) as House;
-        _availableHousing.Remove(nextAvailable);
-        GameController.Instance.Population.CreateHome(house);
+        public void ClockUpdate(int tick)
+        {
+            AdjustStockpiles();
+            CheckHouseholdAvailability();
+            if (_checkForHousingAllowed == null)
+            {
+                HousingCoroutine.Start();
+            }
+        }
+
+        private IEnumerator CheckHousingCO()
+        {
+            yield return new WaitForSeconds(_housingWait);
+            _checkForHousingAllowed = null;
+            HousingCoroutine.Stop();
+        }
+
+        private void AdjustStockpiles()
+        {
+            _totalContentedness = _populationFactory.Population.Sum(person => person.Contentedness);
+        }
+
+        private void CheckHouseholdAvailability()
+        {
+            if (_checkForHousingAllowed == null || !CanPopulationGrow() || _availableHousing.Count == 0) return;
+            int nextAvailable = _availableHousing.GetRandomIndex();
+            House house = GameController.Instance.TownLot.GetLot(nextAvailable) as House;
+            _availableHousing.Remove(nextAvailable);
+            GameController.Instance.Population.CreateHome(house);
+        }
+
+        public void PickingUp()
+        {
+        }
+
+        public void PuttingDown()
+        {
+            HousingCoroutine.Stop();
+        }
     }
 }

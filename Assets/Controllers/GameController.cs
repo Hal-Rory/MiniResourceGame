@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Interfaces;
+using JetBrains.Annotations;
 using Town.TownPopulation;
+using UnityEditor;
 using UnityEngine;
+using Utility;
 
 public class GameController : MonoBehaviour
 {
@@ -26,23 +30,26 @@ public class GameController : MonoBehaviour
 
     public bool PlacementMode { get; private set; }
 
+    private Dictionary<IActionBoxHolder, ActionBox> Actions;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            TownPopulace = new TownPopulaceManager();
+            Actions = new Dictionary<IActionBoxHolder, ActionBox>();
+            TownPopulace ??= new TownPopulaceManager();
             TownPopulace.SetUp();
-            TownObject = new TownObjectManager();
+            TownObject ??= new TownObjectManager();
             TownObject.SetUp();
-            UI = new UIManager();
-            UI.SetUp();
             TownObject.OnStateChanged += SetPlacementMode;
-            Population = new PopulationFactory();
+            UI ??= new UIManager();
+            UI.SetUp();
+            Population ??= new PopulationFactory();
             Population.SetUp();
-            Workplace = new WorkplaceManager();
+            Workplace ??= new WorkplaceManager();
             Workplace.SetUp();
-            Income = new IncomeManager();
+            Income ??= new IncomeManager();
             Income.SetUp();
         }
         else
@@ -60,6 +67,22 @@ public class GameController : MonoBehaviour
         }
         GameStart.SetActive(false);
         GameTime.SetTimeActive(true);
+    }
+
+    private void OnEnable()
+    {
+        foreach (IActionBoxHolder box in Actions.Keys)
+        {
+            box.PickingUp();
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (IActionBoxHolder box in Actions.Keys)
+        {
+            box.PuttingDown();
+        }
     }
 
     public void StartGame()
@@ -98,5 +121,27 @@ public class GameController : MonoBehaviour
     public void RemoveLot(Vector3Int position)
     {
         _gridManager.RemoveLot(position);
+    }
+
+    /// <summary>
+    /// Allows a holder to manually add a box
+    /// </summary>
+    /// <param name="holder">The holder of the box</param>
+    /// <param name="box">The action box</param>
+    /// <param name="start">Should the box be started now</param>
+    public void PickupAction(IActionBoxHolder holder, ActionBox box)
+    {
+        Actions.TryAdd(holder, box);
+    }
+    /// <summary>
+    /// Allows a holder to manually remove itself and therefore it's box.
+    /// All removed holders will have their box put down.
+    /// </summary>
+    /// <param name="holder">The holder of the box</param>
+    /// <param name="box">The action box</param>
+    public void PutdownAction(IActionBoxHolder holder, ActionBox box)
+    {
+        Actions.Remove(holder);
+        holder.PuttingDown();
     }
 }

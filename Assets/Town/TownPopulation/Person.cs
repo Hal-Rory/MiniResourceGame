@@ -1,11 +1,13 @@
 using System;
 using Interfaces;
+using Utility;
+using static GameTimeManager;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation
 {
     [Serializable]
-    public class Person : ITimeListener, IPopulation
+    public class Person : IPopulation
     {
         private static int[] _ageRanges => new int[]
         {
@@ -21,9 +23,8 @@ namespace Town.TownPopulation
         public int HouseholdIndex;
         public int IncomeContribution;
         public event Action<Person> LifeCycleEnded;
-
         public float Contentedness { get; private set; }
-
+        public TownLotObj CurrentLocation;
         public int ID { get; private set; }
 
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
@@ -60,6 +61,11 @@ namespace Town.TownPopulation
         {
             float ageFactor = tick / 100f;
             AgeUp(ageFactor);
+        }
+
+        public void StateClockUpdate(TimesOfDay timeOfDay)
+        {
+
         }
 
         private bool AgeUp(float ageFactor)

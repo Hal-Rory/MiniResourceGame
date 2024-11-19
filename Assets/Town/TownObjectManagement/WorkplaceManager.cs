@@ -3,23 +3,22 @@ using Interfaces;
 using Town.TownPopulation;
 using UnityEngine;
 
-public class WorkplaceManager : ITimeListener, IControllable
+public class WorkplaceManager : IControllable
 {
-    public List<Workplace> Workplaces { get; private set; } = new List<Workplace>();
-
+    public List<Workplace> Workplaces { get; } = new List<Workplace>();
     private PopulationFactory _population => GameController.Instance.Population;
 
     public void SetUp()
     {
         GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.GameTime.RegisterListener(this, true);
+        GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
         _population.OnPopulationChanged += PopulationCheck;
     }
 
     public void SetDown()
     {
         GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
-        GameController.Instance.GameTime.UnregisterListener(this, true);
+        GameController.Instance.GameTime.UnregisterListener(ClockUpdate);
         _population.OnPopulationChanged -= PopulationCheck;
     }
 

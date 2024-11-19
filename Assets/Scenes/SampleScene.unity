@@ -1785,8 +1785,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startDateTime: 3/1/2024 6:00AM
-  _tickDelta: 10
-  TimeMultiplier: 1
+  _tickDelta: 1
+  TimeMultiplier: 0.25
 --- !u!1 &354928795
 GameObject:
   m_ObjectHideFlags: 0
@@ -4101,7 +4101,8 @@ MonoBehaviour:
   GameTime: {fileID: 348041888}
   Selection: {fileID: 1853475131}
   TownPopulace:
-    _growthThreshold: 100
+    _growthThreshold: 0
+    _housingWait: 10
   _gridManager: {fileID: 2074384197}
   Game: {fileID: 1705459656}
   GameStart: {fileID: 111786389}
