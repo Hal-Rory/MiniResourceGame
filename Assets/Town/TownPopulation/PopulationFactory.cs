@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Common.Utility;
 using Interfaces;
-using UnityEngine;
+using Utility;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation
@@ -17,7 +17,7 @@ namespace Town.TownPopulation
         public List<Person> Population { get; private set; }
         private Stack<Person> _orphanedPersons;
         public event Action<IPopulation> OnPopulationChanged;
-        private List<string> _nameCollection = new List<string>
+        public static readonly List<string> NameCollection = new List<string>
         {
             "Alice",
             "Bob",
@@ -79,12 +79,12 @@ namespace Town.TownPopulation
                     householdMember.LifeCycleEnded += OnPopulationChanged;
                     householdMember.Setup(Population.Count);
                 }
-                householdMember.Setup($"{_nameCollection.GetRandomIndex()}",
+                householdMember.Setup($"{NameCollection.GetRandomIndex()}",
                     i < startingAdults
                         ? (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1)
                         : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1),
                     -1,household.HouseholdID);
-                GameController.Instance.GameTime.RegisterListener(householdMember);
+                GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: householdMember.StateClockUpdate);
                 household.AddInhabitant(householdMember);
                 Population.Add(householdMember);
             }

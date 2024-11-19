@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Town.TownPopulation;
 using UnityEngine;
+using Utility;
 
 public class Workplace : TownLot, IIncomeContributor
 {
-    private int _wages;
     [SerializeField] private GameObject _hoverBG;
-    private int _employeeLimit;
     [SerializeField] private List<Person> _employees = new List<Person>();
-    [field: SerializeField] public PersonAgeGroup[] AgeGroups { get; private set; }
-
+    private WorkplaceLotObj _townLotData;
     public bool CanHire(Person person)
     {
-        return _employees.Count <= _employeeLimit && AgeGroups.Contains(person.AgeGroup);
+        return _employees.Count <= _townLotData.EmployeeLimit && _townLotData.AgeGroups.Contains(person.AgeGroup);
     }
 
     public override void StartHovering()
@@ -30,7 +28,7 @@ public class Workplace : TownLot, IIncomeContributor
     public void Employ(Person person)
     {
         _employees.Add(person);
-        person.Employ(PlacementID, _wages);
+        person.Employ(PlacementID, _townLotData.Wages);
     }
 
     public void Unemploy(Person person)
@@ -50,13 +48,13 @@ public class Workplace : TownLot, IIncomeContributor
 
     public int GetIncomeContribution()
     {
-        return _employees.Count != 0 ? _wages * _employees.Count : 0;
+        return _employees.Count != 0 ? _townLotData.Wages * _employees.Count : 0;
     }
 
     public override string ToString()
     {
         string employees = string.Join("\n", _employees.Select(e => e.ToString()));
-        string criteria = string.Join(", ", AgeGroups.Select(a => a.Plural()));
+        string criteria = string.Join(", ", _townLotData.AgeGroups.Select(a => a.Plural()));
 
         return $"{_lotDescription}\n" +
                $"Currently hiring: {char.ToUpper(criteria[0]) + criteria[1..]}\n" +
@@ -68,11 +66,6 @@ public class Workplace : TownLot, IIncomeContributor
 
     public override void Create(TownLotObj lotObj)
     {
-        WorkplaceLotObj workplaceLot = lotObj as WorkplaceLotObj;
-        AgeGroups = workplaceLot.AgeGroups;
-        _wages = workplaceLot.Wages;
-        _employeeLimit = workplaceLot.EmployeeLimit;
-        _lotDescription = lotObj.Name;
-        _lotDepiction = lotObj.ObjPreview;
+        _townLotData = lotObj as WorkplaceLotObj;
     }
 }
