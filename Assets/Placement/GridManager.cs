@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Placement;
+using Town.TownObjectData;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour

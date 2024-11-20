@@ -1,4 +1,5 @@
 using System;
+using Town.TownObjectData;
 using UnityEngine;
 using UnityEngine.UI;
 

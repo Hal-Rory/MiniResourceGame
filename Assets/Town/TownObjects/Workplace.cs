@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
 using Utility;
@@ -9,10 +9,10 @@ public class Workplace : TownLot, IIncomeContributor
 {
     [SerializeField] private GameObject _hoverBG;
     [SerializeField] private List<Person> _employees = new List<Person>();
-    private WorkplaceLotObj _townLotData;
+    private WorkplaceLotObj _workLotData => _townLotData as WorkplaceLotObj;
     public bool CanHire(Person person)
     {
-        return _employees.Count <= _townLotData.EmployeeLimit && _townLotData.AgeGroups.Contains(person.AgeGroup);
+        return _employees.Count <= _workLotData.EmployeeLimit && _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup);
     }
 
     public override void StartHovering()
@@ -28,7 +28,7 @@ public class Workplace : TownLot, IIncomeContributor
     public void Employ(Person person)
     {
         _employees.Add(person);
-        person.Employ(PlacementID, _townLotData.Wages);
+        person.Employ(PlacementID, _workLotData.Wages);
     }
 
     public void Unemploy(Person person)
@@ -48,15 +48,15 @@ public class Workplace : TownLot, IIncomeContributor
 
     public int GetIncomeContribution()
     {
-        return _employees.Count != 0 ? _townLotData.Wages * _employees.Count : 0;
+        return _employees.Count != 0 ? _workLotData.Wages * _employees.Count : 0;
     }
 
     public override string ToString()
     {
         string employees = string.Join("\n", _employees.Select(e => e.ToString()));
-        string criteria = string.Join(", ", _townLotData.AgeGroups.Select(a => a.Plural()));
+        string criteria = string.Join(", ", _workLotData.EmployeeAgeGroups.Select(a => a.Plural()));
 
-        return $"{_lotDescription}\n" +
+        return $"{_workLotData.Name}\n" +
                $"Currently hiring: {char.ToUpper(criteria[0]) + criteria[1..]}\n" +
                (!string.IsNullOrEmpty(employees)
                    ? $"Employees:\n{employees}"
@@ -67,5 +67,11 @@ public class Workplace : TownLot, IIncomeContributor
     public override void Create(TownLotObj lotObj)
     {
         _townLotData = lotObj as WorkplaceLotObj;
+        SetDisplay();
+    }
+
+    protected override void SetDisplay()
+    {
+        _renderer.sprite = _townLotData.ObjPreview;
     }
 }

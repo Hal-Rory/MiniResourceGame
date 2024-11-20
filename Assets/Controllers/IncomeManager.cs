@@ -36,6 +36,7 @@ public class IncomeManager : IControllable
             UnregisterIncomeContributor(contributor);
         }
         NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
+        Pay(obj.GetPrice());
     }
 
     private void CollectPayments()
@@ -49,6 +50,11 @@ public class IncomeManager : IControllable
         if (CurrentFunds < amount) return false;
         CurrentFunds -= amount;
         return true;
+    }
+
+    public void Pay(int amount)
+    {
+        CurrentFunds += amount;
     }
 
     public void RegisterIncomeContributor(IIncomeContributor contributor)

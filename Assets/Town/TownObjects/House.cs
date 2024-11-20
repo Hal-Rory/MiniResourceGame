@@ -1,18 +1,14 @@
 using System.Linq;
+using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
 
 public class House : TownLot
 {
-    [field: SerializeField] public int IncomeContribution { get; private set; }
-
-    [field: SerializeField] public bool CanContribute { get; private set; }
-
-    [field: SerializeField] public int HouseholdSize { get; private set; }
-
     [field: SerializeField] public Household Household { get; private set; }
 
     [SerializeField] private GameObject _hoverBG;
+    private HousingLotObj _houseLotData => _townLotData as HousingLotObj;
 
     public void SetHousehold(Household household)
     {
@@ -31,8 +27,18 @@ public class House : TownLot
 
     public override void Create(TownLotObj lotObj)
     {
-        _lotDescription = lotObj.Name;
-        _lotDepiction = lotObj.ObjPreview;
+        _townLotData = lotObj;
+        SetDisplay();
+    }
+
+    protected override void SetDisplay()
+    {
+        _renderer.sprite = _townLotData.ObjPreview;
+    }
+
+    public int GetHousingSize()
+    {
+        return _houseLotData.HouseholdSize;
     }
 
     public override string ToString()
@@ -43,13 +49,7 @@ public class House : TownLot
                 inhabitants,
                 (current, inhabitant) => current + $"\n{inhabitant}");
 
-
-        // return $"{_lotDescription} (Upkeep: {GetIncomeContribution():0;-#})" +
-        //        (!string.IsNullOrEmpty(inhabitants)
-        //            ? $"\nResidents: {inhabitants}"
-        //            : "\nCurrently Vacant");
-
-        return $"{_lotDescription}" +
+        return $"{_townLotData.Name}" +
                (!string.IsNullOrEmpty(inhabitants)
                    ? $"\nResidents: {inhabitants}"
                    : "\nCurrently Vacant");

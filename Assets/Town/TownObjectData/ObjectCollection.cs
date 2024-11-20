@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Town.TownObjectData;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Town Object Collection", menuName = "Town/Create Town Object Collection")]

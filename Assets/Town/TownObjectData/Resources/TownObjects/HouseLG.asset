@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cb371218647ed7478cb2e2d61e69aae, type: 3}
-  m_Name: House2
+  m_Script: {fileID: 11500000, guid: e8ec9497153abe64c98497ed701e15ce, type: 3}
+  m_Name: HouseLG
   m_EditorClassIdentifier: 
   Name: House2
   LotSize: {x: 2, y: 2}
-  ObjLot: {fileID: 6805459395915589914, guid: e7812d86171f1024fad2195b1104703d, type: 3}
-  ObjPreview: {fileID: -1894703295, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  LotPrice: 0
+  ObjPreview: {fileID: 1201010228, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  Happiness: 1
+  HappinessAgeTarget: 06000000
+  HouseholdSize: 4

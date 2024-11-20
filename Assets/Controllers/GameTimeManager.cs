@@ -15,6 +15,7 @@ public class GameTimeManager : MonoBehaviour
     }
     private DateTime _gameTime;
     [SerializeField] private string _startDateTime;
+    [SerializeField] private string _shortDate;
     private Action<int> _onEarlyClockUpdate;
     private Action<int> _onClockUpdate;
     private Action<TimesOfDay> _onClockStateUpdate;
@@ -29,10 +30,10 @@ public class GameTimeManager : MonoBehaviour
         {
             return _gameTime.Hour switch
             {
-                >= 5 and < 12 => TimesOfDay.Morning,
-                >= 12 and < 15 => TimesOfDay.Noon,
-                >= 15 and < 21 => TimesOfDay.Evening,
-                < 5 or >= 21 => TimesOfDay.Night
+                >= 5 and < 8 => TimesOfDay.Morning,
+                >= 8 and < 15 => TimesOfDay.Noon,
+                >= 15 and < 22 => TimesOfDay.Evening,
+                < 5 or >= 22 => TimesOfDay.Night
             };
         }
     }
@@ -78,6 +79,7 @@ public class GameTimeManager : MonoBehaviour
             {
                 _onClockStateUpdate?.Invoke(TimeOfDay);
             }
+            _shortDate = GetTime();
         }
 
         _clockUpdating = null;

@@ -12,7 +12,7 @@ namespace Town.TownPopulation
     [Serializable]
     public class TownPopulaceManager : IControllable, IActionBoxHolder
     {
-        private float _totalContentedness;
+        private float _totalHappiness;
         private int _totalPopulation;
         [SerializeField] private float _growthThreshold;
         private List<int> _availableHousing;
@@ -25,7 +25,7 @@ namespace Town.TownPopulation
 
         public bool CanPopulationGrow()
         {
-            return (_incomeManager.NetIncome + _totalContentedness) / 2 >= _growthThreshold;
+            return (_incomeManager.NetIncome + _totalHappiness) / 2 >= _growthThreshold;
         }
 
         public void SetUp()
@@ -87,12 +87,12 @@ namespace Town.TownPopulation
 
         private void AdjustStockpiles()
         {
-            _totalContentedness = _populationFactory.Population.Sum(person => person.Contentedness);
+            _totalHappiness = _populationFactory.Population.Sum(person => person.Happiness);
         }
 
         private void CheckHouseholdAvailability()
         {
-            if (_checkForHousingAllowed == null || !CanPopulationGrow() || _availableHousing.Count == 0) return;
+            if (_checkForHousingAllowed != null || !CanPopulationGrow() || _availableHousing.Count == 0) return;
             int nextAvailable = _availableHousing.GetRandomIndex();
             House house = GameController.Instance.TownLot.GetLot(nextAvailable) as House;
             _availableHousing.Remove(nextAvailable);

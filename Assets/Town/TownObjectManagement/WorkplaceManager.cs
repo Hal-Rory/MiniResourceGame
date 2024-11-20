@@ -71,8 +71,7 @@ public class WorkplaceManager : IControllable
         if (unemployed.Count == 0) return;
         foreach (Person person in unemployed)
         {
-            if(Hire(person))
-                Debug.Log($"{person.Name} from household {person.HouseholdIndex} was just hired");
+            Hire(person);
         }
     }
 

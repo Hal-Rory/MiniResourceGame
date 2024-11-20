@@ -11,6 +11,7 @@ namespace Town.TownPopulation
     {
         private static int[] _ageRanges => new int[]
         {
+            0,
             12,
             18,
             50,
@@ -23,22 +24,22 @@ namespace Town.TownPopulation
         public int HouseholdIndex;
         public int IncomeContribution;
         public event Action<Person> LifeCycleEnded;
-        public float Contentedness { get; private set; }
-        public TownLotObj CurrentLocation;
+        public float Happiness { get; private set; }
+        public string CurrentLocation;
         public int ID { get; private set; }
 
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
 
-        public void Setup(string name, PersonAgeGroup ageGroup, int jobIndex, int householdIndex)
+        public void Setup(string name, PersonAgeGroup ageGroup, int jobIndex, int household)
         {
             Name = name;
             AgeGroup = ageGroup;
             JobIndex = jobIndex;
-            HouseholdIndex = householdIndex;
-            int age = (int)AgeGroup;
-            int ageMin = AgeGroup == PersonAgeGroup.Child ? 1 : _ageRanges[(int)AgeGroup - 1];
-            _age = Random.Range(ageMin,_ageRanges[age]);
-            Contentedness = .5f;
+            HouseholdIndex = household;
+            int ageMin = (int)AgeGroup - 1; //0-1, 1-2, 2-3 ...
+            int ageMax = (int)AgeGroup;
+            _age = Random.Range(_ageRanges[ageMin],_ageRanges[ageMax]);
+            Happiness = 1f;
         }
 
         public void Setup(int id)
@@ -63,9 +64,10 @@ namespace Town.TownPopulation
             AgeUp(ageFactor);
         }
 
-        public void StateClockUpdate(TimesOfDay timeOfDay)
+        public void SetLocation(TownLot lot)
         {
-
+            CurrentLocation = lot.GetName();
+            Happiness += lot.GetHappiness();
         }
 
         private bool AgeUp(float ageFactor)
@@ -91,7 +93,8 @@ namespace Town.TownPopulation
 
         public override string ToString()
         {
-            return $"{Name} | {AgeGroup} (Income:{IncomeContribution:+0;-#})";
+            return $"{Name} | {AgeGroup} (Income:{IncomeContribution:+0;-#})" +
+                   $"\nLocation: {CurrentLocation}";
         }
     }
 }

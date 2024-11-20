@@ -1,6 +1,6 @@
 ﻿namespace Utility
 {
-    public enum PersonAgeGroup { Child, Teen, Adult, Elder, Deceased }
+    public enum PersonAgeGroup { None, Child, Teen, Adult, Elder, Deceased, All }
 
     public static class PopulationUtility
     {

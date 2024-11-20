@@ -1785,7 +1785,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startDateTime: 3/1/2024 6:00AM
-  _tickDelta: 1
+  _shortDate: 
+  _tickDelta: 2
   TimeMultiplier: 0.25
 --- !u!1 &354928795
 GameObject:
@@ -7386,6 +7387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _placedGameObjects: []
+  _lotPrefab: {fileID: 1423548501804831387, guid: cfd7fde1accef174395b508546a74dbc, type: 3}
 --- !u!1 &2088988462
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Common.Utility;
 using Interfaces;
 using JetBrains.Annotations;
+using Placement;
+using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEditor;
 using UnityEngine;
@@ -95,9 +98,32 @@ public class GameController : MonoBehaviour
         PlacementMode = active;
     }
 
-    public List<T> GetLots<T>(int[] ids)
+    public void GetPersonLocation(Person person)
     {
-        return TownLot.GetLots<T>(ids);
+        GetPersonLocation(person, GameTime.TimeOfDay);
+    }
+
+    public void GetPersonLocation(Person person, GameTimeManager.TimesOfDay timeOfDay)
+    {
+        int houseID = Population.PopulationHouseholds[person.HouseholdIndex].HouseID;
+        switch (timeOfDay)
+        {
+            case GameTimeManager.TimesOfDay.Noon:
+                person.SetLocation(person.JobIndex != -1
+                    ? TownLot.GetLot(person.JobIndex)
+                    : TownLot.GetLot(houseID));
+                break;
+            case GameTimeManager.TimesOfDay.Evening:
+                List<Workplace> locations = Workplace.Workplaces.FindAll(w => w.TryGetHappiness(person.AgeGroup));
+                if(locations.Count > 0)
+                    person.SetLocation(locations.GetRandomIndex());
+                break;
+            case GameTimeManager.TimesOfDay.Morning:
+            case GameTimeManager.TimesOfDay.Night:
+            default:
+                person.SetLocation(TownLot.GetLot(houseID));
+                break;
+        }
     }
 
     public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)

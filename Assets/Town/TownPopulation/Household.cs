@@ -29,12 +29,6 @@ namespace Town.TownPopulation
             return _inhabitants.ToArray();
         }
 
-        public void ClearHousehold()
-        {
-            HouseholdID = -1;
-            _inhabitants.ForEach(person => person.HouseholdIndex = -1);
-        }
-
         public override string ToString()
         {
             string inhabitants = string.Join(", ", _inhabitants.Select(e => e.Name));

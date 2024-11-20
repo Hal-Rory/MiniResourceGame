@@ -56,7 +56,7 @@ namespace Town.TownPopulation
 
         public void CreateHome(House house)
         {
-            Household household = CreateHousehold(house.HouseholdSize, house.PlacementID);
+            Household household = CreateHousehold(house.GetHousingSize(), house.PlacementID);
             house.SetHousehold(household);
             OnPopulationChanged?.Invoke(household);
         }
@@ -66,6 +66,7 @@ namespace Town.TownPopulation
             int startingAdults = Random.Range(1, size);
             int startingChildren = Random.Range(0, size - startingAdults);
             Household household = new Household(PopulationHouseholds.Count, id);
+            PopulationHouseholds.Add(household);
             for (int i = 0; i < startingAdults + startingChildren; i++)
             {
                 Person householdMember;
@@ -78,27 +79,35 @@ namespace Town.TownPopulation
                     householdMember = new Person();
                     householdMember.LifeCycleEnded += OnPopulationChanged;
                     householdMember.Setup(Population.Count);
+                    GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: timeOfDay =>
+                    {
+                        if(householdMember.HouseholdIndex != -1 && householdMember.HouseholdIndex < PopulationHouseholds.Count)
+                            GameController.Instance.GetPersonLocation(householdMember, timeOfDay);
+                    });
                 }
                 householdMember.Setup($"{NameCollection.GetRandomIndex()}",
                     i < startingAdults
-                        ? (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1)
-                        : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1),
+                        ? (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1) //Adult-Elder
+                        : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1), //Child-Teen
                     -1,household.HouseholdID);
-                GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: householdMember.StateClockUpdate);
                 household.AddInhabitant(householdMember);
                 Population.Add(householdMember);
+                GameController.Instance.GetPersonLocation(householdMember);
             }
-            PopulationHouseholds.Add(household);
             return household;
+        }
+
+        public void GetPersonLocation()
+        {
         }
 
         public void OrphanHousehold(House house)
         {
             if (house.Household != null)
             {
-                house.Household.ClearHousehold();
                 foreach (Person person in house.Household.GetInhabitants())
                 {
+                    person.HouseholdIndex = -1;
                     Population.Remove(person);
                     _orphanedPersons.Push(person);
                 }

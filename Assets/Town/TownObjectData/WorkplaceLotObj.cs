@@ -1,3 +1,4 @@
+using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
 using Utility;
@@ -6,6 +7,11 @@ using Utility;
 public class WorkplaceLotObj : TownLotObj
 {
     public int Wages;
-    public PersonAgeGroup[] AgeGroups;
+    public PersonAgeGroup[] EmployeeAgeGroups;
     public int EmployeeLimit;
+    public override TownLot AddLotType(GameObject go)
+    {
+        TownLot lot = go.gameObject.AddComponent<Workplace>();
+        return lot;
+    }
 }

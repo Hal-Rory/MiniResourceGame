@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Common.Utility;
+using Town.TownObjectData;
 using UnityEngine;
 
 [Serializable]

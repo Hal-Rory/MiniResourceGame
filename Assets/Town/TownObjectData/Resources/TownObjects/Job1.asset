@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Job1
   LotSize: {x: 1, y: 1}
+  LotPrice: 0
   ObjLot: {fileID: 1978036913955703248, guid: dd8bd8fe943053047af462204c554028, type: 3}
   ObjPreview: {fileID: -1204978394, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  Happiness: 0.1
+  HappinessAgeTarget: 02000000
   Wages: 15
-  AgeGroups: 02000000
+  EmployeeAgeGroups: 03000000
   EmployeeLimit: 2

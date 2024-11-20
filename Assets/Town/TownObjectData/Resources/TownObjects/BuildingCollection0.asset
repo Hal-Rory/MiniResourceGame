@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Buildings
   Objects:
-  - {fileID: 11400000, guid: d55b8b1c52d1839429bac0493a1daf30, type: 2}
-  - {fileID: 11400000, guid: a8e09d2dbe2bad24e92a8e8cd5c015b2, type: 2}
+  - {fileID: 11400000, guid: d3e9279e8159f384e8cdf25d73e67c07, type: 2}
+  - {fileID: 11400000, guid: 89c9316defe34344fad4493e92a6762b, type: 2}
