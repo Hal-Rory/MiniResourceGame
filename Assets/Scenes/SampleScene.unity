@@ -1953,7 +1953,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c9b1cf1a01d9a7943a7e42ec42836306, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1975,7 +1975,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -2
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 1}
+  m_Color: {r: 0.26415092, g: 0.1956212, b: 0.1956212, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1993,8 +1993,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380720756}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 0, z: 0}
-  m_LocalScale: {x: 25, y: 15, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 35, y: 22, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1827157023}
@@ -2051,10 +2051,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.475, y: 0.5}
-      - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.475}
-      - {x: 0.475, y: -0.475}
+    - - {x: 0.44149673, y: 0.45374393}
+      - {x: -0.45669526, y: 0.4546345}
+      - {x: -0.45679143, y: -0.44214186}
+      - {x: 0.43978918, y: -0.43932092}
 --- !u!1 &416480073
 GameObject:
   m_ObjectHideFlags: 0
@@ -2301,7 +2301,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.4784314, g: 0.26666668, b: 0.2901961, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -4098,6 +4098,7 @@ MonoBehaviour:
     _objectCollections:
     - {fileID: 11400000, guid: a3a26714e6a14a844a893ed2e8bf8f8d, type: 2}
     - {fileID: 11400000, guid: f6532cd5a6eb0f94688979fd96180174, type: 2}
+    - {fileID: 11400000, guid: 124aa724f305d004f88f8e5ac0f4d1de, type: 2}
   TownLot: {fileID: 2082797078}
   GameTime: {fileID: 348041888}
   Selection: {fileID: 1853475131}
@@ -7116,7 +7117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7494062700459139097, guid: 00cf137933a68d1488e77cc9d137cb59, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7494062700459139097, guid: 00cf137933a68d1488e77cc9d137cb59, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
@@ -7240,7 +7241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7606883822057325667, guid: 00cf137933a68d1488e77cc9d137cb59, type: 3}
       propertyPath: m_Text
-      value: No.
+      value: Recreation
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00cf137933a68d1488e77cc9d137cb59, type: 3}
