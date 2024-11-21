@@ -1,55 +1,69 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Town.TownObjectData;
 using UnityEngine;
 using Utility;
 
-public abstract class TownLot : MonoBehaviour
+namespace Placement
 {
-    public Vector3Int CellBlock;
-    public int PlacementID { get; private set; }
-    protected TownLotObj _townLotData;
-    [SerializeField] protected SpriteRenderer _renderer;
-
-    private void Awake()
+    public abstract class TownLot : MonoBehaviour
     {
-        _renderer = transform.Find("Display").GetComponent<SpriteRenderer>();
-    }
+        public Vector3Int CellBlock;
+        public int PlacementID { get; private set; }
+        protected TownLotObj _townLotData;
+        [SerializeField] protected SpriteRenderer _renderer;
+        [SerializeField] protected BoxCollider2D _collider;
 
-    public Sprite GetDepiction()
-    {
-        return _townLotData.ObjPreview;
-    }
+        private void Awake()
+        {
+            _renderer = transform.Find("Display").GetComponent<SpriteRenderer>();
+            _collider = GetComponentInChildren<BoxCollider2D>();
+        }
 
-    public int GetPrice()
-    {
-        return _townLotData.LotPrice;
-    }
+        public Sprite GetDepiction()
+        {
+            return _townLotData.ObjPreview;
+        }
 
-    public void SetID(int ID)
-    {
-        PlacementID = ID;
-    }
+        public int GetPrice()
+        {
+            return _townLotData.LotPrice;
+        }
 
-    public bool TryGetHappiness(PersonAgeGroup age)
-    {
-        return _townLotData.HappinessAgeTarget.Contains(age) ||
-               _townLotData.HappinessAgeTarget.Contains(PersonAgeGroup.All);
-    }
+        public void SetID(int ID)
+        {
+            PlacementID = ID;
+        }
 
-    public string GetName()
-    {
-        return _townLotData.Name;
-    }
+        public bool TryGetHappiness(PersonAgeGroup age)
+        {
+            return _townLotData.HappinessAgeTarget.Contains(age) ||
+                   _townLotData.HappinessAgeTarget.Contains(PersonAgeGroup.All);
+        }
 
-    public float GetHappiness()
-    {
-        return _townLotData.Happiness;
-    }
+        public string GetName()
+        {
+            return _townLotData.Name;
+        }
 
-    public abstract void StartHovering();
-    public abstract void EndHovering();
-    public abstract void Create(TownLotObj lotObj);
-    protected abstract void SetDisplay();
+        public float GetHappiness()
+        {
+            return _townLotData.Happiness;
+        }
+
+        public virtual void StartHovering()
+        {
+        }
+
+        public virtual void EndHovering()
+        {
+        }
+
+        public void Create(TownLotObj lotObj)
+        {
+            _townLotData = lotObj;
+            _renderer.sprite = lotObj.ObjPreview;
+            _collider.size = _renderer.bounds.size;
+            _collider.offset = transform.InverseTransformPoint(_renderer.bounds.center);
+        }
+    }
 }

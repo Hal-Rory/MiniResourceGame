@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Utility;
 using Interfaces;
+using Placement;
+using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
 
@@ -10,12 +13,11 @@ namespace Town.TownPopulation
     [Serializable]
     public class PopulationFactory: IControllable
     {
-        public List<Household> PopulationHouseholds { get; private set; }
         //find a way to make this a dict<int, person>.
-        //Remove person, leave int, search for first instance of key->value==null and repopulate index
+        //Remove person, leave int, use .Select(first instance of key->value==null) and repopulate index
         //all references to the person is by index in the dict so update references on person exit
+        public List<Household> PopulationHouseholds { get; private set; }
         public List<Person> Population { get; private set; }
-        private Stack<Person> _orphanedPersons;
         public event Action<IPopulation> OnPopulationChanged;
         public static readonly List<string> NameCollection = new List<string>
         {
@@ -40,7 +42,6 @@ namespace Town.TownPopulation
         {
             Population = new List<Person>();
             PopulationHouseholds = new List<Household>();
-            _orphanedPersons = new Stack<Person>();
             GameController.Instance.RegisterPlacementListener(destructionListener:OnRemoveLot);
         }
 
@@ -61,29 +62,42 @@ namespace Town.TownPopulation
             OnPopulationChanged?.Invoke(household);
         }
 
+        public Household GetHousehold(int id)
+        {
+            return PopulationHouseholds.Find(h => h.HouseID != -1 && h.HouseholdID == id);
+        }
+
         public Household CreateHousehold(int size, int id)
         {
             int startingAdults = Random.Range(1, size);
             int startingChildren = Random.Range(0, size - startingAdults);
-            Household household = new Household(PopulationHouseholds.Count, id);
-            PopulationHouseholds.Add(household);
+            Household household = PopulationHouseholds.Find(h =>
+            {
+                if (h.HouseID != -1) return false;
+                h.Set(null, id);
+                return true;
+            }) ?? new Household(PopulationHouseholds.Count, id);
+            if (!PopulationHouseholds.Contains(household))
+            {
+                PopulationHouseholds.Add(household);
+            }
             for (int i = 0; i < startingAdults + startingChildren; i++)
             {
                 Person householdMember;
-                if (_orphanedPersons.Count > 0)
+                if (Population.Find(p => p.HouseholdIndex == -1) is { } person)
                 {
-                    householdMember = _orphanedPersons.Pop();
+                    householdMember = person;
                 }
                 else
                 {
                     householdMember = new Person();
                     householdMember.LifeCycleEnded += OnPopulationChanged;
-                    householdMember.Setup(Population.Count);
                     GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: timeOfDay =>
                     {
-                        if(householdMember.HouseholdIndex != -1 && householdMember.HouseholdIndex < PopulationHouseholds.Count)
+                        if(householdMember.HouseholdIndex != -1)
                             GameController.Instance.GetPersonLocation(householdMember, timeOfDay);
                     });
+                    Population.Add(householdMember);
                 }
                 householdMember.Setup($"{NameCollection.GetRandomIndex()}",
                     i < startingAdults
@@ -91,30 +105,25 @@ namespace Town.TownPopulation
                         : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1), //Child-Teen
                     -1,household.HouseholdID);
                 household.AddInhabitant(householdMember);
-                Population.Add(householdMember);
                 GameController.Instance.GetPersonLocation(householdMember);
             }
             return household;
         }
 
-        public void GetPersonLocation()
+        public int GetActivePopulationCount()
         {
+            return Population.Count(p => p.HouseholdIndex != -1);
         }
 
         public void OrphanHousehold(House house)
         {
             if (house.Household != null)
             {
-                foreach (Person person in house.Household.GetInhabitants())
-                {
-                    person.HouseholdIndex = -1;
-                    Population.Remove(person);
-                    _orphanedPersons.Push(person);
-                }
+                house.Household.Set(null, -1);
+                house.Household.Evict();
+                OnPopulationChanged?.Invoke(house.Household);
+                house.SetHousehold(null);
             }
-            OnPopulationChanged?.Invoke(house.Household);
-            PopulationHouseholds.Remove(house.Household);
-            house.SetHousehold(null);
         }
     }
 }

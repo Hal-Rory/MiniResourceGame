@@ -1786,8 +1786,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startDateTime: 3/1/2024 6:00AM
   _shortDate: 
-  _tickDelta: 2
-  TimeMultiplier: 0.25
+  _tickDelta: 0.1
+  TimeMultiplier: 1
 --- !u!1 &354928795
 GameObject:
   m_ObjectHideFlags: 0
@@ -3878,7 +3878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7429487845778496475, guid: 916401ccf0d641548b7e6538a91ea5fe, type: 3}
       propertyPath: m_Text
-      value: 
+      value: LMB
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 916401ccf0d641548b7e6538a91ea5fe, type: 3}

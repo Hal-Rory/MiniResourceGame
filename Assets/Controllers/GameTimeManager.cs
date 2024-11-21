@@ -8,10 +8,10 @@ public class GameTimeManager : MonoBehaviour
 {
     public enum TimesOfDay
     {
-        Morning,
-        Noon,
-        Evening,
-        Night
+        Prepare,
+        Work,
+        Relax,
+        Rest
     }
     private DateTime _gameTime;
     [SerializeField] private string _startDateTime;
@@ -30,10 +30,10 @@ public class GameTimeManager : MonoBehaviour
         {
             return _gameTime.Hour switch
             {
-                >= 5 and < 8 => TimesOfDay.Morning,
-                >= 8 and < 15 => TimesOfDay.Noon,
-                >= 15 and < 22 => TimesOfDay.Evening,
-                < 5 or >= 22 => TimesOfDay.Night
+                >= 5 and < 8 => TimesOfDay.Prepare,
+                >= 8 and < 16 => TimesOfDay.Work,
+                >= 16 and < 22 => TimesOfDay.Relax,
+                < 5 or >= 22 => TimesOfDay.Rest
             };
         }
     }

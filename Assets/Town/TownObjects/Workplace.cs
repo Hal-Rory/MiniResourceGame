@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Placement;
 using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
@@ -7,22 +8,11 @@ using Utility;
 
 public class Workplace : TownLot, IIncomeContributor
 {
-    [SerializeField] private GameObject _hoverBG;
     [SerializeField] private List<Person> _employees = new List<Person>();
     private WorkplaceLotObj _workLotData => _townLotData as WorkplaceLotObj;
     public bool CanHire(Person person)
     {
         return _employees.Count <= _workLotData.EmployeeLimit && _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup);
-    }
-
-    public override void StartHovering()
-    {
-        _hoverBG.SetActive(true);
-    }
-
-    public override void EndHovering()
-    {
-        _hoverBG.SetActive(false);
     }
 
     public void Employ(Person person)
@@ -62,16 +52,5 @@ public class Workplace : TownLot, IIncomeContributor
                    ? $"Employees:\n{employees}"
                    : "No Workforce.");
 
-    }
-
-    public override void Create(TownLotObj lotObj)
-    {
-        _townLotData = lotObj as WorkplaceLotObj;
-        SetDisplay();
-    }
-
-    protected override void SetDisplay()
-    {
-        _renderer.sprite = _townLotData.ObjPreview;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Interfaces;
 using Town.TownPopulation;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,13 +22,24 @@ public class GameUI : MonoBehaviour
 
     public RebindActionUI[] _bindings;
 
+    private void Start()
+    {
+        CurrentPopulation.text = $"Current Population: {_population.GetActivePopulationCount()}";
+        _population.OnPopulationChanged += OnPopulationChanged;
+    }
+
+    private void OnPopulationChanged(IPopulation obj)
+    {
+        CurrentPopulation.text = $"Current Population: {_population.GetActivePopulationCount()}";
+    }
+
     private void Update()
     {
         CurrentDate.text = _gameTime.GetDate();
-        CurrentPopulation.text = $"Current Population: {_population.Population.Count}";
 
         CurrentIncome.text = $"{_income.CurrentFunds}({_income.NetIncome:+0;-#})";
     }
+
 
     public void SetControls_Button(bool enable)
     {

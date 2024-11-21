@@ -19,6 +19,12 @@ namespace Town.TownPopulation
             HouseID = houseID;
         }
 
+        public void Set(int? id, int? houseID)
+        {
+            if(id.HasValue) HouseholdID = id.Value;
+            if(houseID.HasValue) HouseID = houseID.Value;
+        }
+
         public void AddInhabitant(Person person)
         {
             _inhabitants.Add(person);
@@ -27,6 +33,15 @@ namespace Town.TownPopulation
         public Person[] GetInhabitants()
         {
             return _inhabitants.ToArray();
+        }
+
+        public void Evict()
+        {
+            foreach (Person person in _inhabitants)
+            {
+                person.Evict();
+            }
+            _inhabitants.Clear();
         }
 
         public override string ToString()

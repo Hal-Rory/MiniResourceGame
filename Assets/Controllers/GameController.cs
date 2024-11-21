@@ -31,6 +31,8 @@ public class GameController : MonoBehaviour
     public GameObject GameStart;
     public bool GameHasStarted;
 
+    private readonly object _townLotLock = new();
+
     public bool PlacementMode { get; private set; }
 
     private Dictionary<IActionBoxHolder, ActionBox> Actions;
@@ -105,24 +107,27 @@ public class GameController : MonoBehaviour
 
     public void GetPersonLocation(Person person, GameTimeManager.TimesOfDay timeOfDay)
     {
-        int houseID = Population.PopulationHouseholds[person.HouseholdIndex].HouseID;
-        switch (timeOfDay)
+        lock (_townLotLock)
         {
-            case GameTimeManager.TimesOfDay.Noon:
-                person.SetLocation(person.JobIndex != -1
-                    ? TownLot.GetLot(person.JobIndex)
-                    : TownLot.GetLot(houseID));
-                break;
-            case GameTimeManager.TimesOfDay.Evening:
-                List<Workplace> locations = Workplace.Workplaces.FindAll(w => w.TryGetHappiness(person.AgeGroup));
-                if(locations.Count > 0)
-                    person.SetLocation(locations.GetRandomIndex());
-                break;
-            case GameTimeManager.TimesOfDay.Morning:
-            case GameTimeManager.TimesOfDay.Night:
-            default:
-                person.SetLocation(TownLot.GetLot(houseID));
-                break;
+            if (Population.GetHousehold(person.HouseholdIndex) == null) return;
+            int houseID = Population.GetHousehold(person.HouseholdIndex).HouseID;
+            switch (timeOfDay)
+            {
+                case GameTimeManager.TimesOfDay.Work:
+                    person.SetLocation(person.JobIndex != -1
+                        ? TownLot.GetLot(person.JobIndex)
+                        : TownLot.GetLot(houseID));
+                    break;
+                case GameTimeManager.TimesOfDay.Relax:
+                    List<Workplace> locations = Workplace.Workplaces.FindAll(w => w.TryGetHappiness(person.AgeGroup));
+                    person.SetLocation(locations.Count > 0 ? locations.GetRandomIndex() : TownLot.GetLot(houseID));
+                    break;
+                case GameTimeManager.TimesOfDay.Prepare:
+                case GameTimeManager.TimesOfDay.Rest:
+                default:
+                    person.SetLocation(TownLot.GetLot(houseID));
+                    break;
+            }
         }
     }
 
@@ -146,7 +151,10 @@ public class GameController : MonoBehaviour
 
     public void RemoveLot(Vector3Int position)
     {
-        _gridManager.RemoveLot(position);
+        lock (_townLotLock)
+        {
+            _gridManager.RemoveLot(position);
+        }
     }
 
     /// <summary>

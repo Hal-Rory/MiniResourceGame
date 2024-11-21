@@ -1,7 +1,7 @@
 using System;
 using Interfaces;
+using Placement;
 using Utility;
-using static GameTimeManager;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation
@@ -17,6 +17,7 @@ namespace Town.TownPopulation
             50,
             90
         };
+
         public string Name;
         public PersonAgeGroup AgeGroup;
         private float _age;
@@ -26,7 +27,6 @@ namespace Town.TownPopulation
         public event Action<Person> LifeCycleEnded;
         public float Happiness { get; private set; }
         public string CurrentLocation;
-        public int ID { get; private set; }
 
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
 
@@ -38,14 +38,10 @@ namespace Town.TownPopulation
             HouseholdIndex = household;
             int ageMin = (int)AgeGroup - 1; //0-1, 1-2, 2-3 ...
             int ageMax = (int)AgeGroup;
-            _age = Random.Range(_ageRanges[ageMin],_ageRanges[ageMax]);
+            _age = Random.Range(_ageRanges[ageMin], _ageRanges[ageMax]);
             Happiness = 1f;
         }
 
-        public void Setup(int id)
-        {
-            ID = id;
-        }
         public void Unemploy()
         {
             JobIndex = -1;
@@ -91,7 +87,12 @@ namespace Town.TownPopulation
             return AgeGroup != PersonAgeGroup.Deceased;
         }
 
-        public override string ToString()
+        public void Evict()
+        {
+            HouseholdIndex = -1;
+        }
+
+    public override string ToString()
         {
             return $"{Name} | {AgeGroup} (Income:{IncomeContribution:+0;-#})" +
                    $"\nLocation: {CurrentLocation}";

@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: House2
   LotSize: {x: 2, y: 2}
   LotPrice: 0
-  ObjPreview: {fileID: 1201010228, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  ObjPreview: {fileID: -1482108917, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
   Happiness: 1
   HappinessAgeTarget: 06000000
   HouseholdSize: 4
