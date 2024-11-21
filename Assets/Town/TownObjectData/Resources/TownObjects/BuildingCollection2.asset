@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c1d65ca161a5fd4c97e35086de0cd08, type: 3}
-  m_Name: BuildingCollection1
+  m_Name: BuildingCollection2
   m_EditorClassIdentifier: 
-  Name: Jobs
+  Name: Recreation
   Objects:
-  - {fileID: 11400000, guid: 01474dc7e34ca1345b3f178e0273b878, type: 2}
-  - {fileID: 11400000, guid: 80415ed0dd1c813479625db6e83ce0c9, type: 2}
+  - {fileID: 11400000, guid: d2d4dca0ee4d35f448e8eb431dfcf5aa, type: 2}

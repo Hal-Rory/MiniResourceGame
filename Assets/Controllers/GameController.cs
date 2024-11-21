@@ -119,7 +119,7 @@ public class GameController : MonoBehaviour
                         : TownLot.GetLot(houseID));
                     break;
                 case GameTimeManager.TimesOfDay.Relax:
-                    List<Workplace> locations = Workplace.Workplaces.FindAll(w => w.TryGetHappiness(person.AgeGroup));
+                    List<TownLot> locations = TownLot.GetLots<TownLot>().FindAll(w => w.TryGetHappiness(person.AgeGroup));
                     person.SetLocation(locations.Count > 0 ? locations.GetRandomIndex() : TownLot.GetLot(houseID));
                     break;
                 case GameTimeManager.TimesOfDay.Prepare:

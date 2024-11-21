@@ -43,6 +43,10 @@ namespace Placement
         {
             return _placedGameObjects.FindAll(lot => lot.GetType().ToString() == type) as List<T>;
         }
+        public List<T> GetLots<T>()
+        {
+            return _placedGameObjects.FindAll(lot => lot.GetType() is T) as List<T>;
+        }
         public List<T> GetLots<T>(int[] ids)
         {
             return _placedGameObjects.FindAll(lot => lot != null && ids.Contains(lot.PlacementID)) as List<T>;
