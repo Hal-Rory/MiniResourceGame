@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Coffee
   m_EditorClassIdentifier: 
   Name: StarDeers
+  ID: cof
   LotSize: {x: 1, y: 1}
   LotPrice: 0
-  ObjPreview: {fileID: 721386869, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: 381094273, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: 721386869, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0.1
   HappinessAgeTarget: 06000000
   Wages: 15

@@ -9,12 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cb371218647ed7478cb2e2d61e69aae, type: 3}
+  m_Script: {fileID: 11500000, guid: 392ec168e371a5e46ad68c0e0bac1610, type: 3}
   m_Name: Park
   m_EditorClassIdentifier: 
-  Name: Park
+  Name: Small Park
+  ID: pS
   LotSize: {x: 1, y: 1}
-  LotPrice: 10
-  ObjPreview: {fileID: -1027968872, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  Happiness: 1
-  HappinessAgeTarget: 06000000
+  LotPrice: 0
+  ObjPreview: {fileID: 289994466, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: 289994466, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  Happiness: 0
+  HappinessAgeTarget: 
+  CanBeOverwritten: 0

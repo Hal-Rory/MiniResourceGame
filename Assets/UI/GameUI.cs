@@ -1,8 +1,8 @@
 using System;
-using System.Linq;
+using Controllers;
 using Interfaces;
+using TMPro;
 using Town.TownPopulation;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Samples.RebindUI;
@@ -15,7 +15,8 @@ public class GameUI : MonoBehaviour
     private PopulationFactory _population => GameController.Instance.Population;
     public Text CurrentDate;
     public Text CurrentPopulation;
-    public Text CurrentIncome;
+    public TextMeshProUGUI CurrentIncome;
+    public Animator CurrentIncomeAnimation;
 
     public GameObject Controls;
     public GameObject ControlsButton;
@@ -24,22 +25,21 @@ public class GameUI : MonoBehaviour
 
     private void Start()
     {
-        CurrentPopulation.text = $"Current Population: {_population.GetActivePopulationCount()}";
+        OnPopulationChanged(null);
+        AnimateIncome(0);
         _population.OnPopulationChanged += OnPopulationChanged;
+        GameController.Instance.Income.OnIncomeChanged += AnimateIncome;
     }
 
     private void OnPopulationChanged(IPopulation obj)
     {
-        CurrentPopulation.text = $"Current Population: {_population.GetActivePopulationCount()}";
+        CurrentPopulation.text = $"{_population.GetActivePopulationCountString().Abbreviate()}";
     }
 
     private void Update()
     {
         CurrentDate.text = _gameTime.GetDate();
-
-        CurrentIncome.text = $"{_income.CurrentFunds}({_income.NetIncome:+0;-#})";
     }
-
 
     public void SetControls_Button(bool enable)
     {
@@ -56,5 +56,11 @@ public class GameUI : MonoBehaviour
             Guid id = binding.id;
             ui.bindingId = id.ToString();
         }
+    }
+
+    private void AnimateIncome(int i)
+    {
+        CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate("0;-#")})";
+        CurrentIncomeAnimation.Play(i > 0 ? "Gain" : "Loss");
     }
 }

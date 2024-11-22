@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utility;
+using Controllers;
 using Interfaces;
 using Placement;
 using UnityEngine;
@@ -110,7 +111,7 @@ namespace Town.TownPopulation
             return household;
         }
 
-        public int GetActivePopulationCount()
+        public int GetActivePopulationCountString()
         {
             return Population.Count(p => p.HouseholdIndex != -1);
         }

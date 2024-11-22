@@ -61,7 +61,7 @@ namespace Placement
         public void Create(TownLotObj lotObj)
         {
             _townLotData = lotObj;
-            _renderer.sprite = lotObj.ObjPreview;
+            _renderer.sprite = lotObj.ObjPlacement;
             _collider.size = _renderer.bounds.size;
             _collider.offset = transform.InverseTransformPoint(_renderer.bounds.center);
         }

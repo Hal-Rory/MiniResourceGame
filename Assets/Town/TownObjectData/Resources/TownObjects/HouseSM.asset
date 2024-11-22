@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: HouseSM
   m_EditorClassIdentifier: 
   Name: House1
+  ID: hS
   LotSize: {x: 1, y: 1}
   LotPrice: 0
-  ObjPreview: {fileID: 1159931376, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: 1491452105, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: -106343867, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0
   HappinessAgeTarget: 
   HouseholdSize: 2

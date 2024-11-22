@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Office
   m_EditorClassIdentifier: 
   Name: Skyscraper
+  ID: bldg1
   LotSize: {x: 1, y: 1}
   LotPrice: 45
-  ObjPreview: {fileID: 1362887879, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: -119642845, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: 1362887879, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0
   HappinessAgeTarget: 
   Wages: 30

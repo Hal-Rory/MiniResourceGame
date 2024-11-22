@@ -1,14 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Controllers;
 using Placement;
 using UnityEngine;
 
 public class IncomeManager : IControllable
 {
     private HashSet<IIncomeContributor> _incomeContributors = new HashSet<IIncomeContributor>();
-    public int CurrentFunds { get; private set; }
-    public int NetIncome { get; private set; }
+    public event Action OnIncomeUpdated;
+    public event Action<int> OnIncomeChanged;
+    private int _currentFunds;
+    public int CurrentFunds{
+        get => _currentFunds;
+        private set => _currentFunds = Math.Clamp(value, -_currentFunds, int.MaxValue);
+    }
+    private int _netIncome;
+
+    public int NetIncome
+    {
+        get => _netIncome;
+        private set => _netIncome = Math.Clamp(value, -_netIncome, int.MaxValue);
+    }
 
     public void SetUp()
     {
@@ -43,19 +57,29 @@ public class IncomeManager : IControllable
     private void CollectPayments()
     {
         NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
-        CurrentFunds += NetIncome;
+        Pay(NetIncome);
     }
 
     public bool TryPurchase(int amount)
     {
-        if (CurrentFunds < amount) return false;
-        CurrentFunds -= amount;
+        if (!CanPurchase(amount)) return false;
+        Pay(-amount);
         return true;
+    }
+
+    public bool CanPurchase(int amount)
+    {
+        return CurrentFunds >= amount;
     }
 
     public void Pay(int amount)
     {
         CurrentFunds += amount;
+        if (amount != 0)
+        {
+            OnIncomeUpdated?.Invoke();
+            OnIncomeChanged?.Invoke((int)Mathf.Sign(amount));
+        }
     }
 
     public void RegisterIncomeContributor(IIncomeContributor contributor)

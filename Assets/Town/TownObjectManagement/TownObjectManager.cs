@@ -30,9 +30,9 @@ public class TownObjectManager : IControllable
         return _currentCollection;
     }
 
-    public void SetObjectSelection(int index)
+    public void SetObjectSelection(string id)
     {
-        _currentObject = index == -1 ? -1 : (int)Mathf.Repeat(index, _objectCollections[_currentCollection].Objects.Count);
+        _currentObject = string.IsNullOrEmpty(id) ? -1 : _objectCollections[_currentCollection].Objects.FindIndex(o => o.ID == id);
         OnSelectionChanged?.Invoke();
     }
 

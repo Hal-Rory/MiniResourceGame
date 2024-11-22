@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _label: {fileID: 592244319566420975}
   _icon: {fileID: 592244320744177273}
-  _emptyImage: {fileID: -1482153702, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
+  _emptyImage: {fileID: -609101949, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   <ID>k__BackingField: 
   Selectable: {fileID: 592244319293333998}
   LabelColorInactive: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
@@ -283,9 +283,9 @@ RectTransform:
   m_Father: {fileID: 592244319293333996}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 22.5, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 35, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &592244320744177274
@@ -317,8 +317,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 769096606, guid: 5b01132b5c148544fa6c59966976dc8d, type: 3}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -333,10 +333,10 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 592244320744177278}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 1
-  m_AspectRatio: 1.5
+  m_AspectRatio: 1

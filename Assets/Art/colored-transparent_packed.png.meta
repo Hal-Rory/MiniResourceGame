@@ -22745,6 +22745,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: colored-transparent_packed_1077
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 336
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d28ec4c1c1bc0d4790ae3ceb9ec761f
+      internalID: -609101949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -23021,8 +23042,8 @@ TextureImporter:
       colored-transparent_packed_409: -580233467
       colored-transparent_packed_476: 1755094284
       colored-transparent_packed_96: -803966949
-      colored-transparent_packed_593: 336758584
       colored-transparent_packed_1060: 305004500
+      colored-transparent_packed_593: 336758584
       colored-transparent_packed_377: 1288019707
       colored-transparent_packed_937: -1963597252
       colored-transparent_packed_190: -816866744
@@ -23427,6 +23448,7 @@ TextureImporter:
       colored-transparent_packed_30: 1625337536
       colored-transparent_packed_898: 970139907
       colored-transparent_packed_145: -1528498729
+      colored-transparent_packed_1077: -609101949
       colored-transparent_packed_62: -552643761
       colored-transparent_packed_127: -757896151
       colored-transparent_packed_769: 1858720451
