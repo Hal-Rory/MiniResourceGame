@@ -328,10 +328,10 @@
                 {
                     "name": "",
                     "id": "c3b31b04-997d-417a-a48b-ed1e9fca4764",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Gamepad",
                     "action": "Exit",
                     "isComposite": false,
                     "isPartOfComposite": false

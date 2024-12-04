@@ -7,7 +7,6 @@ public class PlacementSystem : MonoBehaviour
     private InputManager _input => _controller.Input;
     private TownObjectManager _townObject => _controller.TownObject;
 
-    [SerializeField] private GameObject _mouseIndicator;
     [SerializeField] private SpriteRenderer _cellIndicator;
     [SerializeField] private Vector3Int _currentCell;
     [SerializeField] private Grid _worldGrid;
@@ -42,7 +41,7 @@ public class PlacementSystem : MonoBehaviour
     {
         Vector3 mousePosition = _input.GetSelectionPosition(1, out Collider2D col);
         _canPlace = col != null;
-        _mouseIndicator.transform.position = mousePosition;
+        //_mouseIndicator.transform.position = mousePosition;
         mousePosition.y = Mathf.Ceil(mousePosition.y);
         _currentCell = _worldGrid.LocalToCell(mousePosition);
         _cellIndicator.transform.parent.position = _currentCell;

@@ -14,7 +14,6 @@ namespace Controllers
     public class GameController : MonoBehaviour
     {
         public static GameController Instance { get; private set; }
-
         public PopulationFactory Population;
         public InputManager Input;
         public TownObjectManager TownObject;
@@ -26,10 +25,6 @@ namespace Controllers
         public UIManager UI;
         public TownPopulaceManager TownPopulace;
         [SerializeField] private GridManager _gridManager;
-
-        public GameObject Game;
-        public GameObject GameStart;
-        public bool GameHasStarted;
 
         private readonly object _townLotLock = new();
 
@@ -56,22 +51,13 @@ namespace Controllers
                 Workplace.SetUp();
                 Income ??= new IncomeManager();
                 Income.SetUp();
+
+                GameTime.SetTimeActive(true);
             }
             else
             {
                 Destroy(gameObject);
             }
-        }
-
-        private IEnumerator Start()
-        {
-            Game.SetActive(true);
-            if (GameStart.activeSelf)
-            {
-                yield return new WaitUntil(() => GameHasStarted);
-            }
-            GameStart.SetActive(false);
-            GameTime.SetTimeActive(true);
         }
 
         private void OnEnable()
@@ -90,9 +76,12 @@ namespace Controllers
             }
         }
 
-        public void StartGame()
+        private void OnDestroy()
         {
-            GameHasStarted = true;
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         private void SetPlacementMode(bool active)
@@ -166,6 +155,11 @@ namespace Controllers
         public bool CanPurchase(TownLotObj obj)
         {
             return Income.CanPurchase(obj.LotPrice);
+        }
+
+        public void SetTimeMultiplier(float multiplier)
+        {
+            GameTime.SetMultiplier(multiplier);
         }
 
         /// <summary>

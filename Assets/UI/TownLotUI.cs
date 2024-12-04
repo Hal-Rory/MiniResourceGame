@@ -20,16 +20,22 @@ public class TownLotUI : MonoBehaviour, IUIControl
         GameController.Instance.Selection.OnTownObjectDeselected += TownLotDeselected;
         GameController.Instance.RegisterPlacementListener(null, OnRemoveLot);
     }
+    private void Update()
+         {
+             if (!_current) return;
+             SetDisplay();
+         }
     private void OnRemoveLot(TownLot obj)
     {
         if (_current != obj) return;
         TownLotDeselected(null);
     }
 
-    private void Update()
+    public void Shutdown()
     {
-        if (!_current) return;
-        SetDisplay();
+        Panel.SetActive(false);
+        _current = null;
+        DemolishButton.gameObject.SetActive(false);
     }
 
     private void SetDisplay()
@@ -42,10 +48,12 @@ public class TownLotUI : MonoBehaviour, IUIControl
 
     private void TownLotDeselected(TownLot _)
     {
-        if (!GameController.Instance.UI.EndControl(this)) return;
-        Panel.SetActive(false);
-        _current = null;
-        DemolishButton.gameObject.SetActive(false);
+        CloseMenu();
+    }
+
+    public void CloseMenu()
+    {
+        GameController.Instance.UI.EndControl(this);
     }
 
     private void TownLotSelected(TownLot lot)

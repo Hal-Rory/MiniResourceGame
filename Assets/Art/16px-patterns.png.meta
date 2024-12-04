@@ -2343,7 +2343,7 @@ TextureImporter:
         height: 48
       alignment: 1
       pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 5, y: 5, z: 5, w: 5}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -2364,7 +2364,7 @@ TextureImporter:
         height: 48
       alignment: 1
       pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 7, y: 7, z: 7, w: 7}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -3561,7 +3561,7 @@ TextureImporter:
         height: 32
       alignment: 1
       pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 6, y: 6, z: 6, w: 6}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -5094,7 +5094,7 @@ TextureImporter:
         height: 24
       alignment: 1
       pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 4, y: 4, z: 4, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -6017,7 +6017,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -6086,19 +6086,19 @@ TextureImporter:
       16px-patterns_111: -1215411487
       16px-patterns_230: 1489401272
       16px-patterns_181: 80769468
-      16px-patterns_124: -323063444
       16px-patterns_129: 173514469
       16px-patterns_245: 2091760308
-      16px-patterns_105: -1491237251
       16px-patterns_77: -2047199515
-      16px-patterns_58: -133385500
+      16px-patterns_124: -323063444
+      16px-patterns_176: 1259677113
       16px-patterns_138: 2107329342
+      16px-patterns_105: -1491237251
       16px-patterns_73: -707245624
       16px-patterns_263: -869627786
       16px-patterns_62: -492017109
       16px-patterns_194: -1777812337
       16px-patterns_26: -1153721474
-      16px-patterns_176: 1259677113
+      16px-patterns_58: -133385500
       16px-patterns_12: 456926466
       16px-patterns_21: 400112223
       16px-patterns_43: 1763913274
@@ -6162,25 +6162,25 @@ TextureImporter:
       16px-patterns_63: -2140079459
       16px-patterns_31: -2088419132
       16px-patterns_279: 2101142832
-      16px-patterns_36: 934510605
+      16px-patterns_195: -1428938599
       16px-patterns_241: -1876107946
       16px-patterns_131: 283308257
-      16px-patterns_112: -636784830
+      16px-patterns_277: -1651915827
       16px-patterns_256: -1035861752
       16px-patterns_4: -350569163
+      16px-patterns_36: 934510605
+      16px-patterns_205: 1801612849
+      16px-patterns_112: -636784830
+      16px-patterns_170: -1204978394
+      16px-patterns_244: 1477093848
       16px-patterns_72: 2085755390
       16px-patterns_269: -86876046
-      16px-patterns_277: -1651915827
-      16px-patterns_7: -21920555
-      16px-patterns_170: -1204978394
-      16px-patterns_69: -934844505
-      16px-patterns_205: 1801612849
       16px-patterns_91: -1811491037
-      16px-patterns_216: 1101293210
-      16px-patterns_195: -1428938599
+      16px-patterns_69: -934844505
+      16px-patterns_7: -21920555
       16px-patterns_83: 462675682
       16px-patterns_39: 1201010228
-      16px-patterns_244: 1477093848
+      16px-patterns_216: 1101293210
       16px-patterns_152: 83707226
       16px-patterns_110: 1370970763
       16px-patterns_221: 1458471040

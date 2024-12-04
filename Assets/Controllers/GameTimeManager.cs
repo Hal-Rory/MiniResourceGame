@@ -46,10 +46,21 @@ public class GameTimeManager : MonoBehaviour
     public void SetTimeActive(bool active)
     {
         TimeActive = active;
-        if (active && _clockUpdating == null)
+        switch (active)
         {
-            _clockUpdating = StartCoroutine(Tick());
+            case true when _clockUpdating == null:
+                _clockUpdating = StartCoroutine(Tick());
+                break;
+            case false when _clockUpdating != null:
+                StopCoroutine(_clockUpdating);
+                _clockUpdating = null;
+                break;
         }
+    }
+
+    public void SetMultiplier(float multiplier)
+    {
+        TimeMultiplier = multiplier;
     }
 
     public float GetClockSpeed()

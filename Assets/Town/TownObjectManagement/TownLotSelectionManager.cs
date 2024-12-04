@@ -36,7 +36,14 @@ public class TownLotSelectionManager : MonoBehaviour
         }
     }
 
-    private void DeselectTownLot()
+    public void SelectTownLot()
+    {
+        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode || !_lastFound) return;
+        OnTownObjectSelected?.Invoke(_lastFound);
+        _selected = true;
+    }
+
+    public void DeselectTownLot()
     {
         _selected = false;
         if (!_lastFound) return;
@@ -63,12 +70,5 @@ public class TownLotSelectionManager : MonoBehaviour
             _lastFound = lot;
             lot.StartHovering();
         }
-    }
-
-    private void SelectTownLot()
-    {
-        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode || !_lastFound) return;
-        OnTownObjectSelected?.Invoke(_lastFound);
-        _selected = true;
     }
 }

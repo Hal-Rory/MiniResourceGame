@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ToggleCard : Card
 {
-    [SerializeField] private Toggle Selectable;    
+    [SerializeField] private Toggle Selectable;
     private Color LabelColorActive;
     public Color LabelColorInactive = Color.white;
     private void Awake()
@@ -67,5 +67,10 @@ public class ToggleCard : Card
     {
         base.SetEmpty(label);
         Interactable = false;
+    }
+
+    public Toggle GetToggle()
+    {
+        return Selectable;
     }
 }

@@ -21,13 +21,19 @@ namespace Town.TownPopulation
         [SerializeField] private float _housingWait;
         private Coroutine _checkForHousingAllowed;
         private ActionBox HousingCoroutine;
+        private bool _stagnantGrowth;
 
         private PopulationFactory _populationFactory => GameController.Instance.Population;
         private IncomeManager _incomeManager => GameController.Instance.Income;
 
         public bool CanPopulationGrow()
         {
-            return (_incomeManager.NetIncome + _totalHappiness) / 2 >= _growthThreshold;
+            return !_stagnantGrowth && (_incomeManager.NetIncome + _totalHappiness) / 2 >= _growthThreshold;
+        }
+
+        public void SetStagnant(bool stagnant)
+        {
+            _stagnantGrowth = stagnant;
         }
 
         public void SetUp()

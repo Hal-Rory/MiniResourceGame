@@ -16,10 +16,9 @@ public class GridManager : MonoBehaviour
         _placedLots = new Dictionary<Vector3Int, PlacedLot>();
     }
 
-    public bool AddLot(TownLotObj lotObj, Vector3Int gridPosition)
+    public void AddLot(TownLotObj lotObj, Vector3Int gridPosition)
     {
         List<Vector3Int> positions = CalculatePositions(gridPosition, lotObj.LotSize);
-        if (!CanPlaceObejctAt(gridPosition, lotObj.LotSize)) return false;
         PlacedLot lot = new PlacedLot
         {
             OccupiedPositions = positions
@@ -29,7 +28,7 @@ public class GridManager : MonoBehaviour
             _placedLots.Add(pos, lot);
         }
         lot.PlacedIndex = _placementManager.PlaceObject(lotObj, gridPosition);
-        return true;
+        //lot.Replaceable = lotObj is CasualLotObj { CanBeOverwritten: true };
     }
 
     public bool RemoveLot(Vector3Int gridPosition)
@@ -42,11 +41,6 @@ public class GridManager : MonoBehaviour
             _placedLots.Remove(pos);
         }
         return true;
-    }
-
-    public bool IsPositionEmpty(Vector3Int position)
-    {
-        return _placedLots.Values.All(lot => !lot.OccupiedPositions.Contains(position));
     }
 
     private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objectSize)

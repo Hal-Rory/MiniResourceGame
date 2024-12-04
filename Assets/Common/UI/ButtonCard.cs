@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class ButtonCard : Card
 {
     [SerializeField] private Button Selectable;
-    private Color LabelColorActive;
+    private Color _labelColorActive;
     public Color LabelColorInactive = Color.white;
     private void Awake()
     {
         if (_label != null)
-            LabelColorActive = _label.color;
+            _labelColorActive = _label.color;
         Interactable = Selectable.interactable;
     }
     public bool Interactable
@@ -26,12 +26,12 @@ public class ButtonCard : Card
     public void SetLabelInteractable(bool value)
     {
         if (_label != null)
-            _label.color = value ? LabelColorActive : LabelColorInactive;
+            _label.color = value ? _labelColorActive : LabelColorInactive;
     }
 
-    public void Set(string ID, string label = "", Sprite icon = null, UnityAction callback = null)
+    public void Set(string id, string label = "", Sprite icon = null, UnityAction callback = null)
     {
-        base.Set(ID, label, icon);
+        base.Set(id, label, icon);
         SetAction(callback);
     }
 
@@ -49,6 +49,11 @@ public class ButtonCard : Card
     {
         Selectable.onClick.RemoveAllListeners();
         if (callback != null) AddListener(callback);
+    }
+
+    public void Select()
+    {
+        Selectable.onClick.Invoke();
     }
 
     public override void SetEmpty(string label = "")
