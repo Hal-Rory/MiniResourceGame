@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ea230907595eb4d846174f5569d59a, type: 3}
   m_Name: Coffee
   m_EditorClassIdentifier: 
-  Name: StarDeers
+  Name: AstralDeers
   ID: cof
   LotSize: {x: 1, y: 1}
   LotPrice: 0
@@ -20,6 +20,8 @@ MonoBehaviour:
   ObjPlacement: {fileID: 721386869, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0.1
   HappinessAgeTarget: 06000000
+  LotType: Retail / Recreational
+  Capacity: 3
   Wages: 15
   EmployeeAgeGroups: 03000000
-  EmployeeLimit: 2
+  EmployeeLimit: 3

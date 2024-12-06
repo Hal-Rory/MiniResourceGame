@@ -20,6 +20,8 @@ MonoBehaviour:
   ObjPlacement: {fileID: 1362887879, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0
   HappinessAgeTarget: 
+  LotType: Commercial
+  Capacity: 3
   Wages: 30
   EmployeeAgeGroups: 03000000
-  EmployeeLimit: 4
+  EmployeeLimit: 5

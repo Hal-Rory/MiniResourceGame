@@ -1,14 +1,17 @@
+using System;
 using System.Collections.Generic;
 using Controllers;
 using Interfaces;
 using Placement;
+using Town.TownObjects;
 using Town.TownPopulation;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WorkplaceManager : IControllable
 {
     public List<Workplace> Workplaces { get; } = new List<Workplace>();
     private PopulationFactory _population => GameController.Instance.Population;
+    public event Action OnWorkforceChanged;
 
     public void SetUp()
     {
@@ -46,28 +49,28 @@ public class WorkplaceManager : IControllable
         }
     }
 
-    public void CreateWorkplace(Workplace workplace)
+    private void CreateWorkplace(Workplace workplace)
     {
         Workplaces.Add(workplace);
     }
 
-    public bool Hire(Person person)
+    private void Hire(Person person)
     {
-        if (Workplaces.Count == 0) return false;
+        if (Workplaces.Count == 0) return;
         List<Workplace> workplaces = Workplaces.FindAll(workplace => workplace.CanHire(person));
-        if (workplaces.Count == 0) return false;
+        if (workplaces.Count == 0) return;
         int job = Random.Range(0, workplaces.Count);
         Workplaces[job].Employ(person);
-        return true;
+        OnWorkforceChanged?.Invoke();
     }
 
-    public void ShutdownWorkplace(Workplace workplace)
+    private void ShutdownWorkplace(Workplace workplace)
     {
         Workplaces.Remove(workplace);
         workplace.UnemployAll();
     }
 
-    public void HireUnemployed()
+    private void HireUnemployed()
     {
         List<Person> unemployed = _population.Population.FindAll(person => person.JobIndex == -1 && person.CanWork);
         if (unemployed.Count == 0) return;
@@ -77,7 +80,7 @@ public class WorkplaceManager : IControllable
         }
     }
 
-    public void ClockUpdate(int tick)
+    private void ClockUpdate(int tick)
     {
         HireUnemployed();
     }

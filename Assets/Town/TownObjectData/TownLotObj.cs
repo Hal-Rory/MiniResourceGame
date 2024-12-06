@@ -16,6 +16,12 @@ namespace Town.TownObjectData
         [Range(0,10)]
         public float Happiness;
         public PersonAgeGroup[] HappinessAgeTarget;
+        public string LotType;
+        /// <summary>
+        /// How many Persons can fill this lot.
+        /// Each lot may use this differently
+        /// </summary>
+        public int Capacity;
 
         public virtual TownLot AddLotType(GameObject go)
         {

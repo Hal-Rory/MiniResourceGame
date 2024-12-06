@@ -20,4 +20,5 @@ MonoBehaviour:
   ObjPlacement: {fileID: 1799965814, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 1
   HappinessAgeTarget: 06000000
-  HouseholdSize: 4
+  LotType: Housing
+  Capacity: 3

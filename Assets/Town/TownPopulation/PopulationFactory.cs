@@ -58,7 +58,7 @@ namespace Town.TownPopulation
 
         public void CreateHome(House house)
         {
-            Household household = CreateHousehold(house.GetHousingSize(), house.PlacementID);
+            Household household = CreateHousehold(house.GetMaxCapacity(), house.PlacementID);
             house.SetHousehold(household);
             OnPopulationChanged?.Invoke(household);
         }

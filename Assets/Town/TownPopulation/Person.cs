@@ -94,8 +94,9 @@ namespace Town.TownPopulation
 
     public override string ToString()
         {
-            return $"{Name} | {AgeGroup} (Income:{IncomeContribution:+0;-#})" +
-                   $"\nLocation: {CurrentLocation}";
+            return $"Age: {AgeGroup}\n" +
+                   $"Income: {IncomeContribution:+0;-#})\n" +
+                   $"Location: {CurrentLocation}";
         }
     }
 }

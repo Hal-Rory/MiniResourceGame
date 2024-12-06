@@ -59,7 +59,7 @@ public class Tutorial : MonoBehaviour
         ((RectTransform)TutorialWindows[_lotWindow].transform).position =
             GameController.Instance.Input.WorldToScreen(lot.CellBlock + Vector3.up * 2);
         _placedLot = lot;
-        Selection.Shutdown();
+        Selection.ForceShutdown();
         _townLotSelection.gameObject.SetActive(true);
         GameController.Instance.GameTime.SetTimeActive(true);
         GameController.Instance.Selection.OnTownObjectSelected += OnTownObjectSelected;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Placement;
 using Town.TownObjectData;
@@ -14,9 +15,9 @@ public class House : TownLot
         Household = household;
     }
 
-    public int GetHousingSize()
+    public override List<Person> GetPersons()
     {
-        return _houseLotData.HouseholdSize;
+        return Household?.GetInhabitants().ToList();
     }
 
     public override string ToString()

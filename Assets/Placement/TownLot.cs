@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using Town.TownObjectData;
+using Town.TownPopulation;
 using UnityEngine;
 using Utility;
 
@@ -10,6 +12,7 @@ namespace Placement
         public Vector3Int CellBlock;
         public int PlacementID { get; private set; }
         protected TownLotObj _townLotData;
+        public string LotType => _townLotData.LotType;
         [SerializeField] protected SpriteRenderer _renderer;
         [SerializeField] protected BoxCollider2D _collider;
 
@@ -24,9 +27,16 @@ namespace Placement
             return _townLotData.ObjPreview;
         }
 
+        public abstract List<Person> GetPersons();
+
         public int GetPrice()
         {
             return _townLotData.LotPrice;
+        }
+
+        public int GetMaxCapacity()
+        {
+            return _townLotData.Capacity;
         }
 
         public void SetID(int ID)
@@ -48,6 +58,18 @@ namespace Placement
         public float GetHappiness()
         {
             return _townLotData.Happiness;
+        }
+
+        public string GetPatronCriteria()
+        {
+            if (_townLotData.HappinessAgeTarget == null)
+                return "None";
+            if (_townLotData.HappinessAgeTarget[0] == PersonAgeGroup.All)
+            {
+                return $"{PersonAgeGroup.All} ages";
+            }
+            string patronCriteria = string.Join(", ", _townLotData.HappinessAgeTarget.Select(age => age.Plural().ToString()).ToList());
+            return patronCriteria;
         }
 
         public virtual void StartHovering()

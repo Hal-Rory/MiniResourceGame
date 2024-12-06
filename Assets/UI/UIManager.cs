@@ -20,13 +20,15 @@ public class UIManager : IControllable
     {
         if (_currentControl != null) return false;
         _currentControl = control;
+        _currentControl.Active = true;
         return true;
     }
 
     public void EndControl(IUIControl control)
     {
         if (_currentControl != control) return;
-        _currentControl.Shutdown();
+        _currentControl.ForceShutdown();
+        _currentControl.Active = false;
         _currentControl = null;
     }
 

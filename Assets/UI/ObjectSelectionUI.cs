@@ -12,7 +12,7 @@ namespace UI
         private TownObjectManager _townObject => GameController.Instance.TownObject;
         public GameObject Menus;
         public ToggleCard[] Tabs;
-        private bool _menuOpen;
+        public bool Active { get; set; }
         private InputManager _input => GameController.Instance.Input;
         public int _currentSelection;
         public ButtonCard SelectionButtonPrefab;
@@ -22,22 +22,20 @@ namespace UI
         {
             Menus.SetActive(false);
             _townObject.OnCollectionChanged += DoOnCollectionChanged;
-            _townObject.OnSelectionChanged += DoSelectionChanged;
             SetCurrentTab(_townObject.GetCurrentCollection(), true);
             GameController.Instance.Income.OnIncomeUpdated += UpdatePricing;
         }
 
         private void Update()
         {
-            print(_input.Movement);
             if (_input.MenuPressed)
             {
-                SetMenuOpen(!_menuOpen);
+                SetMenuOpen(!Active);
             }
 
             if (_input.ExitPressed)
             {
-                if (_menuOpen)
+                if (Active)
                 {
                     SetMenuOpen(false);
                 }
@@ -45,9 +43,9 @@ namespace UI
 
             if (_input.SecondaryPressed)
             {
-                print(_townObject.GetObjectsInCollection()[_currentSelection].ID);
-                print(SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID).ID);
-                ((ButtonCard)SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID)).Select();
+                // print(_townObject.GetObjectsInCollection()[_currentSelection].ID);
+                // print(SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID).ID);
+                // ((ButtonCard)SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID)).Select();
             }
         }
 
@@ -55,15 +53,13 @@ namespace UI
 
         public void ToggleMenu_Button()
         {
-            SetMenuOpen(!_menuOpen);
+            SetMenuOpen(!Active);
         }
-
 
         private void SetMenuOpen(bool open)
         {
             if (open && !GameController.Instance.UI.TrySetActive(this)) return;
             ClearCards();
-            _menuOpen = open;
             if(!open)
             {
                 GameController.Instance.UI.EndControl(this);
@@ -75,21 +71,10 @@ namespace UI
             Menus.SetActive(open);
         }
 
-        public void Shutdown()
+        public void ForceShutdown()
         {
             if (!GameController.Instance.UI.HasControl(this)) return;
-            _menuOpen = false;
             _townObject.StartSelection(false);
-        }
-
-        #endregion
-
-        #region Selection Menu
-
-        private void DoSelectionChanged()
-        {
-            if (!_menuOpen) return;
-            UpdateObjectSelection();
         }
 
         #endregion
@@ -112,7 +97,10 @@ namespace UI
                 ButtonCard card = SelectionDisplay.SpawnItem(lot.ID, lot.Name, SelectionButtonPrefab) as ButtonCard;
                 void onSelect()
                 {
-                    _townObject.SetObjectSelection(_townObject.CurrentObject && _townObject.CurrentObject.ID == card.ID ? null : card.ID);
+                    if (_townObject.SetObjectSelection(card.ID))
+                    {
+                        UpdateObjectSelection();
+                    }
                 }
                 card.AddListener(onSelect);
                 card.SetIcon(lot.ObjPreview);
@@ -129,7 +117,7 @@ namespace UI
 
         private void UpdatePricing()
         {
-            if (!_menuOpen) return;
+            if (!Active) return;
             TownLotObj[] cards = _townObject.GetObjectsInCollection();
             foreach (TownLotObj lot in cards)
             {
@@ -183,7 +171,7 @@ namespace UI
 
         public void ChangeCollection_Toggle(int selection)
         {
-            if (!_menuOpen || selection == _townObject.GetCurrentCollection()) return;
+            if (!Active || selection == _townObject.GetCurrentCollection()) return;
             _townObject.ChangeCollection(selection);
         }
 
@@ -191,7 +179,7 @@ namespace UI
         {
             SetCurrentTab(_townObject.GetCurrentCollection(), true);
             ClearCards();
-            if (_menuOpen)
+            if (Active)
             {
                 ModifyList();
             }

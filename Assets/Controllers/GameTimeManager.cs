@@ -18,6 +18,7 @@ public class GameTimeManager : MonoBehaviour
     [SerializeField] private string _shortDate;
     private Action<int> _onEarlyClockUpdate;
     private Action<int> _onClockUpdate;
+    private Action<int> _onLateClockUpdate;
     private Action<TimesOfDay> _onClockStateUpdate;
     private Coroutine _clockUpdating;
     [SerializeField] private float _tickDelta;
@@ -82,6 +83,7 @@ public class GameTimeManager : MonoBehaviour
             {
                 _onEarlyClockUpdate?.Invoke(1);
                 _onClockUpdate?.Invoke(1);
+                _onLateClockUpdate.Invoke(1);
             }
 
             TimesOfDay timeOfDay = TimeOfDay;
@@ -99,20 +101,24 @@ public class GameTimeManager : MonoBehaviour
     public void RegisterListener(
         Action<int> earlyClockUpdate = null,
         Action<int> clockUpdate = null,
+        Action<int> lateClockUpdate = null,
         Action<TimesOfDay> stateClockUpdate = null)
     {
         if(earlyClockUpdate != null) _onEarlyClockUpdate += earlyClockUpdate;
         if(clockUpdate != null) _onClockUpdate += clockUpdate;
+        if(lateClockUpdate != null) _onLateClockUpdate += lateClockUpdate;
         if(stateClockUpdate != null) _onClockStateUpdate += stateClockUpdate;
     }
 
     public void UnregisterListener(
         Action<int> earlyClockUpdate = null,
         Action<int> clockUpdate = null,
+        Action<int> lateClockUpdate = null,
         Action<TimesOfDay> stateClockUpdate = null)
     {
         if(earlyClockUpdate != null) _onEarlyClockUpdate -= earlyClockUpdate;
         if(clockUpdate != null) _onClockUpdate -= clockUpdate;
+        if(lateClockUpdate != null) _onLateClockUpdate += lateClockUpdate;
         if(stateClockUpdate != null) _onClockStateUpdate -= stateClockUpdate;
     }
 

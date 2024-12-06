@@ -20,4 +20,6 @@ MonoBehaviour:
   ObjPlacement: {fileID: 289994466, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0
   HappinessAgeTarget: 
+  LotType: Recreational
+  Capacity: 5
   CanBeOverwritten: 0

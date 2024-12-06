@@ -12,7 +12,6 @@ public class TownObjectManager : IControllable
     private int _currentObject;
     public TownLotObj CurrentObject => _objectCollections[_currentCollection].Objects.Count == 0 || _currentObject < 0 ? null : _objectCollections[_currentCollection].Objects[_currentObject];
     public event Action OnCollectionChanged;
-    public event Action OnSelectionChanged;
     public event Action<bool> OnStateChanged;
 
     public void SetUp()
@@ -30,10 +29,10 @@ public class TownObjectManager : IControllable
         return _currentCollection;
     }
 
-    public void SetObjectSelection(string id)
+    public bool SetObjectSelection(string id)
     {
         _currentObject = string.IsNullOrEmpty(id) ? -1 : _objectCollections[_currentCollection].Objects.FindIndex(o => o.ID == id);
-        OnSelectionChanged?.Invoke();
+        return _currentObject >= 0;
     }
 
     public TownLotObj[] GetObjectsInCollection()
