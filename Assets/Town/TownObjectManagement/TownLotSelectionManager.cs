@@ -9,7 +9,6 @@ public class TownLotSelectionManager : MonoBehaviour
     public event Action<TownLot> OnTownObjectSelected;
     public event Action<TownLot> OnTownObjectDeselected;
     private TownLot _lastFound;
-    private bool _selected;
 
     private void Start()
     {
@@ -20,7 +19,6 @@ public class TownLotSelectionManager : MonoBehaviour
     {
         DeselectTownLot();
     }
-
 
     private void Update()
     {
@@ -38,37 +36,30 @@ public class TownLotSelectionManager : MonoBehaviour
 
     public void SelectTownLot()
     {
-        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode || !_lastFound) return;
+        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode) return;
         OnTownObjectSelected?.Invoke(_lastFound);
-        _selected = true;
     }
 
     public void DeselectTownLot()
     {
-        _selected = false;
-        if (!_lastFound) return;
-        OnTownObjectDeselected?.Invoke(_lastFound);
+        OnTownObjectDeselected?.Invoke(null);
     }
-
 
     private void TryHover()
     {
-        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode || _selected) return;
+        if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode) return;
 
         _input.GetSelectionPosition(1 << LayerMask.NameToLayer("TownLot"), out Collider2D col);
 
-        if (!col || !(col.transform.parent.TryGetComponent(out TownLot lot) && lot))
-        {
-            if (!_lastFound) return;
-            _lastFound.EndHovering();
-            _lastFound = null;
-        }
-        else
+        if (col && col.transform.parent.TryGetComponent(out TownLot lot) && lot)
         {
             if (lot == _lastFound) return;
             if(_lastFound) _lastFound.EndHovering();
             _lastFound = lot;
             lot.StartHovering();
+            return;
         }
+        if (_lastFound) _lastFound.EndHovering();
+        _lastFound = null;
     }
 }

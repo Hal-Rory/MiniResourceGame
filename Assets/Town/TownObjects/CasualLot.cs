@@ -11,5 +11,10 @@ namespace Town.TownObjects
         {
             return _patrons;
         }
+
+        public override int GetPersonsCount()
+        {
+            return _patrons.Count;
+        }
     }
 }

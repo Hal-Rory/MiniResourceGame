@@ -4,6 +4,7 @@ using System.Linq;
 using Placement;
 using Town.TownPopulation;
 using UnityEngine;
+using Utility;
 
 namespace Town.TownObjects
 {
@@ -18,8 +19,7 @@ namespace Town.TownObjects
 
         public string GetWorkCriteria()
         {
-            string employeeCriteria = String.Join(", ", _workLotData.EmployeeAgeGroups.Select(age => age.ToString()).ToList());
-            return employeeCriteria;
+            return _workLotData.GetEmployeeCriteria();
         }
 
         public List<Person> GetEmployees()
@@ -27,6 +27,10 @@ namespace Town.TownObjects
             return _employees;
         }
 
+        public override int GetPersonsCount()
+        {
+            return _patrons.Count;
+        }
         public override List<Person> GetPersons()
         {
             return _patrons;

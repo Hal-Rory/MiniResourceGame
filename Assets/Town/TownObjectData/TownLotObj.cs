@@ -27,5 +27,23 @@ namespace Town.TownObjectData
         {
             return null;
         }
+
+        public string GetPatronCriteria()
+        {
+            if (HappinessAgeTarget == null || HappinessAgeTarget.Length == 0)
+                return "None";
+            if (HappinessAgeTarget[0] == PersonAgeGroup.All)
+            {
+                return $"{PersonAgeGroup.All} ages";
+            }
+
+            string patronCriteria = HappinessAgeTarget.GroupedString(true);
+            return patronCriteria;
+        }
+
+        public virtual string GetPerks()
+        {
+            return $"{Happiness} mood / d";
+        }
     }
 }

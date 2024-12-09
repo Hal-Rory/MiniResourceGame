@@ -1,39 +1,56 @@
-public class UIManager : IControllable
+using System;
+using Controllers;
+using Utility;
+
+namespace UI
 {
-    private IUIControl _currentControl;
-
-    public void SetUp()
+    [Serializable]
+    public class UIManager : IControllable
     {
-        _currentControl = null;
-    }
+        private IUIControl _currentControl;
+        public ColorPaletteUtilities ColorPalette;
+        private SoundManager _soundManager => GameController.Instance.Sound;
 
-    public void SetDown()
-    {
-    }
+        public void SetUp()
+        {
+            _currentControl = null;
+            ColorPalette.GetHex();
+        }
 
-    public bool HasControl(IUIControl control)
-    {
-        return _currentControl == control && control != null;
-    }
+        public void SetDown()
+        {
+        }
 
-    public bool TrySetActive(IUIControl control)
-    {
-        if (_currentControl != null) return false;
-        _currentControl = control;
-        _currentControl.Active = true;
-        return true;
-    }
+        public bool HasControl()
+        {
+            return _currentControl != null;
+        }
 
-    public void EndControl(IUIControl control)
-    {
-        if (_currentControl != control) return;
-        _currentControl.ForceShutdown();
-        _currentControl.Active = false;
-        _currentControl = null;
-    }
+        public bool HasControl(IUIControl control)
+        {
+            return _currentControl == control && control != null;
+        }
 
-    public void EndControl()
-    {
-        EndControl(_currentControl);
+        public bool TrySetActive(IUIControl control)
+        {
+            if (_currentControl != null) return false;
+            _currentControl = control;
+            _currentControl.Active = true;
+            return true;
+        }
+
+        public void EndControl(IUIControl control)
+        {
+            if (_currentControl != control) return;
+            _currentControl.ForceShutdown();
+            _currentControl.Active = false;
+            _currentControl = null;
+            _soundManager.PlayCancel();
+        }
+
+        public void EndControl()
+        {
+            EndControl(_currentControl);
+        }
     }
 }

@@ -6,6 +6,7 @@ using Interfaces;
 using Placement;
 using Town.TownObjectData;
 using Town.TownPopulation;
+using UI;
 using UnityEngine;
 using Utility;
 
@@ -21,6 +22,7 @@ namespace Controllers
         public TownLotFactory TownLot;
         public GameTimeManager GameTime;
         public IncomeManager Income;
+        public SoundManager Sound;
         public TownLotSelectionManager Selection;
         public UIManager UI;
         public TownPopulaceManager TownPopulace;

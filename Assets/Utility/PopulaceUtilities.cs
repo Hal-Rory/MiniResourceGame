@@ -1,9 +1,18 @@
-﻿namespace Utility
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Utility
 {
     public enum PersonAgeGroup { None, Child, Teen, Adult, Elder, Deceased, All }
 
     public static class PopulationUtility
     {
+        public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural)
+        {
+            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural().ToString() : age.ToString()).ToList());
+            return ageGroup;
+        }
+
        public static string ToNoun(this PersonAgeGroup age)
         {
             switch (age)

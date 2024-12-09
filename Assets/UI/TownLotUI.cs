@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Common.UI;
 using Controllers;
 using Placement;
 using Town.TownObjects;
@@ -13,16 +10,15 @@ namespace UI
 {
     public class TownLotUI : MonoBehaviour, IUIControl
     {
-        private enum CardTypes
+        public enum CardTypes
         {
-            Type,
-            Criteria,
             Perks,
             Employees,
             Patrons,
             Inhabitants
         }
 
+        private SoundManager _soundManager => GameController.Instance.Sound;
         private TownLot _current;
 
         [SerializeField] private GameObject _lotPanel;
@@ -30,6 +26,7 @@ namespace UI
         [SerializeField] private CardTMP _headerCard;
         [SerializeField] private CardTMP _typeCard;
         [SerializeField] private List<CardTMP> _baseCards;
+        [SerializeField] private RectTransform _baseCardContainer;
 
         [SerializeField] private List<CardTMP> _capacityCards;
 
@@ -40,6 +37,8 @@ namespace UI
 
         private string _currentTooltip;
         private Dictionary<string, Toggle> _tooltipToggles;
+
+        private UIManager _uiManager => GameController.Instance.UI;
 
         public bool Active { get; set; }
 
@@ -68,8 +67,10 @@ namespace UI
             if (!Active || !_current || _current is not Workplace workplace) return;
             CardTMP employeeCard = _baseCards.Find(card => card.ID == CardTypes.Employees.ToString());
             if (!employeeCard) return;
-            employeeCard.SetLabel($"<color=#F3B41B>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
+            string colorHex = ColorUtility.ToHtmlStringRGB(_uiManager.ColorPalette.Positive);
+            employeeCard.SetLabel($"<color=#{colorHex}>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
             _tooltipToggles[employeeCard.ID].interactable = workplace.GetEmployees().Count > 0;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_baseCardContainer);
             if (!_tooltipPanel.activeSelf) return;
                 UpdateEmployeeTooltip();
         }
@@ -87,65 +88,49 @@ namespace UI
             _current = null;
         }
 
-        private void SetDisplay(TownLot lot)
+        private void SetDisplay()
         {
-            _headerCard.SetLabel(lot.GetName());
-            _headerCard.SetIcon(lot.GetDepiction());
-            _typeCard.SetLabel($"{lot.LotType}");
+            _headerCard.SetLabel(_current.GetName());
+            _headerCard.SetIcon(_current.GetDepiction());
+            _typeCard.SetLabel($"{_current.LotType}");
             _lotPanel.SetActive(true);
-        }
-        private void SetDisplay(Workplace workplace)
-        {
             foreach (CardTMP card in _baseCards)
             {
-                card.gameObject.SetActive(true);
-                if (card.ID == CardTypes.Criteria.ToString())
+                card.gameObject.SetActive(false);
+                if (_current is Workplace workplace)
                 {
-                    card.SetLabel($"{workplace.GetWorkCriteria()}");
-                } else if (card.ID == CardTypes.Perks.ToString())
-                {
-                    card.SetLabel($"{workplace.Wages} / mo\n{workplace.GetHappiness()} mood / d");
-                } else if (card.ID == CardTypes.Employees.ToString())
-                {
-                    card.SetLabel($"<color=#F3B41B>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
-                    _tooltipToggles[card.ID].interactable = workplace.EmployeeCount > 0;
+                    if (card.ID == CardTypes.Employees.ToString())
+                    {
+                        card.SetLabel($"[{workplace.GetWorkCriteria()}]\n<color=#{_uiManager.ColorPalette.PositiveHex}>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
+                        _tooltipToggles[card.ID].interactable = workplace.EmployeeCount > 0;
+                        card.gameObject.SetActive(true);
+                    }
                 }
-                else if (card.ID == CardTypes.Patrons.ToString())
+                if (_current is House house)
                 {
-                    card.SetLabel($"[{workplace.GetPatronCriteria()}]\n<color=#F3B41B>{workplace.GetPersons().Count}</color> / {workplace.GetMaxCapacity()}");
-                    _tooltipToggles[card.ID].interactable = workplace.GetPersons().Count > 0;
+                    if (card.ID == CardTypes.Inhabitants.ToString())
+                    {
+                        card.SetLabel($"<color=#{_uiManager.ColorPalette.PositiveHex}>{house.GetPersonsCount()}</color> / {house.GetMaxCapacity()}");
+                        _tooltipToggles[card.ID].interactable = house.GetPersonsCount() > 0;
+                        card.gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
-                    card.gameObject.SetActive(false);
+                    if (card.ID == CardTypes.Patrons.ToString())
+                    {
+                        card.SetLabel($"[{_current.GetPatronCriteria()}]\n<color=#{_uiManager.ColorPalette.PositiveHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}");
+                        _tooltipToggles[card.ID].interactable = _current.GetPersonsCount() > 0;
+                        card.gameObject.SetActive(true);
+                    }
                 }
-            }
-        }
-        private void SetDisplay(House house)
-        {
-            foreach (CardTMP card in _baseCards)
-            {
-                if (card.ID == CardTypes.Inhabitants.ToString())
+
+                if (card.ID == CardTypes.Perks.ToString())
                 {
+                    card.SetLabel($"{_current.GetPerks()}");
                     card.gameObject.SetActive(true);
-                    card.SetLabel($"<color=#F3B41B>{house.GetPersons().Count}</color> / {house.GetMaxCapacity()}");
-                }
-                else
-                {
-                    card.gameObject.SetActive(false);
                 }
             }
-            List<Person> inhabitants = house.GetPersons();
-            if (inhabitants == null || inhabitants.Count == 0) return;
-            _personListView.ClearCards();
-            for (int p = 0; p < inhabitants.Count; p++)
-            {
-                CardTMP personCard = _personListView.SpawnItem(p.ToString(), _lotCardPrefab.gameObject)
-                    .GetComponent<CardTMP>();
-                personCard.SetHeader(inhabitants[p].Name);
-                personCard.SetLabel(inhabitants[p].ToString());
-            }
-            _personListView.UpdateLayout();
         }
 
         private void TownLotDeselected(TownLot _)
@@ -161,18 +146,11 @@ namespace UI
         private void TownLotSelected(TownLot lot)
         {
             if (lot == null) return;
+            //this stops it from switching while active, remove if the need for that arises
             if (!GameController.Instance.UI.TrySetActive(this)) return;
-            switch (lot)
-            {
-                case Workplace workplace:
-                    SetDisplay(workplace);
-                    break;
-                case House house:
-                    SetDisplay(house);
-                    break;
-            }
             _current = lot;
-            SetDisplay(lot);
+            SetDisplay();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_baseCardContainer);
         }
 
         public void DemolishLot_Button()
@@ -185,34 +163,73 @@ namespace UI
             if (_currentTooltip == card.ID)
             {
                 CloseTooltip();
+                _soundManager.PlayCancel();
                 return;
             }
 
+            _soundManager.PlaySelect();
             _currentTooltip = card.ID;
-            bool canOpen = false;
+            _personListView.ClearCards();
+
             if (card.ID == CardTypes.Employees.ToString())
             {
-                canOpen = UpdateEmployeeTooltip();
+                UpdateEmployeeTooltip();
             }
-            _tooltipPanel.SetActive(canOpen);
+
+            if (card.ID == CardTypes.Inhabitants.ToString())
+            {
+                UpdateHouseTooltip();
+            }
+
+            if (card.ID == CardTypes.Patrons.ToString())
+            {
+                UpdateLotTooltip();
+            }
         }
 
-        private bool UpdateEmployeeTooltip()
+        private void UpdateLotTooltip()
         {
-            if (_current is not Workplace workplace) return false;
-            List<Person> employees = workplace.GetEmployees();
-            if (employees.Count != 0)
+            List<Person> patrons = _current.GetPersons();
+            if (patrons.Count == 0) return;
+            for (int p = 0; p < patrons.Count; p++)
             {
-                _personListView.ClearCards();
-                for (int p = 0; p < employees.Count; p++)
-                {
-                    CardTMP personCard = _personListView.SpawnItem(p.ToString(), _personCard.gameObject)
-                        .GetComponent<CardTMP>();
-                    personCard.SetLabel(employees[p].Name);
-                }
-                _personListView.UpdateLayout();
+                CardTMP personCard = _personListView.SpawnItem(p.ToString(), _personCard.gameObject)
+                    .GetComponent<CardTMP>();
+                personCard.SetLabel(patrons[p].Name);
             }
-            return employees.Count != 0;
+            _personListView.UpdateLayout();
+            _tooltipPanel.SetActive(true);
+        }
+
+        private void UpdateHouseTooltip()
+        {
+            if (_current is not House house) return;
+            List<Person> inhabitants = house.GetPersons();
+            if (inhabitants == null || inhabitants.Count == 0) return;
+            for (int p = 0; p < inhabitants.Count; p++)
+            {
+                CardTMP personCard = _personListView.SpawnItem(p.ToString(), _lotCardPrefab.gameObject)
+                    .GetComponent<CardTMP>();
+                personCard.SetHeader(inhabitants[p].Name);
+                personCard.SetLabel(inhabitants[p].ToString());
+            }
+            _personListView.UpdateLayout();
+            _tooltipPanel.SetActive(true);
+        }
+
+        private void UpdateEmployeeTooltip()
+        {
+            if (_current is not Workplace workplace) return;
+            List<Person> employees = workplace.GetEmployees();
+            if (employees.Count == 0) return;
+            for (int p = 0; p < employees.Count; p++)
+            {
+                CardTMP personCard = _personListView.SpawnItem(p.ToString(), _personCard.gameObject)
+                    .GetComponent<CardTMP>();
+                personCard.SetLabel(employees[p].Name);
+            }
+            _personListView.UpdateLayout();
+            _tooltipPanel.SetActive(true);
         }
 
         private void CloseTooltip()
@@ -224,7 +241,7 @@ namespace UI
         private void ClockUpdate(int tick)
         {
             if (!_current) return;
-            string capacity = $"<color=#F3B41B>{(_current.GetPersons() != null ? _current.GetPersons().Count : 0)}</color> / {_current.GetMaxCapacity()}";
+            string capacity = $"<color=#{_uiManager.ColorPalette.PositiveHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}";
             _capacityCards.ForEach(card =>
             {
                 card.SetLabel(card.ID == CardTypes.Patrons.ToString()
@@ -232,7 +249,7 @@ namespace UI
                     : $"{capacity}");
                 if (_tooltipToggles.TryGetValue(card.ID, out Toggle toggle))
                 {
-                    toggle.interactable = _current.GetPersons().Count > 0;
+                    toggle.interactable = _current.GetPersonsCount() > 0;
                 }
             });
         }

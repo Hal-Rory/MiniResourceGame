@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +6,7 @@ namespace UI
 {
     public class ListView : MonoBehaviour
     {
-        [SerializeField] private ScrollRect _listView;
+        [SerializeField] private RectTransform _listView;
 
         public Dictionary<string, GameObject> SpawnedObjects { get; private set; } =
             new Dictionary<string, GameObject>();
@@ -19,7 +18,7 @@ namespace UI
 
         public GameObject SpawnItem(string id, GameObject prefab)
         {
-            GameObject obj = Instantiate(prefab, _listView.content);
+            GameObject obj = Instantiate(prefab, _listView);
             SpawnedObjects.Add(id, obj);
             return obj;
         }
@@ -34,18 +33,16 @@ namespace UI
             if (SpawnedObjects == null) return;
             int count = SpawnedObjects.Count;
             if (count == 0) return;
-            GameObject[] objs = SpawnedObjects.Values.ToArray();
-            for (int i = 0; i < count; i++)
+            foreach (KeyValuePair<string,GameObject> spawnedObj in SpawnedObjects)
             {
-                Destroy(objs[i]);
+                Destroy(spawnedObj.Value);
             }
-
             SpawnedObjects.Clear();
         }
 
         public void UpdateLayout()
         {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_listView.content.transform as RectTransform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_listView);
         }
     }
 }

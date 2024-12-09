@@ -24,9 +24,19 @@ public class TownObjectManager : IControllable
     {
     }
 
-    public int GetCurrentCollection()
+    public string GetCurrentCollectionName()
     {
-        return _currentCollection;
+        return _objectCollections[_currentCollection].Name;
+    }
+
+    public void NextCollection()
+    {
+        ChangeCollection((int)Mathf.Repeat(_currentCollection+1, _objectCollections.Count - 1));
+    }
+
+    public void PreviousCollection()
+    {
+        ChangeCollection((int)Mathf.Repeat(_currentCollection-1, _objectCollections.Count - 1));
     }
 
     public bool SetObjectSelection(string id)
@@ -40,20 +50,19 @@ public class TownObjectManager : IControllable
         return _objectCollections[_currentCollection].Objects.ToArray();
     }
 
-    public void ChangeCollection(int index)
+    private void ChangeCollection(int index)
     {
         if(!index.IsBetweenRange(0, _objectCollections.Count-1))
         {
             Debug.LogWarning($"{nameof(TownObjectManager)}: Index is out of bounds");
             return;
         }
-
         _currentObject = 0;
         _currentCollection = index;
         OnCollectionChanged?.Invoke();
     }
 
-    public void StartSelection(bool started)
+    public void StartPlacing(bool started)
     {
         OnStateChanged?.Invoke(started);
     }

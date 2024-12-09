@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Placement;
-using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
 
@@ -20,6 +19,10 @@ public class House : TownLot
         return Household?.GetInhabitants().ToList();
     }
 
+    public override int GetPersonsCount()
+    {
+        return Household != null ? Household.GetInhabitants().Length : 0;
+    }
     public override string ToString()
     {
         string inhabitants = string.Empty;

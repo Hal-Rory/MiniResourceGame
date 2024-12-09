@@ -1,5 +1,5 @@
-using System;
-using Common.UI;
+using System.Collections.Generic;
+using System.Linq;
 using Controllers;
 using Town.TownObjectData;
 using UnityEngine;
@@ -9,21 +9,35 @@ namespace UI
 {
     public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
-        private TownObjectManager _townObject => GameController.Instance.TownObject;
-        public GameObject Menus;
-        public ToggleCard[] Tabs;
-        public bool Active { get; set; }
         private InputManager _input => GameController.Instance.Input;
-        public int _currentSelection;
-        public ButtonCard SelectionButtonPrefab;
-        public CardListView SelectionDisplay;
+        private TownObjectManager _townObject => GameController.Instance.TownObject;
+        public GameObject MenuContainer;
+        public bool Active { get; set; }
+        public ToggleCard SelectionTogglePrefab;
+        public ListView SelectionDisplay;
+        private Toggle _currentSelection;
+        private SoundManager _soundManager => GameController.Instance.Sound;
+        [SerializeField] private GameObject _lotDescription;
+        [SerializeField] private List<CardTMP> _lotCards;
+        [SerializeField] private CardTMP _headerCard;
+        [SerializeField] private Text _currentCollection;
+        [SerializeField] private Text _fundsWarning;
+        [SerializeField] private GameObject _buildButton;
+        [SerializeField] private ToggleGroup _selectionToggleGroup;
 
         private void Start()
         {
-            Menus.SetActive(false);
+            MenuContainer.SetActive(false);
             _townObject.OnCollectionChanged += DoOnCollectionChanged;
-            SetCurrentTab(_townObject.GetCurrentCollection(), true);
+            SetCurrentCollection();
             GameController.Instance.Income.OnIncomeUpdated += UpdatePricing;
+            GameController.Instance.TownObject.OnStateChanged += OnStateChanged;
+        }
+
+        private void OnStateChanged(bool obj)
+        {
+            MenuContainer.gameObject.SetActive(false);
+            _lotDescription.gameObject.SetActive(false);
         }
 
         private void Update()
@@ -66,48 +80,115 @@ namespace UI
             }
             else
             {
+                _soundManager.PlaySelect();
+                SetCurrentCollection();
                 ModifyList();
             }
-            Menus.SetActive(open);
+            MenuContainer.SetActive(open);
         }
 
         public void ForceShutdown()
         {
             if (!GameController.Instance.UI.HasControl(this)) return;
-            _townObject.StartSelection(false);
+            _townObject.StartPlacing(false);
         }
 
-        #endregion
-
-        #region During Selection
-
-        private void UpdateObjectSelection()
-        {
-            _townObject.StartSelection(true);
-        }
         #endregion
 
         #region List Display
+
+        public void BeginPlacing()
+        {
+            _soundManager.PlaySelect();
+            _townObject.StartPlacing(true);
+        }
 
         private void ModifyList()
         {
             TownLotObj[] townObjs = _townObject.GetObjectsInCollection();
             foreach (TownLotObj lot in townObjs)
             {
-                ButtonCard card = SelectionDisplay.SpawnItem(lot.ID, lot.Name, SelectionButtonPrefab) as ButtonCard;
-                void onSelect()
+                ToggleCard card = SelectionDisplay.SpawnItem(lot.ID, SelectionTogglePrefab.gameObject).GetComponent<ToggleCard>();
+                card.Set(lot.ID);
+                void onSelect(bool selected)
                 {
-                    if (_townObject.SetObjectSelection(card.ID))
+                    if (selected)
                     {
-                        UpdateObjectSelection();
+                        _soundManager.PlaySelect();
+                        _currentSelection = card.GetToggle();
                     }
+                    else
+                    {
+                        if (!_selectionToggleGroup.AnyTogglesOn())
+                        {
+                            _soundManager.PlayCancel();
+                        }
+                    }
+
+                    SetLotDescription(_townObject.SetObjectSelection(selected ? card.ID : string.Empty), lot);
                 }
                 card.AddListener(onSelect);
                 card.SetIcon(lot.ObjPreview);
-                card.Interactable = GameController.Instance.CanPurchase(lot);
+                card.GetToggle().group = _selectionToggleGroup;
             }
 
             SelectionDisplay.UpdateLayout();
+        }
+
+        private void SetLotDescription(bool active, TownLotObj lot)
+        {
+            if (active)
+            {
+                _headerCard.SetHeader($"{lot.Name}");
+                _headerCard.SetLabel($"${lot.LotPrice}");
+                bool canAfford = GameController.Instance.CanPurchase(_townObject.CurrentObject);
+                _buildButton.gameObject.SetActive(canAfford);
+                _fundsWarning.gameObject.SetActive(!canAfford);
+                foreach (CardTMP card in _lotCards)
+                {
+                    card.gameObject.SetActive(false);
+                    WorkplaceLotObj workplace = lot as WorkplaceLotObj;
+
+                    if (card.ID == TownLotUI.CardTypes.Perks.ToString())
+                    {
+                        card.SetLabel($"{lot.GetPerks()}");
+                        card.gameObject.SetActive(true);
+                        continue;
+                    }
+
+                    if (workplace)
+                    {
+                        if (card.ID == TownLotUI.CardTypes.Employees.ToString())
+                        {
+                            card.SetLabel($"[{workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeLimit}");
+                            card.gameObject.SetActive(true);
+                        }
+                        else if (card.ID == TownLotUI.CardTypes.Patrons.ToString())
+                        {
+                            card.SetLabel($"[{lot.GetPatronCriteria()}]\n{lot.Capacity}");
+                            card.gameObject.SetActive(true);
+                        }
+                    }
+                    else if (card.ID == TownLotUI.CardTypes.Inhabitants.ToString())
+                    {
+                        card.SetLabel($"{lot.Capacity}");
+                        card.gameObject.SetActive(true);
+                    }
+                }
+                _lotDescription.gameObject.SetActive(true);
+            }
+            else
+            {
+                ClosetLotDescription();
+            }
+        }
+
+        public void ClosetLotDescription()
+        {
+            _lotDescription.gameObject.SetActive(false);
+            if (!_currentSelection) return;
+            _currentSelection.isOn = false;
+            _currentSelection = null;
         }
 
         private void ClearCards()
@@ -117,74 +198,42 @@ namespace UI
 
         private void UpdatePricing()
         {
-            if (!Active) return;
-            TownLotObj[] cards = _townObject.GetObjectsInCollection();
-            foreach (TownLotObj lot in cards)
-            {
-                if (!SelectionDisplay.SpawnedCards.TryGetValue(lot.ID, out Card card))
-                {
-                    ClearCards();
-                    ModifyList();
-                    return;
-                }
-                if (lot)
-                    ((ButtonCard)card).Interactable = GameController.Instance.CanPurchase(lot);
-            }
+            if (!Active || !_lotDescription.activeSelf) return;
+            bool canAfford = GameController.Instance.CanPurchase(_townObject.CurrentObject);
+            _buildButton.gameObject.SetActive(canAfford);
+            _fundsWarning.gameObject.SetActive(!canAfford);
         }
 
         #endregion
 
-        #region Toggles
+        #region Collections
 
-        /// <summary>
-        /// Performing Toggle groups job because Unity's toggle group is incredibly noisy
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="silent"></param>
-        private void SetCurrentTab(int index, bool silent)
+        private void SetCurrentCollection()
         {
-            void setToggle(bool value, ToggleCard t)
-            {
-                if (silent)
-                {
-                    t.GetToggle().SetIsOnWithoutNotify(value);
-                    t.SetIconActive(value);
-                }
-                else
-                {
-                    t.GetToggle().isOn = value;
-                    t.SetIconActive(value);
-                }
-            }
-
-            for (int i = 0; i < Tabs.Length; i++)
-            {
-                if (i == index)
-                {
-                    setToggle(true, Tabs[i]);
-                    continue;
-                }
-
-                setToggle(false, Tabs[i]);
-            }
+            _currentCollection.text = _townObject.GetCurrentCollectionName();
         }
 
-        public void ChangeCollection_Toggle(int selection)
+        public void SetNextCollection()
         {
-            if (!Active || selection == _townObject.GetCurrentCollection()) return;
-            _townObject.ChangeCollection(selection);
+            _townObject.NextCollection();
+        }
+
+        public void SetPreviousCollection()
+        {
+            _townObject.PreviousCollection();
         }
 
         private void DoOnCollectionChanged()
         {
-            SetCurrentTab(_townObject.GetCurrentCollection(), true);
+            _lotDescription.SetActive(false);
+            _soundManager.PlayPlace();
             ClearCards();
             if (Active)
             {
                 ModifyList();
             }
+            SetCurrentCollection();
         }
-
         #endregion
     }
 }

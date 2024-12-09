@@ -15,6 +15,8 @@ namespace Placement
         public string LotType => _townLotData.LotType;
         [SerializeField] protected SpriteRenderer _renderer;
         [SerializeField] protected BoxCollider2D _collider;
+        public abstract int GetPersonsCount();
+        public abstract List<Person> GetPersons();
 
         private void Awake()
         {
@@ -27,7 +29,10 @@ namespace Placement
             return _townLotData.ObjPreview;
         }
 
-        public abstract List<Person> GetPersons();
+        public string GetPerks()
+        {
+            return _townLotData.GetPerks();
+        }
 
         public int GetPrice()
         {
@@ -62,14 +67,7 @@ namespace Placement
 
         public string GetPatronCriteria()
         {
-            if (_townLotData.HappinessAgeTarget == null)
-                return "None";
-            if (_townLotData.HappinessAgeTarget[0] == PersonAgeGroup.All)
-            {
-                return $"{PersonAgeGroup.All} ages";
-            }
-            string patronCriteria = string.Join(", ", _townLotData.HappinessAgeTarget.Select(age => age.Plural().ToString()).ToList());
-            return patronCriteria;
+            return _townLotData.GetPatronCriteria();
         }
 
         public virtual void StartHovering()
