@@ -20,7 +20,7 @@ namespace Town.TownPopulation
         private List<int> _availableHousing;
         [SerializeField] private float _housingWait;
         private Coroutine _checkForHousingAllowed;
-        private ActionBox HousingCoroutine;
+        private ActionBox _housingCoroutine;
         private bool _stagnantGrowth;
 
         private PopulationFactory _populationFactory => GameController.Instance.Population;
@@ -36,26 +36,31 @@ namespace Town.TownPopulation
             _stagnantGrowth = stagnant;
         }
 
+        public int GetHappiness()
+        {
+            return (int)(_totalHappiness * 100);
+        }
+
         public void SetUp()
         {
             GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
             GameController.Instance.RegisterPlacementListener(OnNewLot, OnRemoveLot);
             _availableHousing = new List<int>();
-            if (HousingCoroutine != null) return;
-            HousingCoroutine = new ActionBox(() =>
+            if (_housingCoroutine != null) return;
+            _housingCoroutine = new ActionBox(() =>
                 {
-                    HousingCoroutine.Running = _checkForHousingAllowed == null;
+                    _housingCoroutine.Running = _checkForHousingAllowed == null;
                     _checkForHousingAllowed ??= GameController.Instance.StartCoroutine(CheckHousingCO());
                 },
                 () =>
                 {
-                    HousingCoroutine.Running = false;
+                    _housingCoroutine.Running = false;
                     if (_checkForHousingAllowed == null || !GameController.Instance) return;
                     GameController.Instance.StopCoroutine(_checkForHousingAllowed);
                     _checkForHousingAllowed = null;
                 }
             );
-            GameController.Instance.PickupAction(this, HousingCoroutine);
+            GameController.Instance.PickupAction(this, _housingCoroutine);
         }
 
         public void SetDown()
@@ -82,7 +87,7 @@ namespace Town.TownPopulation
             CheckHouseholdAvailability();
             if (_checkForHousingAllowed == null)
             {
-                HousingCoroutine.Start();
+                _housingCoroutine.Start();
             }
         }
 
@@ -90,7 +95,7 @@ namespace Town.TownPopulation
         {
             yield return new WaitForSeconds(_housingWait);
             _checkForHousingAllowed = null;
-            HousingCoroutine.Stop();
+            _housingCoroutine.Stop();
         }
 
         private void AdjustStockpiles()
@@ -113,7 +118,7 @@ namespace Town.TownPopulation
 
         public void PuttingDown()
         {
-            HousingCoroutine.Stop();
+            _housingCoroutine.Stop();
         }
     }
 }

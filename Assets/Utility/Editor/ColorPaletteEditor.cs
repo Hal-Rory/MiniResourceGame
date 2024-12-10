@@ -104,19 +104,26 @@ namespace Utility.Editor
                                 if (GUILayout.Button("Swap"))
                                 {
                                     ColorBlock colors = target.colors;
+                                    Color disabled = Color.white;
                                     switch (_coloring)
                                     {
                                         case SelectableColoring.Positive:
                                             colors.normalColor = _palette.Yellow;
                                             colors.highlightedColor = _palette.Red;
                                             colors.pressedColor = _palette.White;
-                                            colors.selectedColor = _palette.White;
+                                            colors.selectedColor = _palette.Yellow;
+                                            disabled = _palette.Yellow;
+                                            disabled.a = .2f;
+                                            colors.disabledColor = disabled;
                                             break;
                                         case SelectableColoring.Negative:
                                             colors.normalColor = _palette.Red;
                                             colors.highlightedColor = _palette.Yellow;
                                             colors.pressedColor = _palette.White;
                                             colors.selectedColor = _palette.Red;
+                                            disabled = _palette.Red;
+                                            disabled.a = .2f;
+                                            colors.disabledColor = disabled;
                                             break;
                                         default:
                                             colors = target.colors;
@@ -129,14 +136,17 @@ namespace Utility.Editor
                             }
                             case Options.Text when _componentsEditors[c].target is Text txt:
                                 txt.color = DrawColorSwatch(txt.color);
+                                EditorUtility.SetDirty(txt);
                                 SceneView.RepaintAll();
                                 break;
                             case Options.Text when _componentsEditors[c].target is TextMeshProUGUI tmp:
                                 tmp.color = DrawColorSwatch(tmp.color);
+                                EditorUtility.SetDirty(tmp);
                                 SceneView.RepaintAll();
                                 break;
                             case Options.Images when _componentsEditors[c].target is Image img:
                                 img.color = DrawColorSwatch(img.color);
+                                EditorUtility.SetDirty(img);
                                 SceneView.RepaintAll();
                                 break;
                         }
@@ -191,6 +201,11 @@ namespace Utility.Editor
         {
             GUILayout.BeginHorizontal();
             Color bg = GUI.color;
+            if (GUILayout.Button(""))
+            {
+                GUILayout.EndHorizontal();
+                return Color.white;
+            }
             foreach (Color color in _palette.Colors)
             {
                 GUI.color = color;

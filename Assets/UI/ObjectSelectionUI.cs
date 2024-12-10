@@ -18,6 +18,7 @@ namespace UI
         private Toggle _currentSelection;
         private SoundManager _soundManager => GameController.Instance.Sound;
         [SerializeField] private GameObject _lotDescription;
+        [SerializeField] private ScrollRect _lotDescriptionScroll;
         [SerializeField] private List<CardTMP> _lotCards;
         [SerializeField] private CardTMP _headerCard;
         [SerializeField] private Text _currentCollection;
@@ -28,6 +29,7 @@ namespace UI
         private void Start()
         {
             MenuContainer.SetActive(false);
+            CloseScroll();
             _townObject.OnCollectionChanged += DoOnCollectionChanged;
             SetCurrentCollection();
             GameController.Instance.Income.OnIncomeUpdated += UpdatePricing;
@@ -37,7 +39,7 @@ namespace UI
         private void OnStateChanged(bool obj)
         {
             MenuContainer.gameObject.SetActive(false);
-            _lotDescription.gameObject.SetActive(false);
+            CloseScroll();
         }
 
         private void Update()
@@ -141,6 +143,7 @@ namespace UI
             {
                 _headerCard.SetHeader($"{lot.Name}");
                 _headerCard.SetLabel($"${lot.LotPrice}");
+                _headerCard.SetIcon(lot.ObjPreview);
                 bool canAfford = GameController.Instance.CanPurchase(_townObject.CurrentObject);
                 _buildButton.gameObject.SetActive(canAfford);
                 _fundsWarning.gameObject.SetActive(!canAfford);
@@ -165,7 +168,7 @@ namespace UI
                         }
                         else if (card.ID == TownLotUI.CardTypes.Patrons.ToString())
                         {
-                            card.SetLabel($"[{lot.GetPatronCriteria()}]\n{lot.Capacity}");
+                            card.SetLabel($"[{lot.GetPatronCriteria()}]{(lot.Capacity > 0 ? $"\n{lot.Capacity}" : "")}");
                             card.gameObject.SetActive(true);
                         }
                     }
@@ -175,7 +178,7 @@ namespace UI
                         card.gameObject.SetActive(true);
                     }
                 }
-                _lotDescription.gameObject.SetActive(true);
+                _lotDescription.SetActive(true);
             }
             else
             {
@@ -185,10 +188,16 @@ namespace UI
 
         public void ClosetLotDescription()
         {
-            _lotDescription.gameObject.SetActive(false);
+            CloseScroll();
             if (!_currentSelection) return;
             _currentSelection.isOn = false;
             _currentSelection = null;
+        }
+
+        private void CloseScroll()
+        {
+            _lotDescriptionScroll.verticalNormalizedPosition = 1;
+            _lotDescription.SetActive(false);
         }
 
         private void ClearCards()
@@ -225,7 +234,7 @@ namespace UI
 
         private void DoOnCollectionChanged()
         {
-            _lotDescription.SetActive(false);
+            CloseScroll();
             _soundManager.PlayPlace();
             ClearCards();
             if (Active)

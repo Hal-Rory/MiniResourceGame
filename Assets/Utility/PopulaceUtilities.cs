@@ -9,7 +9,7 @@ namespace Utility
     {
         public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural)
         {
-            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural().ToString() : age.ToString()).ToList());
+            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural().ToString().ToUpper() : age.ToString().ToUpper()).ToList());
             return ageGroup;
         }
 

@@ -31,9 +31,10 @@ namespace UI
         [SerializeField] private List<CardTMP> _capacityCards;
 
         [SerializeField] private CardTMP _lotCardPrefab;
-        [SerializeField] private ListView _housingCardsList;
+        [SerializeField] private ScrollRect _cardsScroll;
         [SerializeField] private CardTMP _personCard;
         [SerializeField] private ListView _personListView;
+        [SerializeField] private ScrollRect _personScroll;
 
         private string _currentTooltip;
         private Dictionary<string, Toggle> _tooltipToggles;
@@ -84,7 +85,8 @@ namespace UI
         public void ForceShutdown()
         {
             _lotPanel.SetActive(false);
-            _tooltipPanel.SetActive(false);
+            _cardsScroll.verticalNormalizedPosition = 1;
+            CloseTooltip();
             _current = null;
         }
 
@@ -147,7 +149,8 @@ namespace UI
         {
             if (lot == null) return;
             //this stops it from switching while active, remove if the need for that arises
-            if (!GameController.Instance.UI.TrySetActive(this)) return;
+            if (!GameController.Instance.UI.TrySetActive(this) && !GameController.Instance.UI.HasControl(this)) return;
+            CloseTooltip();
             _current = lot;
             SetDisplay();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_baseCardContainer);
@@ -155,6 +158,7 @@ namespace UI
 
         public void DemolishLot_Button()
         {
+            CloseTooltip();
             GameController.Instance.RemoveLot(_current.CellBlock);
         }
 
@@ -235,6 +239,7 @@ namespace UI
         private void CloseTooltip()
         {
             _currentTooltip = string.Empty;
+            _personScroll.verticalNormalizedPosition = 1;
             _tooltipPanel.SetActive(false);
         }
 

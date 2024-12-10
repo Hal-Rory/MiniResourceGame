@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ea230907595eb4d846174f5569d59a, type: 3}
   m_Name: Office
   m_EditorClassIdentifier: 
-  Name: Skyscraper
+  Name: Office
   ID: bldg1
   LotSize: {x: 1, y: 1}
   LotPrice: 45

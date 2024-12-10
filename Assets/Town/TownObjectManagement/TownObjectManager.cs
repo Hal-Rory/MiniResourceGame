@@ -31,7 +31,7 @@ public class TownObjectManager : IControllable
 
     public void NextCollection()
     {
-        ChangeCollection((int)Mathf.Repeat(_currentCollection+1, _objectCollections.Count - 1));
+        ChangeCollection((int)Mathf.Repeat(_currentCollection+1, _objectCollections.Count));
     }
 
     public void PreviousCollection()
@@ -52,7 +52,7 @@ public class TownObjectManager : IControllable
 
     private void ChangeCollection(int index)
     {
-        if(!index.IsBetweenRange(0, _objectCollections.Count-1))
+        if(!index.IsBetweenRange(0, _objectCollections.Count))
         {
             Debug.LogWarning($"{nameof(TownObjectManager)}: Index is out of bounds");
             return;
