@@ -35,7 +35,7 @@ public class GameUI : MonoBehaviour
 
     private void Update()
     {
-        CurrentDate.text = $"{_gameTime.GetDate()}\n{_gameTime.GetTime()}";
+        CurrentDate.text = $"{_gameTime.GetDate()} @ {_gameTime.GetTime()}";
     }
 
     public void UpdateControls(PlayerInput controls)

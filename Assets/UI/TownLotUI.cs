@@ -67,7 +67,7 @@ namespace UI
             if (!Active || !_current || _current is not Workplace workplace) return;
             CardTMP employeeCard = _baseCards.Find(card => card.ID == CardTypes.Employees.ToString());
             if (!employeeCard) return;
-            string colorHex = ColorUtility.ToHtmlStringRGB(_uiManager.ColorPalette.Positive);
+            string colorHex = _uiManager.ColorPalette.YellowHex;
             employeeCard.SetLabel($"<color=#{colorHex}>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
             _tooltipToggles[employeeCard.ID].interactable = workplace.GetEmployees().Count > 0;
             LayoutRebuilder.ForceRebuildLayoutImmediate(_baseCardContainer);
@@ -101,7 +101,7 @@ namespace UI
                 {
                     if (card.ID == CardTypes.Employees.ToString())
                     {
-                        card.SetLabel($"[{workplace.GetWorkCriteria()}]\n<color=#{_uiManager.ColorPalette.PositiveHex}>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
+                        card.SetLabel($"[{workplace.GetWorkCriteria()}]\n<color=#{_uiManager.ColorPalette.YellowHex}>{workplace.EmployeeCount}</color> / {workplace.MaxEmployeeCapacity}");
                         _tooltipToggles[card.ID].interactable = workplace.EmployeeCount > 0;
                         card.gameObject.SetActive(true);
                     }
@@ -110,7 +110,7 @@ namespace UI
                 {
                     if (card.ID == CardTypes.Inhabitants.ToString())
                     {
-                        card.SetLabel($"<color=#{_uiManager.ColorPalette.PositiveHex}>{house.GetPersonsCount()}</color> / {house.GetMaxCapacity()}");
+                        card.SetLabel($"<color=#{_uiManager.ColorPalette.YellowHex}>{house.GetPersonsCount()}</color> / {house.GetMaxCapacity()}");
                         _tooltipToggles[card.ID].interactable = house.GetPersonsCount() > 0;
                         card.gameObject.SetActive(true);
                     }
@@ -119,7 +119,7 @@ namespace UI
                 {
                     if (card.ID == CardTypes.Patrons.ToString())
                     {
-                        card.SetLabel($"[{_current.GetPatronCriteria()}]\n<color=#{_uiManager.ColorPalette.PositiveHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}");
+                        card.SetLabel($"[{_current.GetPatronCriteria()}]\n<color=#{_uiManager.ColorPalette.YellowHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}");
                         _tooltipToggles[card.ID].interactable = _current.GetPersonsCount() > 0;
                         card.gameObject.SetActive(true);
                     }
@@ -241,7 +241,7 @@ namespace UI
         private void ClockUpdate(int tick)
         {
             if (!_current) return;
-            string capacity = $"<color=#{_uiManager.ColorPalette.PositiveHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}";
+            string capacity = $"<color=#{_uiManager.ColorPalette.YellowHex}>{_current.GetPersonsCount()}</color> / {_current.GetMaxCapacity()}";
             _capacityCards.ForEach(card =>
             {
                 card.SetLabel(card.ID == CardTypes.Patrons.ToString()
