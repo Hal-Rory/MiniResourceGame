@@ -8,7 +8,7 @@ namespace UI
     public class UIManager : IControllable
     {
         private IUIControl _currentControl;
-        public ColorPaletteUtilities ColorPalette;
+        public ColorPaletteUtilities ColorPalette = new ColorPaletteUtilities();
         private SoundManager _soundManager => GameController.Instance.Sound;
 
         public void SetUp()
