@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Controllers;
 using Town.TownObjectData;
 using UnityEngine;
@@ -150,32 +149,24 @@ namespace UI
                 foreach (CardTMP card in _lotCards)
                 {
                     card.gameObject.SetActive(false);
-                    WorkplaceLotObj workplace = lot as WorkplaceLotObj;
-
-                    if (card.ID == TownLotUI.CardTypes.Perks.ToString())
+                    switch (lot)
                     {
-                        card.SetLabel($"{lot.GetPerks()}");
-                        card.gameObject.SetActive(true);
-                        continue;
-                    }
-
-                    if (workplace)
-                    {
-                        if (card.ID == TownLotUI.CardTypes.Employees.ToString())
-                        {
-                            card.SetLabel($"[{workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeLimit}");
+                        case not null when card.ID == TownLotUI.CardTypes.Perks.ToString():
+                            card.SetLabel($"{lot.GetPerks()}");
                             card.gameObject.SetActive(true);
-                        }
-                        else if (card.ID == TownLotUI.CardTypes.Patrons.ToString())
-                        {
-                            card.SetLabel($"[{lot.GetPatronCriteria()}]{(lot.Capacity > 0 ? $"\n{lot.Capacity}" : "")}");
+                            break;
+                        case not HousingLotObj when card.ID == TownLotUI.CardTypes.Visitors.ToString():
+                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.Capacity > 0 ? $"\n{lot.Capacity}" : "")}");
                             card.gameObject.SetActive(true);
-                        }
-                    }
-                    else if (card.ID == TownLotUI.CardTypes.Inhabitants.ToString())
-                    {
-                        card.SetLabel($"{lot.Capacity}");
-                        card.gameObject.SetActive(true);
+                            break;
+                        case WorkplaceLotObj workplace when card.ID == TownLotUI.CardTypes.Employees.ToString():
+                            card.SetLabel($"[Age Groups: {workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeLimit}");
+                            card.gameObject.SetActive(true);
+                            break;
+                        case HousingLotObj when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
+                            card.SetLabel($"{lot.Capacity}");
+                            card.gameObject.SetActive(true);
+                            break;
                     }
                 }
                 _lotDescription.SetActive(true);

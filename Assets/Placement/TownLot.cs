@@ -15,6 +15,7 @@ namespace Placement
         public string LotType => _townLotData.LotType;
         [SerializeField] protected SpriteRenderer _renderer;
         [SerializeField] protected BoxCollider2D _collider;
+        private string _name;
         public abstract int GetPersonsCount();
         public abstract List<Person> GetPersons();
 
@@ -51,13 +52,18 @@ namespace Placement
 
         public bool TryGetHappiness(PersonAgeGroup age)
         {
-            return _townLotData.HappinessAgeTarget.Contains(age) ||
-                   _townLotData.HappinessAgeTarget.Contains(PersonAgeGroup.All);
+            return _townLotData.VisitorAgeTarget.Contains(age) ||
+                   _townLotData.VisitorAgeTarget.Contains(PersonAgeGroup.All);
         }
 
-        public string GetName()
+        public void SetName(string lotName)
         {
-            return _townLotData.Name;
+            _name = lotName;
+        }
+
+        public virtual string GetName()
+        {
+            return _name;
         }
 
         public float GetHappiness()
@@ -65,9 +71,9 @@ namespace Placement
             return _townLotData.Happiness;
         }
 
-        public string GetPatronCriteria()
+        public string GetVisitorCriteria()
         {
-            return _townLotData.GetPatronCriteria();
+            return _townLotData.GetVisitorCriteria();
         }
 
         public virtual void StartHovering()
@@ -81,6 +87,7 @@ namespace Placement
         public void Create(TownLotObj lotObj)
         {
             _townLotData = lotObj;
+            _name = _townLotData.Name;
             _renderer.sprite = lotObj.ObjPlacement;
             _collider.size = _renderer.bounds.size;
             _collider.offset = transform.InverseTransformPoint(_renderer.bounds.center);

@@ -15,7 +15,7 @@ namespace Town.TownObjectData
         public Sprite ObjPlacement;
         [Range(0,10)]
         public float Happiness;
-        public PersonAgeGroup[] HappinessAgeTarget;
+        public PersonAgeGroup[] VisitorAgeTarget;
         public string LotType;
         /// <summary>
         /// How many Persons can fill this lot.
@@ -28,17 +28,17 @@ namespace Town.TownObjectData
             return null;
         }
 
-        public string GetPatronCriteria()
+        public string GetVisitorCriteria()
         {
-            if (HappinessAgeTarget == null || HappinessAgeTarget.Length == 0)
+            if (VisitorAgeTarget == null || VisitorAgeTarget.Length == 0)
                 return "None";
-            if (HappinessAgeTarget[0] == PersonAgeGroup.All)
+            if (VisitorAgeTarget[0] == PersonAgeGroup.All)
             {
                 return $"{PersonAgeGroup.All} ages";
             }
 
-            string patronCriteria = HappinessAgeTarget.GroupedString(true);
-            return patronCriteria;
+            string visitorCriteria = VisitorAgeTarget.GroupedString(true);
+            return visitorCriteria;
         }
 
         public virtual string GetPerks()

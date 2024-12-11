@@ -6,15 +6,15 @@ namespace Town.TownObjects
 {
     public class CasualLot : TownLot
     {
-        private List<Person> _patrons = new List<Person>();
+        private List<Person> _visitors = new List<Person>();
         public override List<Person> GetPersons()
         {
-            return _patrons;
+            return _visitors;
         }
 
         public override int GetPersonsCount()
         {
-            return _patrons.Count;
+            return _visitors.Count;
         }
     }
 }

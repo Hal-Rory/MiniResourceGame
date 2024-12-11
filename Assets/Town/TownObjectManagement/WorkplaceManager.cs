@@ -60,7 +60,7 @@ public class WorkplaceManager : IControllable
         List<Workplace> workplaces = Workplaces.FindAll(workplace => workplace.CanHire(person));
         if (workplaces.Count == 0) return;
         int job = Random.Range(0, workplaces.Count);
-        Workplaces[job].Employ(person);
+        workplaces[job].Employ(person);
         OnWorkforceChanged?.Invoke();
     }
 

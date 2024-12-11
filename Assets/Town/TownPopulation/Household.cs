@@ -12,17 +12,20 @@ namespace Town.TownPopulation
         [SerializeField] private List<Person> _inhabitants = new List<Person>();
         public int HouseID { get; private set; }
         public int HouseholdID { get; private set; }
+        public string HouseholdName{ get; private set; }
 
-        public Household(int id, int houseID)
+        public Household(int id, int houseID, string householdName)
         {
             HouseholdID = id;
             HouseID = houseID;
+            HouseholdName = householdName;
         }
 
-        public void Set(int? id, int? houseID)
+        public void Set(int? id, int? houseID, string householdName)
         {
             if(id.HasValue) HouseholdID = id.Value;
             if(houseID.HasValue) HouseID = houseID.Value;
+            HouseholdName = householdName;
         }
 
         public void AddInhabitant(Person person)

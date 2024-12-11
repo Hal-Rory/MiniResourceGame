@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Placement;
@@ -11,7 +10,7 @@ namespace Town.TownObjects
     public class Workplace : TownLot, IIncomeContributor
     {
         [SerializeField] private List<Person> _employees = new List<Person>();
-        [SerializeField] private List<Person> _patrons = new List<Person>();
+        [SerializeField] private List<Person> _visitors = new List<Person>();
         private WorkplaceLotObj _workLotData => _townLotData as WorkplaceLotObj;
         public int EmployeeCount => _employees.Count;
         public int MaxEmployeeCapacity => _workLotData.EmployeeLimit;
@@ -29,16 +28,17 @@ namespace Town.TownObjects
 
         public override int GetPersonsCount()
         {
-            return _patrons.Count;
+            return _visitors.Count;
         }
         public override List<Person> GetPersons()
         {
-            return _patrons;
+            return _visitors;
         }
 
         public bool CanHire(Person person)
         {
-            return _employees.Count < _workLotData.Capacity && _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup);
+            return _employees.Count < _workLotData.Capacity &&
+                   (_workLotData.EmployeeAgeGroups.Contains(PersonAgeGroup.All) || _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup));
         }
 
         public void Employ(Person person)

@@ -7,11 +7,11 @@ using UnityEngine;
 public class House : TownLot
 {
     [field: SerializeField] public Household Household { get; private set; }
-    private HousingLotObj _houseLotData => _townLotData as HousingLotObj;
 
     public void SetHousehold(Household household)
     {
         Household = household;
+        SetName(household.HouseholdName);
     }
 
     public override List<Person> GetPersons()
@@ -23,6 +23,12 @@ public class House : TownLot
     {
         return Household != null ? Household.GetInhabitants().Length : 0;
     }
+
+    public override string GetName()
+    {
+        return Household == null ? $"{_townLotData.Name} Home" : base.GetName();
+    }
+
     public override string ToString()
     {
         string inhabitants = string.Empty;
@@ -31,7 +37,7 @@ public class House : TownLot
                 inhabitants,
                 (current, inhabitant) => current + $"\n{inhabitant}");
 
-        return $"{_townLotData.Name}" +
+        return $"{(Household == null ? _townLotData.Name : GetName())}" +
                (!string.IsNullOrEmpty(inhabitants)
                    ? $"\nResidents: {inhabitants}"
                    : "\nCurrently Vacant");

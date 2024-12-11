@@ -4,6 +4,7 @@ using System.Linq;
 using Common.Utility;
 using Controllers;
 using Interfaces;
+using Newtonsoft.Json;
 using Placement;
 using UnityEngine;
 using Utility;
@@ -20,30 +21,21 @@ namespace Town.TownPopulation
         public List<Household> PopulationHouseholds { get; private set; }
         public List<Person> Population { get; private set; }
         public event Action<IPopulation> OnPopulationChanged;
-        public static readonly List<string> NameCollection = new List<string>
+        private Names _populationNames;
+
+        private class Names
         {
-            "Alice",
-            "Bob",
-            "Charlie",
-            "Diana",
-            "Ethan",
-            "Fiona",
-            "George",
-            "Hannah",
-            "Isaac",
-            "Julia",
-            "Kevin",
-            "Lily",
-            "Michael",
-            "Nina",
-            "Oscar"
-        };
+            public string[] first { get; set; }
+            public string[] last{ get; set; }
+        }
 
         public void SetUp()
         {
             Population = new List<Person>();
             PopulationHouseholds = new List<Household>();
             GameController.Instance.RegisterPlacementListener(destructionListener:OnRemoveLot);
+            TextAsset textFile = Resources.Load<TextAsset>("Names");
+            _populationNames = JsonConvert.DeserializeObject<Names>(textFile.text);
         }
 
         public void SetDown()
@@ -72,12 +64,13 @@ namespace Town.TownPopulation
         {
             int startingAdults = Random.Range(1, size);
             int startingChildren = Random.Range(0, size - startingAdults);
+            string householdName = $"{_populationNames.last.GetRandomIndex()} Home";
             Household household = PopulationHouseholds.Find(h =>
             {
                 if (h.HouseID != -1) return false;
-                h.Set(null, id);
+                h.Set(null, id,householdName);
                 return true;
-            }) ?? new Household(PopulationHouseholds.Count, id);
+            }) ?? new Household(PopulationHouseholds.Count, id, householdName);
             if (!PopulationHouseholds.Contains(household))
             {
                 PopulationHouseholds.Add(household);
@@ -100,7 +93,7 @@ namespace Town.TownPopulation
                     });
                     Population.Add(householdMember);
                 }
-                householdMember.Setup($"{NameCollection.GetRandomIndex()}",
+                householdMember.Setup($"{_populationNames.first.GetRandomIndex()} {householdName}",
                     i < startingAdults
                         ? (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1) //Adult-Elder
                         : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1), //Child-Teen
@@ -120,7 +113,7 @@ namespace Town.TownPopulation
         {
             if (house.Household != null)
             {
-                house.Household.Set(null, -1);
+                house.Household.Set(null, -1, null);
                 house.Household.Evict();
                 OnPopulationChanged?.Invoke(house.Household);
                 house.SetHousehold(null);

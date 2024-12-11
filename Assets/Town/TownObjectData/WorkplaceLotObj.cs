@@ -1,7 +1,6 @@
 using Placement;
 using Town.TownObjectData;
 using Town.TownObjects;
-using Town.TownPopulation;
 using UnityEngine;
 using Utility;
 
