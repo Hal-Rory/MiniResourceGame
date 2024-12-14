@@ -14,6 +14,7 @@ public static class NumericAbbreviationsUtility
     public static string Abbreviate(this int amount, int abbreviateTo, string format = "", int trailingDigitsCount = 0)
     {
         int current = 0;
+        if (amount == 0) return amount.ToString(format);
         foreach ((int divisor, string abbreviation) in abbrevations.OrderByDescending(pair => pair.Key))
         {
             if (current > abbreviateTo) break;
