@@ -168,7 +168,7 @@ namespace Controllers
             if(person.CurrentLocationID != -1)
             {
                 TownLot previousLocation = LotFactory.GetLot(person.CurrentLocationID);
-                previousLocation.RemoveVisitor(person);
+                if(previousLocation) previousLocation.RemoveVisitor(person);
             }
             person.SetLocation();
         }

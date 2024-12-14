@@ -131,7 +131,7 @@ namespace UI
                         break;
                     case House house when card.ID == CardTypes.Inhabitants.ToString():
                         card.SetLabel(house.ColoredInhabitantsText());
-                        card.Interactable = house.GetVisitorCount() > 0;
+                        card.Interactable = house.GetInhabitantsCount() > 0;
                         card.gameObject.SetActive(true);
                         break;
                 }
@@ -189,13 +189,11 @@ namespace UI
         private void UpdateHouseTooltip()
         {
             if (_current is not House house) return;
-            if (_current.GetVisitorCount() == 0) return;
-
-            for (int i = 0; i < house.GetVisitorCount(); i++)
+            for (int i = 0; i < house.GetInhabitantsCount(); i++)
             {
                 CardTMP personCard = _personListView.SpawnItem(i.ToString(), _lotCardPrefab.gameObject)
                     .GetComponent<CardTMP>();
-                Person p = house.GetVisitors()[i];
+                Person p = house.GetInhabitants()[i];
                 personCard.SetHeader(p.Name);
                 personCard.SetLabel(p.ToString());
                 UpdateTooltip += () =>

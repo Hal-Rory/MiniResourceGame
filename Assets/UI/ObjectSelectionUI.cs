@@ -163,8 +163,8 @@ namespace UI
                             card.SetLabel($"[Age Groups: {workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeCapacity}");
                             card.gameObject.SetActive(true);
                             break;
-                        case HousingLotObj when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
-                            card.SetLabel($"{lot.VisitorCapacity}");
+                        case HousingLotObj house when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
+                            card.SetLabel($"{house.InhabitantCapacity}");
                             card.gameObject.SetActive(true);
                             break;
                     }

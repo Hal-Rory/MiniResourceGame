@@ -53,7 +53,7 @@ namespace Town.TownPopulation
                 OrphanHousehold(house);
                     break;
                 case not House:
-                    foreach (Person person in lot.GetVisitors())
+                    foreach (Person person in lot.GetVisitors().ToArray())
                     {
                         RelocatePerson(person, GameController.Instance.GameTime.TimeOfDay);
                     }
