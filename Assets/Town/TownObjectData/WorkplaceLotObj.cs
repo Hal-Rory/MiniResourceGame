@@ -18,7 +18,7 @@ public class WorkplaceLotObj : TownLotObj
 
     public override string GetPerks()
     {
-        return $"${Wages} / mo\n{Happiness} mood / d";
+        return $"${Wages} / mo\n{base.GetPerks()}";
     }
 
     public string GetEmployeeCriteria()

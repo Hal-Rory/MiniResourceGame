@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 392ec168e371a5e46ad68c0e0bac1610, type: 3}
-  m_Name: Park
+  m_Name: cemetery
   m_EditorClassIdentifier: 
-  Name: Small Park
-  ID: pS
+  Name: Cemetery
+  ID: cem
   LotSize: {x: 1, y: 1}
   LotPrice: 0
-  ObjPreview: {fileID: 289994466, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: 289994466, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  Happiness: 0
-  HappinessAgeTarget: 
-  LotType: Recreational
-  Capacity: 5
+  ObjPreview: {fileID: 850013509, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: 850013509, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  Happiness: 0.25
+  VisitorAgeTarget: 05000000
+  LotType: graveyard
+  Capacity: 50
   CanBeOverwritten: 0

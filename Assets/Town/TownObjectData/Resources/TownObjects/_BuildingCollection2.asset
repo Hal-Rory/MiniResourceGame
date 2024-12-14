@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c1d65ca161a5fd4c97e35086de0cd08, type: 3}
-  m_Name: BuildingCollection0
+  m_Name: _BuildingCollection2
   m_EditorClassIdentifier: 
-  Name: Homes
+  Name: Recreation
   Objects:
-  - {fileID: 11400000, guid: d3e9279e8159f384e8cdf25d73e67c07, type: 2}
-  - {fileID: 11400000, guid: 89c9316defe34344fad4493e92a6762b, type: 2}
+  - {fileID: 11400000, guid: 0764e5651287bd14696942e10f6ff7dd, type: 2}
+  - {fileID: 11400000, guid: d84857e8d2dc3ec4185372ee4d13ec05, type: 2}
+  - {fileID: 11400000, guid: a24904b3219b9764fab6b49b4532f0b1, type: 2}
+  - {fileID: 11400000, guid: 94ee0bbcb32831c49ad2d88bb2b84e16, type: 2}

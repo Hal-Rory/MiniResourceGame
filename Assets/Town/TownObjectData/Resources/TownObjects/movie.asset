@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9ea230907595eb4d846174f5569d59a, type: 3}
-  m_Name: office
+  m_Name: movie
   m_EditorClassIdentifier: 
-  Name: Office
-  ID: off
+  Name: Theater
+  ID: mvth
   LotSize: {x: 1, y: 1}
-  LotPrice: 100
-  ObjPreview: {fileID: -133400331, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: -133400331, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  Happiness: 0
-  VisitorAgeTarget: 
-  LotType: Industrial
-  Capacity: 0
-  Wages: 10
-  EmployeeAgeGroups: 03000000
+  LotPrice: 400
+  ObjPreview: {fileID: 1842370273, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPlacement: {fileID: -1300580861, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  Happiness: 0.25
+  VisitorAgeTarget: 010000000200000003000000
+  LotType: Commercial
+  Capacity: 10
+  Wages: 15
+  EmployeeAgeGroups: 0200000003000000
   EmployeeLimit: 5

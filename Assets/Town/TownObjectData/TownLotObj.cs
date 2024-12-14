@@ -13,7 +13,7 @@ namespace Town.TownObjectData
         public int LotPrice;
         public Sprite ObjPreview;
         public Sprite ObjPlacement;
-        [Range(0,10)]
+        [Range(0,1)]
         public float Happiness;
         public PersonAgeGroup[] VisitorAgeTarget;
         public string LotType;
@@ -43,7 +43,8 @@ namespace Town.TownObjectData
 
         public virtual string GetPerks()
         {
-            return $"{Happiness} mood / d";
+            string happinessPerk = $"{Happiness} mood / d";
+            return happinessPerk;
         }
     }
 }
