@@ -156,7 +156,7 @@ namespace UI
                             card.gameObject.SetActive(true);
                             break;
                         case not HousingLotObj when card.ID == TownLotUI.CardTypes.Visitors.ToString():
-                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.Capacity > 0 ? $"\n{lot.Capacity}" : "")}");
+                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.VisitorAgeTarget.Length > 0 ? $"\n{lot.Capacity}" : "")}");
                             card.gameObject.SetActive(true);
                             break;
                         case WorkplaceLotObj workplace when card.ID == TownLotUI.CardTypes.Employees.ToString():

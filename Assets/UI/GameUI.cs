@@ -28,10 +28,9 @@ public class GameUI : MonoBehaviour
 
     private void Start()
     {
-        CurrentPopulation.text = $"{_population.GetActivePopulationCountString().Abbreviate(_abbreviationMax)}";
+        CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
-        _population.OnPopulationChanged += OnPopulationChanged;
         _income.OnIncomeChanged += AnimateIncome;
         _town.OnStateChanged += OnGameStateChanged;
     }
@@ -51,15 +50,11 @@ public class GameUI : MonoBehaviour
         }
     }
 
-    private void OnPopulationChanged(IPopulation obj)
-    {
-        CurrentPopulation.text = $"{_population.GetActivePopulationCountString().Abbreviate(_abbreviationMax)}";
-    }
-
     private void Update()
     {
         CurrentDate.text = $"{_gameTime.GetDate()} @ {_gameTime.GetTime()}";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
+        CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
     }
 
     public void UpdateControls(PlayerInput controls)
