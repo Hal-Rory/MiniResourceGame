@@ -18,10 +18,11 @@ namespace Town.TownPopulation
         //find a way to make this a dict<int, person>.
         //Remove person, leave int, use .Select(first instance of key->value==null) and repopulate index
         //all references to the person is by index in the dict so update references on person exit
-        public List<Household> PopulationHouseholds { get; private set; }
-        public List<Person> Population { get; private set; }
-        public event Action<IPopulation> OnPopulationChanged;
+        [SerializeField] private List<Household> _populationHouseholds;
+        [SerializeField] private List<Person> _population;
+        public event Action<IPopulation> OnPopulationRemoved;
         private Names _populationNames;
+        public int PopulationCount { get; private set; }
 
         private class Names
         {
@@ -31,8 +32,8 @@ namespace Town.TownPopulation
 
         public void SetUp()
         {
-            Population = new List<Person>();
-            PopulationHouseholds = new List<Household>();
+            _population = new List<Person>();
+            _populationHouseholds = new List<Household>();
             GameController.Instance.RegisterPlacementListener(destructionListener:OnRemoveLot);
             TextAsset textFile = Resources.Load<TextAsset>("Names");
             _populationNames = JsonConvert.DeserializeObject<Names>(textFile.text);
@@ -42,6 +43,7 @@ namespace Town.TownPopulation
         {
             GameController.Instance.UnregisterPlacementListener(destructionListener:OnRemoveLot);
         }
+
         private void OnRemoveLot(TownLot obj)
         {
             if (obj is not House house) return;
@@ -52,46 +54,45 @@ namespace Town.TownPopulation
         {
             Household household = CreateHousehold(house.GetMaxCapacity(), house.PlacementID);
             house.SetHousehold(household);
-            OnPopulationChanged?.Invoke(household);
+            PopulationCount = GetActivePopulation().Count;
         }
 
         public Household GetHousehold(int id)
         {
-            return PopulationHouseholds.Find(h => h.HouseID != -1 && h.HouseholdID == id);
+            return _populationHouseholds.Find(h => h.HouseID != -1 && h.HouseholdID == id);
         }
 
         public Household CreateHousehold(int size, int id)
         {
             int startingAdults = Random.Range(1, size);
             int startingChildren = Random.Range(0, size - startingAdults);
-            string householdName = $"{_populationNames.last.GetRandomIndex()} Home";
-            Household household = PopulationHouseholds.Find(h =>
+            string householdName = _populationNames.last.GetRandomIndex();
+            Household household = _populationHouseholds.Find(h =>
             {
                 if (h.HouseID != -1) return false;
-                h.Set(null, id,householdName);
+                h.Set(null, id, $"{householdName} Home", size);
                 return true;
-            }) ?? new Household(PopulationHouseholds.Count, id, householdName);
-            if (!PopulationHouseholds.Contains(household))
+            }) ?? new Household(_populationHouseholds.Count, id, $"{householdName} Home");
+            if (!_populationHouseholds.Contains(household))
             {
-                PopulationHouseholds.Add(household);
+                _populationHouseholds.Add(household);
             }
             for (int i = 0; i < startingAdults + startingChildren; i++)
             {
                 Person householdMember;
-                if (Population.Find(p => p.HouseholdIndex == -1) is { } person)
+                if (_population.Find(p => p.HouseholdIndex == -1) is { } person)
                 {
                     householdMember = person;
                 }
                 else
                 {
                     householdMember = new Person();
-                    householdMember.LifeCycleEnded += OnPopulationChanged;
                     GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: timeOfDay =>
                     {
                         if(householdMember.HouseholdIndex != -1)
                             GameController.Instance.GetPersonLocation(householdMember, timeOfDay);
                     });
-                    Population.Add(householdMember);
+                    _population.Add(householdMember);
                 }
                 householdMember.Setup($"{_populationNames.first.GetRandomIndex()} {householdName}",
                     i < startingAdults
@@ -104,20 +105,34 @@ namespace Town.TownPopulation
             return household;
         }
 
-        public int GetActivePopulationCountString()
+        public List<Person> GetActivePopulation()
         {
-            return Population.Count(p => p.HouseholdIndex != -1);
+            return _population.FindAll(person => person.HouseholdIndex != -1);
+        }
+
+        /// <summary>
+        /// A way to shorthand _populationFactory.PopulationCount == 0 ?
+        /// </summary>
+        /// <returns></returns>
+        public float UsePopulationAsAverage(float amount, int defaultValue = 0)
+        {
+            return PopulationCount == 0 ? defaultValue : amount / PopulationCount;
+        }
+
+        public float AverageHouseholdSize()
+        {
+            float result = 0;
+            _populationHouseholds.Aggregate(result, (total, household) => total + household.GetHousingDensity());
+            return PopulationCount == 0 ? 0 : result / PopulationCount;
         }
 
         public void OrphanHousehold(House house)
         {
-            if (house.Household != null)
-            {
-                house.Household.Set(null, -1, null);
-                house.Household.Evict();
-                OnPopulationChanged?.Invoke(house.Household);
-                house.SetHousehold(null);
-            }
+            if (house.Household == null) return;
+            house.Household.Set(null, -1, null, 0);
+            OnPopulationRemoved?.Invoke(house.Household);
+            house.Household.Evict();
+            PopulationCount = GetActivePopulation().Count;
         }
     }
 }

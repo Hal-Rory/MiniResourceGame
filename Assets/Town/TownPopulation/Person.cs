@@ -24,7 +24,6 @@ namespace Town.TownPopulation
         public int JobIndex = -1;
         public int HouseholdIndex;
         public int IncomeContribution;
-        public event Action<Person> LifeCycleEnded;
         public float Happiness { get; private set; }
         public string CurrentLocation;
 
@@ -39,13 +38,7 @@ namespace Town.TownPopulation
             int ageMin = (int)AgeGroup - 1; //0-1, 1-2, 2-3 ...
             int ageMax = (int)AgeGroup;
             _age = Random.Range(_ageRanges[ageMin], _ageRanges[ageMax]);
-            Happiness = 1f;
-        }
-
-        public void Unemploy()
-        {
-            JobIndex = -1;
-            IncomeContribution = 0;
+            Happiness = 0;
         }
 
         public void Employ(int placementID, int wages)
@@ -56,6 +49,7 @@ namespace Town.TownPopulation
 
         public void ClockUpdate(int tick)
         {
+            Happiness = 0;
             float ageFactor = tick / 100f;
             AgeUp(ageFactor);
         }
@@ -77,13 +71,6 @@ namespace Town.TownPopulation
                 AgeGroup++;
             }
 
-            if (AgeGroup == PersonAgeGroup.Deceased)
-            {
-                Unemploy();
-                LifeCycleEnded?.Invoke(this);
-                LifeCycleEnded = null;
-            }
-
             return AgeGroup != PersonAgeGroup.Deceased;
         }
 
@@ -92,10 +79,15 @@ namespace Town.TownPopulation
             HouseholdIndex = -1;
         }
 
-    public override string ToString()
+        public void Unemploy()
+        {
+            Employ(-1, 0);
+        }
+
+        public override string ToString()
         {
             return $"Age: {AgeGroup}\n" +
-                   $"Income: {IncomeContribution:+0;-#}\n" +
+                   (AgeGroup is not PersonAgeGroup.Deceased ? $"Income: {IncomeContribution:+0;-#}\n" : "") +
                    $"Location: {CurrentLocation}";
         }
     }

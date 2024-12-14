@@ -6,7 +6,6 @@ public class GameTimeManager : MonoBehaviour
 {
     public enum TimesOfDay
     {
-        Prepare,
         Work,
         Relax,
         Rest
@@ -18,6 +17,7 @@ public class GameTimeManager : MonoBehaviour
     private Action<int> _onClockUpdate;
     private Action<int> _onLateClockUpdate;
     private Action<TimesOfDay> _onClockStateUpdate;
+    private Action<TimesOfDay> _onLateClockStateUpdate;
     private Coroutine _clockUpdating;
     [SerializeField] private float _tickDelta;
     public float TimeMultiplier;
@@ -29,10 +29,9 @@ public class GameTimeManager : MonoBehaviour
         {
             return _gameTime.Hour switch
             {
-                >= 5 and < 8 => TimesOfDay.Prepare,
-                >= 8 and < 16 => TimesOfDay.Work,
+                >= 7 and < 16 => TimesOfDay.Work,
                 >= 16 and < 22 => TimesOfDay.Relax,
-                < 5 or >= 22 => TimesOfDay.Rest
+                < 7 or >= 22 => TimesOfDay.Rest
             };
         }
     }
@@ -89,6 +88,7 @@ public class GameTimeManager : MonoBehaviour
             if (timeOfDay != TimeOfDay)
             {
                 _onClockStateUpdate?.Invoke(TimeOfDay);
+                _onLateClockStateUpdate?.Invoke(TimeOfDay);
             }
             _shortDate = GetTime();
         }
@@ -100,24 +100,28 @@ public class GameTimeManager : MonoBehaviour
         Action<int> earlyClockUpdate = null,
         Action<int> clockUpdate = null,
         Action<int> lateClockUpdate = null,
-        Action<TimesOfDay> stateClockUpdate = null)
+        Action<TimesOfDay> stateClockUpdate = null,
+        Action<TimesOfDay> lateStateClockUpdate = null)
     {
         if(earlyClockUpdate != null) _onEarlyClockUpdate += earlyClockUpdate;
         if(clockUpdate != null) _onClockUpdate += clockUpdate;
         if(lateClockUpdate != null) _onLateClockUpdate += lateClockUpdate;
         if(stateClockUpdate != null) _onClockStateUpdate += stateClockUpdate;
+        if(lateStateClockUpdate != null) _onLateClockStateUpdate += lateStateClockUpdate;
     }
 
     public void UnregisterListener(
         Action<int> earlyClockUpdate = null,
         Action<int> clockUpdate = null,
         Action<int> lateClockUpdate = null,
-        Action<TimesOfDay> stateClockUpdate = null)
+        Action<TimesOfDay> stateClockUpdate = null,
+        Action<TimesOfDay> lateStateClockUpdate = null)
     {
         if(earlyClockUpdate != null) _onEarlyClockUpdate -= earlyClockUpdate;
         if(clockUpdate != null) _onClockUpdate -= clockUpdate;
         if(lateClockUpdate != null) _onLateClockUpdate += lateClockUpdate;
         if(stateClockUpdate != null) _onClockStateUpdate -= stateClockUpdate;
+        if(lateStateClockUpdate != null) _onLateClockStateUpdate -= lateStateClockUpdate;
     }
 
     public string GetDate()

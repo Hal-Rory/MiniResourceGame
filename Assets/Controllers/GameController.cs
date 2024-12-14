@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Common.Utility;
 using Interfaces;
 using Placement;
 using Town.TownObjectData;
+using Town.TownObjectManagement;
 using Town.TownPopulation;
 using UI;
 using UnityEngine;
@@ -18,7 +20,7 @@ namespace Controllers
         public InputManager Input;
         public TownObjectManager TownObject;
         public WorkplaceManager Workplace;
-        public TownLotFactory TownLot;
+        public TownLotFactory LotFactory;
         public GameTimeManager GameTime;
         public IncomeManager Income;
         public SoundManager Sound;
@@ -26,12 +28,25 @@ namespace Controllers
         public UIManager UI;
         public TownPopulaceManager TownPopulace;
         [SerializeField] private GridManager _gridManager;
+        [SerializeField] private GameObject _game;
 
         private readonly object _townLotLock = new();
 
         public bool PlacementMode { get; private set; }
 
         private Dictionary<IActionBoxHolder, ActionBox> Actions;
+
+        public bool CreateHouse;
+        public HousingLotObj StartingHouse;
+        public TownLot StartingLot;
+
+        private void OnValidate()
+        {
+            if (!CreateHouse) return;
+            CreateHouse = false;
+            LotFactory.PlaceObject(StartingHouse, Vector3Int.zero);
+            StartingLot = FindObjectOfType<TownLot>();
+        }
 
         private void Awake()
         {
@@ -52,7 +67,7 @@ namespace Controllers
                 Workplace.SetUp();
                 Income ??= new IncomeManager();
                 Income.SetUp();
-
+                Income.Pay(100);
                 GameTime.SetTimeActive(true);
             }
             else
@@ -75,6 +90,13 @@ namespace Controllers
             {
                 box.PuttingDown();
             }
+        }
+
+        private IEnumerator Start()
+        {
+            yield return new WaitForEndOfFrame();
+            _gridManager.AddLot(StartingLot, Vector3Int.zero, StartingHouse.LotSize);
+            TownPopulace.AddHousing(StartingLot.PlacementID);
         }
 
         private void OnDestroy()
@@ -101,41 +123,44 @@ namespace Controllers
             {
                 if (Population.GetHousehold(person.HouseholdIndex) == null) return;
                 int houseID = Population.GetHousehold(person.HouseholdIndex).HouseID;
-                switch (timeOfDay)
+                TownLot location = LotFactory.GetLot(houseID);
+                if (person.AgeGroup == PersonAgeGroup.Deceased)
                 {
-                    case GameTimeManager.TimesOfDay.Work:
-                        person.SetLocation(person.JobIndex != -1
-                            ? TownLot.GetLot(person.JobIndex)
-                            : TownLot.GetLot(houseID));
-                        break;
-                    case GameTimeManager.TimesOfDay.Relax:
-                        TownLot location = null;
-                        if (TownLot.TryGetLots(out List<TownLot> locations))
-                        {
-                            location = locations.FindAll(w => w.TryGetHappiness(person.AgeGroup))
-                                .GetRandomIndex();
-                        }
-                        person.SetLocation(location ?? TownLot.GetLot(houseID));
-                        break;
-                    case GameTimeManager.TimesOfDay.Prepare:
-                    case GameTimeManager.TimesOfDay.Rest:
-                    default:
-                        person.SetLocation(TownLot.GetLot(houseID));
-                        break;
+                    if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
+                    {
+                        location = locations.FindAll(lot => lot.TryGetHappiness(person.AgeGroup))
+                            .GetRandomIndex();
+                    }
+                } else if (timeOfDay == GameTimeManager.TimesOfDay.Work)
+                {
+                    if (person.JobIndex != -1)
+                    {
+                        location = LotFactory.GetLot(person.JobIndex);
+                    }
+                } else if(timeOfDay != GameTimeManager.TimesOfDay.Rest)
+                {
+                    if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
+                    {
+                        List<TownLot> viableLocations = locations.FindAll(lot => lot.TryGetHappiness(person.AgeGroup));
+                        if (viableLocations.Count > 0) location = viableLocations.GetRandomIndex();
+                    }
                 }
+
+                if (location == null) return;
+                person.SetLocation(location);
             }
         }
 
         public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
         {
-            if(creationListener != null) TownLot.OnLotAdded += creationListener;
-            if(destructionListener != null) TownLot.OnLotRemoved += destructionListener;
+            if(creationListener != null) LotFactory.OnLotAdded += creationListener;
+            if(destructionListener != null) LotFactory.OnLotRemoved += destructionListener;
         }
 
         public void UnregisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
         {
-            if(creationListener != null) TownLot.OnLotAdded -= creationListener;
-            if(destructionListener != null) TownLot.OnLotRemoved -= destructionListener;
+            if(creationListener != null) LotFactory.OnLotAdded -= creationListener;
+            if(destructionListener != null) LotFactory.OnLotRemoved -= destructionListener;
         }
 
         public void PlaceLot(TownLotObj townLot, Vector3Int position)

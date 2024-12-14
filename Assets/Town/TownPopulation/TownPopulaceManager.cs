@@ -8,6 +8,7 @@ using Interfaces;
 using Placement;
 using UnityEngine;
 using Utility;
+using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation
 {
@@ -16,7 +17,7 @@ namespace Town.TownPopulation
     {
         private float _totalHappiness;
         private int _totalPopulation;
-        [SerializeField] private float _growthThreshold;
+        private int _growthThreshold;
         private List<int> _availableHousing;
         [SerializeField] private float _housingWait;
         private Coroutine _checkForHousingAllowed;
@@ -25,21 +26,6 @@ namespace Town.TownPopulation
 
         private PopulationFactory _populationFactory => GameController.Instance.Population;
         private IncomeManager _incomeManager => GameController.Instance.Income;
-
-        public bool CanPopulationGrow()
-        {
-            return !_stagnantGrowth && (_incomeManager.NetIncome + _totalHappiness) / 2 >= _growthThreshold;
-        }
-
-        public void SetStagnant(bool stagnant)
-        {
-            _stagnantGrowth = stagnant;
-        }
-
-        public int GetHappiness()
-        {
-            return (int)(_totalHappiness * 100);
-        }
 
         public void SetUp()
         {
@@ -61,12 +47,39 @@ namespace Town.TownPopulation
                 }
             );
             GameController.Instance.PickupAction(this, _housingCoroutine);
+            _totalHappiness = 0;
         }
 
         public void SetDown()
         {
             GameController.Instance.GameTime.UnregisterListener(earlyClockUpdate: ClockUpdate);
             GameController.Instance.UnregisterPlacementListener(OnNewLot, OnRemoveLot);
+        }
+
+        public bool CanPopulationGrow()
+        {
+            //is the net income able to support the population count
+            _growthThreshold = (int)_populationFactory.UsePopulationAsAverage(_incomeManager.NetIncome, 1);
+            //is the average high enough to warrant new growth?
+            float happinessValue = Random.value;
+            float averageHappiness =
+                _populationFactory.UsePopulationAsAverage(_totalHappiness / 100, 1);
+            return !_stagnantGrowth && _growthThreshold >= 1 && happinessValue <= averageHappiness;
+        }
+
+        public void SetStagnant(bool stagnant)
+        {
+            _stagnantGrowth = stagnant;
+        }
+
+        public int GetHappiness()
+        {
+            return (int)_totalHappiness;
+        }
+
+        public void AddHousing(int id)
+        {
+            _availableHousing.Add(id);
         }
 
         private void OnNewLot(TownLot obj)
@@ -100,14 +113,21 @@ namespace Town.TownPopulation
 
         private void AdjustStockpiles()
         {
-            _totalHappiness = _populationFactory.Population.Sum(person => person.Happiness);
+            //how crowded are the households
+            float densityHappinessDecay = _populationFactory.AverageHouseholdSize();
+            //average happiness of people
+            float average = _populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
+                .Sum(person => person.Happiness));
+            //total decay due to population size vs housing
+            float loss = average * densityHappinessDecay;
+            _totalHappiness += average - loss;
         }
 
         private void CheckHouseholdAvailability()
         {
             if (_checkForHousingAllowed != null || !CanPopulationGrow() || _availableHousing.Count == 0) return;
             int nextAvailable = _availableHousing.GetRandomIndex();
-            House house = GameController.Instance.TownLot.GetLot(nextAvailable) as House;
+            House house = GameController.Instance.LotFactory.GetLot(nextAvailable) as House;
             _availableHousing.Remove(nextAvailable);
             GameController.Instance.Population.CreateHome(house);
         }

@@ -7,11 +7,25 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     private Dictionary<Vector3Int, PlacedLot> _placedLots;
-    private TownLotFactory _placementManager => GameController.Instance.TownLot;
+    private TownLotFactory _placementManager => GameController.Instance.LotFactory;
     [SerializeField] private Collider2D _gridCollider;
     private void Awake()
     {
         _placedLots = new Dictionary<Vector3Int, PlacedLot>();
+    }
+
+    public void AddLot(TownLot lotObj, Vector3Int gridPosition, Vector2Int size)
+    {
+        List<Vector3Int> positions = CalculatePositions(gridPosition, size);
+        PlacedLot lot = new PlacedLot
+        {
+            OccupiedPositions = positions,
+            PlacedIndex = _placementManager.AddLot(lotObj)
+        };
+        foreach (Vector3Int pos in positions)
+        {
+            _placedLots.Add(pos, lot);
+        }
     }
 
     public void AddLot(TownLotObj lotObj, Vector3Int gridPosition)
@@ -19,14 +33,13 @@ public class GridManager : MonoBehaviour
         List<Vector3Int> positions = CalculatePositions(gridPosition, lotObj.LotSize);
         PlacedLot lot = new PlacedLot
         {
-            OccupiedPositions = positions
+            OccupiedPositions = positions,
+            PlacedIndex = _placementManager.PlaceObject(lotObj, gridPosition)
         };
         foreach (Vector3Int pos in positions)
         {
             _placedLots.Add(pos, lot);
         }
-        lot.PlacedIndex = _placementManager.PlaceObject(lotObj, gridPosition);
-        //lot.Replaceable = lotObj is CasualLotObj { CanBeOverwritten: true };
     }
 
     public bool RemoveLot(Vector3Int gridPosition)

@@ -13,6 +13,12 @@ namespace Town.TownPopulation
         public int HouseID { get; private set; }
         public int HouseholdID { get; private set; }
         public string HouseholdName{ get; private set; }
+        public int MaxSize { get; private set; } = 1;
+
+        public int GetHousingDensity()
+        {
+            return _inhabitants.Count / (MaxSize == 0? 1 : MaxSize);
+        }
 
         public Household(int id, int houseID, string householdName)
         {
@@ -21,11 +27,12 @@ namespace Town.TownPopulation
             HouseholdName = householdName;
         }
 
-        public void Set(int? id, int? houseID, string householdName)
+        public void Set(int? id, int? houseID, string householdName, int maxSize)
         {
             if(id.HasValue) HouseholdID = id.Value;
             if(houseID.HasValue) HouseID = houseID.Value;
             HouseholdName = householdName;
+            MaxSize = maxSize;
         }
 
         public void AddInhabitant(Person person)
@@ -43,6 +50,7 @@ namespace Town.TownPopulation
             foreach (Person person in _inhabitants)
             {
                 person.Evict();
+                person.Unemploy();
             }
             _inhabitants.Clear();
         }
