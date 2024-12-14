@@ -9,7 +9,7 @@ public class WorkplaceLotObj : TownLotObj
 {
     public int Wages;
     public PersonAgeGroup[] EmployeeAgeGroups;
-    public int EmployeeLimit;
+    public int EmployeeCapacity;
     public override TownLot AddLotType(GameObject go)
     {
         TownLot lot = go.gameObject.AddComponent<Workplace>();

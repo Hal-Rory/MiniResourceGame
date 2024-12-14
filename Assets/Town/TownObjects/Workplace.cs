@@ -12,7 +12,7 @@ namespace Town.TownObjects
         [SerializeField] private List<Person> _employees = new List<Person>();
         private WorkplaceLotObj _workLotData => _townLotData as WorkplaceLotObj;
         public int EmployeeCount => _employees.Count;
-        public int MaxEmployeeCapacity => _workLotData.EmployeeLimit;
+        public int MaxEmployeeCapacity => _workLotData.EmployeeCapacity;
 
         public string GetWorkCriteria()
         {
@@ -26,7 +26,7 @@ namespace Town.TownObjects
 
         public bool CanHire(Person person)
         {
-            return _employees.Count < _workLotData.EmployeeLimit &&
+            return _employees.Count < _workLotData.EmployeeCapacity &&
                    (_workLotData.EmployeeAgeGroups.Contains(PersonAgeGroup.All) || _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup));
         }
 
@@ -52,18 +52,16 @@ namespace Town.TownObjects
             {
                 employee.Unemploy();
             }
+        }
+
+        public void ShutdownWorkplace()
+        {
             _employees.Clear();
         }
 
         public int GetIncomeContribution()
         {
             return _employees.Count != 0 ? _workLotData.Wages * _employees.Count : 0;
-        }
-
-        public override void RemovePersons(params Person[] persons)
-        {
-            base.RemovePersons(persons);
-            Unemploy(persons);
         }
     }
 }

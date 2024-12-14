@@ -26,6 +26,7 @@ namespace Town.TownPopulation
         public int IncomeContribution;
         public float Happiness { get; private set; }
         public string CurrentLocation;
+        public int CurrentLocationID;
 
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
 
@@ -56,8 +57,16 @@ namespace Town.TownPopulation
 
         public void SetLocation(TownLot lot)
         {
-            CurrentLocation = lot.GetName();
-            Happiness += lot.GetHappiness();
+            CurrentLocation = lot.GetLotName();
+            CurrentLocationID = lot.PlacementID;
+            Happiness += lot.GetLotHappiness();
+        }
+
+        public void SetLocation()
+        {
+            CurrentLocation = String.Empty;
+            CurrentLocationID = -1;
+            Happiness += 0;
         }
 
         private bool AgeUp(float ageFactor)
@@ -77,10 +86,14 @@ namespace Town.TownPopulation
         public void Evict()
         {
             HouseholdIndex = -1;
+            CurrentLocationID = -1;
+            CurrentLocation = string.Empty;
+            Unemploy();
         }
 
         public void Unemploy()
         {
+            if (CurrentLocationID == JobIndex) CurrentLocationID = -1;
             Employ(-1, 0);
         }
 

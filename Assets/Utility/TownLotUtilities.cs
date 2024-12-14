@@ -13,12 +13,12 @@ namespace Utility
 
         public static string ColoredPersonsText(this TownLot lot)
         {
-            return ColorTextCount(lot.GetPersonsCount(), lot.GetMaxCapacity());
+            return ColorTextCount(lot.GetVisitorCount(), lot.GetMaxVisitorCapacity());
         }
 
         public static string ColoredVisitorText(this TownLot lot)
         {
-            return $"[Age Groups: {lot.GetVisitorCriteria()}]\n{(lot.CanHaveVisitors() ? ColorTextCount(lot.GetPersonsCount(), lot.GetMaxCapacity()) : "")}";
+            return $"[Age Groups: {lot.GetVisitorCriteria()}]\n{(lot.CanHaveVisitors() ? ColorTextCount(lot.GetVisitorCount(), lot.GetMaxVisitorCapacity()) : "")}";
         }
 
         public static string ColoredEmployeeText(this Workplace lot)
@@ -28,7 +28,7 @@ namespace Utility
 
         public static string ColoredInhabitantsText(this House house)
         {
-            return $"{ColorTextCount(house.GetPersonsCount(), house.GetMaxCapacity())}";
+            return $"{ColorTextCount(house.GetInhabitantsCount(), house.MaxHouseholdCapacity)}";
         }
     }
 }

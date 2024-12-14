@@ -21,7 +21,7 @@ namespace Town.TownObjectData
         /// How many Persons can fill this lot.
         /// Each lot may use this differently
         /// </summary>
-        public int Capacity;
+        public int VisitorCapacity;
 
         public virtual TownLot AddLotType(GameObject go)
         {

@@ -17,7 +17,7 @@ namespace Placement
         {
             GameObject lotObject = Instantiate(_lotPrefab, position, Quaternion.identity);
             TownLot newLot = lotObjBase.AddLotType(lotObject);
-            newLot.SetID(_placedGameObjects.Count);
+            newLot.SetLotID(_placedGameObjects.Count);
             newLot.Create(lotObjBase);
             newLot.CellBlock = position;
             if(Application.isPlaying){

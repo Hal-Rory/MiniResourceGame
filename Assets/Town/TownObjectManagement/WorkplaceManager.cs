@@ -18,12 +18,32 @@ namespace Town.TownObjectManagement
         {
             GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
             GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
+            _population.OnPopulationRemoved += OnPopulationRemoved;
         }
 
         public void SetDown()
         {
             GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
             GameController.Instance.GameTime.UnregisterListener(earlyClockUpdate: ClockUpdate);
+            if(_population != null) _population.OnPopulationRemoved -= OnPopulationRemoved;
+        }
+
+        private void OnPopulationRemoved(IPopulation population)
+        {
+            switch (population)
+            {
+                case Household household:
+                    foreach (Person inhabitant in household.GetInhabitants())
+                    {
+                        if (inhabitant.JobIndex == -1) continue;
+                        Workplaces[inhabitant.JobIndex].Unemploy(inhabitant);
+                    }
+                    break;
+                case Person person:
+                    if (person.JobIndex == -1) return;
+                    Workplaces[person.JobIndex].Unemploy(person);
+                    break;
+            }
         }
 
         private void ObjectPlacerOnOnLotAdded(TownLot obj)
@@ -58,6 +78,11 @@ namespace Town.TownObjectManagement
         private void ShutdownWorkplace(Workplace workplace)
         {
             workplace.UnemployAll();
+            foreach (Person employee in workplace.GetEmployees())
+            {
+                _population.RelocatePerson(employee, GameController.Instance.GameTime.TimeOfDay);
+            }
+            workplace.ShutdownWorkplace();
             Workplaces.Remove(workplace.PlacementID);
         }
 

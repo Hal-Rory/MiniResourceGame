@@ -40,18 +40,13 @@ namespace Town.TownPopulation
             _inhabitants.Add(person);
         }
 
-        public Person[] GetInhabitants()
+        public List<Person> GetInhabitants()
         {
-            return _inhabitants.ToArray();
+            return _inhabitants.ToList();
         }
 
         public void Evict()
         {
-            foreach (Person person in _inhabitants)
-            {
-                person.Evict();
-                person.Unemploy();
-            }
             _inhabitants.Clear();
         }
 

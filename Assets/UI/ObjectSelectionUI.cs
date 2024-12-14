@@ -156,15 +156,15 @@ namespace UI
                             card.gameObject.SetActive(true);
                             break;
                         case not HousingLotObj when card.ID == TownLotUI.CardTypes.Visitors.ToString():
-                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.VisitorAgeTarget.Length > 0 ? $"\n{lot.Capacity}" : "")}");
+                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.VisitorAgeTarget.Length > 0 ? $"\n{lot.VisitorCapacity}" : "")}");
                             card.gameObject.SetActive(true);
                             break;
                         case WorkplaceLotObj workplace when card.ID == TownLotUI.CardTypes.Employees.ToString():
-                            card.SetLabel($"[Age Groups: {workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeLimit}");
+                            card.SetLabel($"[Age Groups: {workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeCapacity}");
                             card.gameObject.SetActive(true);
                             break;
                         case HousingLotObj when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
-                            card.SetLabel($"{lot.Capacity}");
+                            card.SetLabel($"{lot.VisitorCapacity}");
                             card.gameObject.SetActive(true);
                             break;
                     }

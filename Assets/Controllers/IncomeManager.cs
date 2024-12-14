@@ -51,7 +51,7 @@ namespace Controllers
                 UnregisterIncomeContributor(contributor);
             }
             NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
-            Pay(obj.GetPrice());
+            Pay(obj.GetLotPrice());
         }
 
         private void CollectPayments()

@@ -6,6 +6,7 @@ using Controllers;
 using Interfaces;
 using Newtonsoft.Json;
 using Placement;
+using Town.TownObjects;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
@@ -44,15 +45,25 @@ namespace Town.TownPopulation
             GameController.Instance.UnregisterPlacementListener(destructionListener:OnRemoveLot);
         }
 
-        private void OnRemoveLot(TownLot obj)
+        private void OnRemoveLot(TownLot lot)
         {
-            if (obj is not House house) return;
-            OrphanHousehold(house);
+            switch (lot)
+            {
+                case House house:
+                OrphanHousehold(house);
+                    break;
+                case not House:
+                    foreach (Person person in lot.GetVisitors())
+                    {
+                        RelocatePerson(person, GameController.Instance.GameTime.TimeOfDay);
+                    }
+                    break;
+            }
         }
 
         public void CreateHome(House house)
         {
-            Household household = CreateHousehold(house.GetMaxCapacity(), house.PlacementID);
+            Household household = CreateHousehold(house.MaxHouseholdCapacity, house.PlacementID);
             house.SetHousehold(household);
             PopulationCount = GetActivePopulation().Count;
         }
@@ -89,8 +100,7 @@ namespace Town.TownPopulation
                     householdMember = new Person();
                     GameController.Instance.GameTime.RegisterListener(clockUpdate: householdMember.ClockUpdate, stateClockUpdate: timeOfDay =>
                     {
-                        if(householdMember.HouseholdIndex != -1)
-                            GameController.Instance.GetPersonLocation(householdMember, timeOfDay);
+                        RelocatePerson(householdMember, timeOfDay);
                     });
                     _population.Add(householdMember);
                 }
@@ -103,6 +113,12 @@ namespace Town.TownPopulation
                 GameController.Instance.GetPersonLocation(householdMember);
             }
             return household;
+        }
+
+        public void RelocatePerson(Person person, GameTimeManager.TimesOfDay timeOfDay)
+        {
+            if(person.HouseholdIndex != -1)
+                GameController.Instance.GetPersonLocation(person, timeOfDay);
         }
 
         public List<Person> GetActivePopulation()
@@ -121,9 +137,8 @@ namespace Town.TownPopulation
 
         public float AverageHouseholdSize()
         {
-            float result = 0;
-            _populationHouseholds.Aggregate(result, (total, household) => total + household.GetHousingDensity());
-            return PopulationCount == 0 ? 0 : result / PopulationCount;
+            float amount = _populationHouseholds.Aggregate(0, (total, household) => total + household.GetHousingDensity());
+            return UsePopulationAsAverage(amount);
         }
 
         public void OrphanHousehold(House house)
@@ -131,6 +146,11 @@ namespace Town.TownPopulation
             if (house.Household == null) return;
             house.Household.Set(null, -1, null, 0);
             OnPopulationRemoved?.Invoke(house.Household);
+            foreach (Person person in house.Household.GetInhabitants())
+            {
+                GameController.Instance.RemovePersonLocation(person);
+                person.Evict();
+            }
             house.Household.Evict();
             PopulationCount = GetActivePopulation().Count;
         }

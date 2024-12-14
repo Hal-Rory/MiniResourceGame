@@ -21,7 +21,7 @@ MonoBehaviour:
   Happiness: 0.225
   VisitorAgeTarget: 0100000002000000
   LotType: Commercial
-  Capacity: 8
+  VisitorCapacity: 5
   Wages: 5
   EmployeeAgeGroups: 02000000
-  EmployeeLimit: 5
+  EmployeeCapacity: 3

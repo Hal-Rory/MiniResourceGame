@@ -124,31 +124,53 @@ namespace Controllers
                 if (Population.GetHousehold(person.HouseholdIndex) == null) return;
                 int houseID = Population.GetHousehold(person.HouseholdIndex).HouseID;
                 TownLot location = LotFactory.GetLot(houseID);
+
                 if (person.AgeGroup == PersonAgeGroup.Deceased)
                 {
                     if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
                     {
-                        location = locations.FindAll(lot => lot.TryGetHappiness(person.AgeGroup))
+                        location = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup))
                             .GetRandomIndex();
                     }
-                } else if (timeOfDay == GameTimeManager.TimesOfDay.Work)
+                }
+                else if (timeOfDay == GameTimeManager.TimesOfDay.Work)
                 {
                     if (person.JobIndex != -1)
                     {
                         location = LotFactory.GetLot(person.JobIndex);
                     }
-                } else if(timeOfDay != GameTimeManager.TimesOfDay.Rest)
+                }
+                else if(timeOfDay != GameTimeManager.TimesOfDay.Rest)
                 {
                     if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
                     {
-                        List<TownLot> viableLocations = locations.FindAll(lot => lot.TryGetHappiness(person.AgeGroup));
-                        if (viableLocations.Count > 0) location = viableLocations.GetRandomIndex();
+                        List<TownLot> viableLocations = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup));
+                        if (viableLocations.Count > 0)
+                        {
+                            location = viableLocations.GetRandomIndex();
+                        }
                     }
                 }
 
-                if (location == null) return;
+                if (person.CurrentLocationID != houseID || !location)
+                {
+                    RemovePersonLocation(person);
+                }
+                if (!location) return;
                 person.SetLocation(location);
+                if (person.CurrentLocationID == houseID) return;
+                location.AddVisitors(person);
             }
+        }
+
+        public void RemovePersonLocation(Person person)
+        {
+            if(person.CurrentLocationID != -1)
+            {
+                TownLot previousLocation = LotFactory.GetLot(person.CurrentLocationID);
+                previousLocation.RemoveVisitor(person);
+            }
+            person.SetLocation();
         }
 
         public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)

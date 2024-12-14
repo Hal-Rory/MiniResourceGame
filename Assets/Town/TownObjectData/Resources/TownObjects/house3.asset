@@ -21,4 +21,5 @@ MonoBehaviour:
   Happiness: 0.125
   VisitorAgeTarget: 
   LotType: Housing
-  Capacity: 4
+  VisitorCapacity: 0
+  InhabitantCapacity: 4

@@ -105,10 +105,10 @@ namespace UI
 
         private void UpdateDisplay()
         {
-            _headerCard.SetHeader(_current.GetName());
-            _headerCard.SetIcon(_current.GetDepiction());
+            _headerCard.SetHeader(_current.GetLotName());
+            _headerCard.SetIcon(_current.GetLotDepiction());
             _typeCard.SetLabel($"{_current.LotType}");
-            _perksCard.SetLabel($"{_current.GetPerks()}");
+            _perksCard.SetLabel($"{_current.GetLotPerks()}");
         }
 
         private void SetCapacityCards()
@@ -121,7 +121,7 @@ namespace UI
                     case not House when card.ID == CardTypes.Visitors.ToString():
                         card.SetLabel(_current.ColoredVisitorText());
                         card.gameObject.SetActive(_current.CanHaveVisitors());
-                        card.Interactable = _current.CanHaveVisitors() && _current.GetPersonsCount() > 0;
+                        card.Interactable = _current.CanHaveVisitors() && _current.GetVisitorCount() > 0;
                         card.gameObject.SetActive(true);
                         break;
                     case Workplace workplace when card.ID == CardTypes.Employees.ToString():
@@ -131,7 +131,7 @@ namespace UI
                         break;
                     case House house when card.ID == CardTypes.Inhabitants.ToString():
                         card.SetLabel(house.ColoredInhabitantsText());
-                        card.Interactable = house.GetPersonsCount() > 0;
+                        card.Interactable = house.GetVisitorCount() > 0;
                         card.gameObject.SetActive(true);
                         break;
                 }
@@ -177,25 +177,25 @@ namespace UI
 
         private void UpdateLotTooltip()
         {
-            if (_current.GetPersonsCount() == 0) return;
-            for (int v = 0; v < _current.GetPersonsCount(); v++)
+            if (_current.GetVisitorCount() == 0) return;
+            for (int v = 0; v < _current.GetVisitorCount(); v++)
             {
                 CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
-                personCard.SetLabel(_current.GetPersons()[v].Name);
+                personCard.SetLabel(_current.GetVisitors()[v].Name);
             }
         }
 
         private void UpdateHouseTooltip()
         {
             if (_current is not House house) return;
-            if (_current.GetPersonsCount() == 0) return;
+            if (_current.GetVisitorCount() == 0) return;
 
-            for (int i = 0; i < house.GetPersonsCount(); i++)
+            for (int i = 0; i < house.GetVisitorCount(); i++)
             {
                 CardTMP personCard = _personListView.SpawnItem(i.ToString(), _lotCardPrefab.gameObject)
                     .GetComponent<CardTMP>();
-                Person p = house.GetPersons()[i];
+                Person p = house.GetVisitors()[i];
                 personCard.SetHeader(p.Name);
                 personCard.SetLabel(p.ToString());
                 UpdateTooltip += () =>

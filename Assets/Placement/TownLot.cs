@@ -20,71 +20,64 @@ namespace Placement
         [SerializeField] protected BoxCollider2D _collider;
         private string _name;
         [SerializeField] protected List<Person> _persons = new List<Person>();
-        private PopulationFactory _population => GameController.Instance.Population;
-
-        private void Start()
+        public void AddVisitors(params Person[] persons)
         {
-            _population.OnPopulationRemoved += OnPopulationRemoved;
+            _persons.AddRange(persons);
         }
 
-        private void OnDestroy()
-        {
-            if(GameController.Instance?.Population != null) _population.OnPopulationRemoved -= OnPopulationRemoved;
-        }
-
-        public List<Person> GetPersons()
+        public List<Person> GetVisitors()
         {
             return _persons;
         }
 
-        public int GetPersonsCount()
+        public int GetVisitorCount()
         {
             return _persons.Count;
         }
 
-        public Sprite GetDepiction()
+        public Sprite GetLotDepiction()
         {
             return _townLotData.ObjPreview;
         }
 
-        public string GetPerks()
+        public string GetLotPerks()
         {
             return _townLotData.GetPerks();
         }
 
-        public int GetPrice()
+        public int GetLotPrice()
         {
             return _townLotData.LotPrice;
         }
 
-        public int GetMaxCapacity()
+        public int GetMaxVisitorCapacity()
         {
-            return _townLotData.Capacity;
+            return _townLotData.VisitorCapacity;
         }
 
-        public void SetID(int ID)
+        public void SetLotID(int ID)
         {
             PlacementID = ID;
         }
 
-        public bool TryGetHappiness(PersonAgeGroup age)
+        public bool CheckHappinessGroup(PersonAgeGroup age)
         {
             return _townLotData.VisitorAgeTarget.Length > 0 &&
                    (_townLotData.VisitorAgeTarget.Contains(age) ||
                     _townLotData.VisitorAgeTarget.Contains(PersonAgeGroup.All));
         }
 
-        public void SetName(string lotName)
+        protected void SetLotName(string lotName)
         {
             _name = lotName;
         }
 
-        public virtual string GetName()
+        public virtual string GetLotName()
         {
             return _name;
         }
 
-        public float GetHappiness()
+        public float GetLotHappiness()
         {
             return _townLotData.Happiness;
         }
@@ -99,9 +92,14 @@ namespace Placement
             return _townLotData.VisitorAgeTarget.Length > 0;
         }
 
-        public virtual void RemovePersons(params Person[] persons)
+        public void RemoveVisitor(params Person[] persons)
         {
             _persons.RemoveAll(persons.Contains);
+        }
+
+        public void RemoveAllVisitors()
+        {
+            RemoveVisitor(_persons.ToArray());
         }
 
         public virtual void StartHovering()
@@ -112,6 +110,10 @@ namespace Placement
         {
         }
 
+        /// <summary>
+        /// Fill in lot data from town lot object, such as name, sprite, and lot "size"
+        /// </summary>
+        /// <param name="lotObj"></param>
         public void Create(TownLotObj lotObj)
         {
             _townLotData = lotObj;
@@ -121,21 +123,6 @@ namespace Placement
             _renderer.sprite = lotObj.ObjPlacement;
             _collider.size = _renderer.bounds.size;
             _collider.offset = transform.InverseTransformPoint(_renderer.bounds.center);
-        }
-
-        private void OnPopulationRemoved(IPopulation population)
-        {
-            switch (population)
-            {
-                case Person person:
-                    RemovePersons(person);
-                    break;
-                case Household household:
-                {
-                    RemovePersons(household.GetInhabitants());
-                    break;
-                }
-            }
         }
     }
 }
