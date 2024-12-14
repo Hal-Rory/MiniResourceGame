@@ -42,8 +42,10 @@ namespace UI
 
         [SerializeField] private CardTMP _lotCardPrefab;
         [SerializeField] private CardTMP _personCard;
+        [SerializeField] private Sprite _employeeIcon;
+        [SerializeField] private Sprite _visitorIcon;
 
-        private string _currentTooltip;
+        private ToggleCardTMP _currentTooltip;
         private Action UpdateTooltip;
 
         void Start()
@@ -140,7 +142,7 @@ namespace UI
 
         public void OpenTooltip_UI(CardTMP card)
         {
-            if (_currentTooltip == card.ID)
+            if (_currentTooltip && _currentTooltip.ID == card.ID)
             {
                 CloseTooltip();
                 _soundManager.PlayCancel();
@@ -148,7 +150,7 @@ namespace UI
             }
 
             _soundManager.PlaySelect();
-            _currentTooltip = card.ID;
+            _currentTooltip = card as ToggleCardTMP;
             RefreshTooltip(card.ID);
         }
 
@@ -175,14 +177,16 @@ namespace UI
             _tooltipPanel.SetActive(true);
         }
 
-        private void UpdateLotTooltip()
+        private void UpdateEmployeeTooltip()
         {
-            if (_current.GetVisitorCount() == 0) return;
-            for (int v = 0; v < _current.GetVisitorCount(); v++)
+            if (_current is not Workplace workplace) return;
+            if (workplace.EmployeeCount == 0) return;
+            for (int e = 0; e < workplace.EmployeeCount; e++)
             {
-                CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
+                CardTMP personCard = _personListView.SpawnItem(e.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
-                personCard.SetLabel(_current.GetVisitors()[v].Name);
+                personCard.SetLabel(workplace.GetEmployees()[e].Name);
+                personCard.SetIcon(_employeeIcon);
             }
         }
 
@@ -203,21 +207,21 @@ namespace UI
             }
         }
 
-        private void UpdateEmployeeTooltip()
+        private void UpdateLotTooltip()
         {
-            if (_current is not Workplace workplace) return;
-            if (workplace.EmployeeCount == 0) return;
-            for (int e = 0; e < workplace.EmployeeCount; e++)
+            if (_current.GetVisitorCount() == 0) return;
+            for (int v = 0; v < _current.GetVisitorCount(); v++)
             {
-                CardTMP personCard = _personListView.SpawnItem(e.ToString(), _personCard.gameObject)
+                CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
-                personCard.SetLabel(workplace.GetEmployees()[e].Name);
+                personCard.SetLabel(_current.GetVisitors()[v].Name);
+                personCard.SetIcon(_visitorIcon);
             }
         }
 
         private void CloseTooltip()
         {
-            _currentTooltip = string.Empty;
+            _currentTooltip = null;
             _personScroll.verticalNormalizedPosition = 1;
             _tooltipPanel.SetActive(false);
         }
@@ -227,13 +231,21 @@ namespace UI
             if (!_current || !Active) return;
             UpdateDisplay();
             SetCapacityCards();
-            if(_tooltipPanel.activeSelf) RefreshTooltip(_currentTooltip);
+            if(_tooltipPanel.activeSelf) RefreshTooltip(_currentTooltip.ID);
         }
 
         private void LateStateClockUpdate(GameTimeManager.TimesOfDay obj)
         {
-            if (!_tooltipPanel.activeSelf && _currentTooltip != CardTypes.Inhabitants.ToString()) return;
+            if (!Active) return;
+            SetCapacityCards();
+            if (!_currentTooltip) return;
+            if (!_tooltipPanel.activeSelf && _currentTooltip.ID != CardTypes.Inhabitants.ToString()) return;
             UpdateTooltip?.Invoke();
+            if (_currentTooltip.ID == CardTypes.Visitors.ToString() && _current.GetVisitorCount() <= 0)
+            {
+                _currentTooltip.SetActive(false);
+                OpenTooltip_UI(_currentTooltip);
+            }
         }
     }
 }
