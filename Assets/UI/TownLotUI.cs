@@ -62,6 +62,7 @@ namespace UI
             if (lot == null) return;
             //this stops it from switching while active, remove if the need for that arises
             if (!_uiManager.TrySetActive(this) && !_uiManager.HasControl(this)) return;
+            _soundManager.PlaySelect();
             CloseTooltip();
             _current = lot;
             SetDisplay();

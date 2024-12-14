@@ -15,20 +15,12 @@ namespace Controllers
         private void Start()
         {
             GameController.Instance.RegisterPlacementListener(OnLotAdded, OnLotRemoved);
-            GameController.Instance.Selection.OnTownObjectSelected += OnTownObjectSelected;
         }
 
         private void OnDestroy()
         {
             if (GameController.Instance == null) return;
             GameController.Instance.UnregisterPlacementListener(OnLotAdded, OnLotRemoved);
-            GameController.Instance.Selection.OnTownObjectSelected += OnTownObjectSelected;
-        }
-
-        private void OnTownObjectSelected(TownLot lot)
-        {
-            if (!lot) return;
-            PlaySelect();
         }
 
         private void OnLotRemoved(TownLot obj)
