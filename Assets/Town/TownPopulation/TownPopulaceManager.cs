@@ -64,7 +64,7 @@ namespace Town.TownPopulation
             float happinessValue = Random.value;
             float averageHappiness =
                 _populationFactory.UsePopulationAsAverage(_totalHappiness / 100, 1);
-            return !_stagnantGrowth && _growthThreshold >= 1 && happinessValue <= averageHappiness;
+            return !_stagnantGrowth && _growthThreshold >= _populationFactory.GetActivePopulation().Count && happinessValue <= averageHappiness;
         }
 
         public void SetStagnant(bool stagnant)
@@ -116,11 +116,11 @@ namespace Town.TownPopulation
             //how crowded are the households
             float densityHappinessDecay = _populationFactory.AverageHouseholdSize();
             //average happiness of people
-            float average = _populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
+            float averageHappiness = _populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
                 .Sum(person => person.Happiness));
             //total decay due to population size vs housing
-            float loss = average * densityHappinessDecay;
-            _totalHappiness += average - loss;
+            float loss = averageHappiness * densityHappinessDecay;
+            _totalHappiness += averageHappiness - loss;
         }
 
         private void CheckHouseholdAvailability()
