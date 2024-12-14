@@ -10,11 +10,9 @@ namespace Town.TownObjects
     public class Workplace : TownLot, IIncomeContributor
     {
         [SerializeField] private List<Person> _employees = new List<Person>();
-        [SerializeField] private List<Person> _visitors = new List<Person>();
         private WorkplaceLotObj _workLotData => _townLotData as WorkplaceLotObj;
         public int EmployeeCount => _employees.Count;
         public int MaxEmployeeCapacity => _workLotData.EmployeeLimit;
-        public int Wages => _workLotData.Wages;
 
         public string GetWorkCriteria()
         {
@@ -26,18 +24,9 @@ namespace Town.TownObjects
             return _employees;
         }
 
-        public override int GetPersonsCount()
-        {
-            return _visitors.Count;
-        }
-        public override List<Person> GetPersons()
-        {
-            return _visitors;
-        }
-
         public bool CanHire(Person person)
         {
-            return _employees.Count < _workLotData.Capacity &&
+            return _employees.Count < _workLotData.EmployeeLimit &&
                    (_workLotData.EmployeeAgeGroups.Contains(PersonAgeGroup.All) || _workLotData.EmployeeAgeGroups.Contains(person.AgeGroup));
         }
 
@@ -47,17 +36,21 @@ namespace Town.TownObjects
             person.Employ(PlacementID, _workLotData.Wages);
         }
 
-        public void Unemploy(Person person)
+        public void Unemploy(params Person[] persons)
         {
-            _employees.Remove(person);
-            person.Unemploy();
+            foreach (Person person in persons)
+            {
+                if (person.JobIndex != PlacementID) continue;
+                person.Unemploy();
+                _employees.Remove(person);
+            }
         }
 
         public void UnemployAll()
         {
-            foreach (Person person in _employees)
+            foreach (Person employee in _employees)
             {
-                person.Unemploy();
+                employee.Unemploy();
             }
             _employees.Clear();
         }
@@ -65,6 +58,12 @@ namespace Town.TownObjects
         public int GetIncomeContribution()
         {
             return _employees.Count != 0 ? _workLotData.Wages * _employees.Count : 0;
+        }
+
+        public override void RemovePersons(params Person[] persons)
+        {
+            base.RemovePersons(persons);
+            Unemploy(persons);
         }
     }
 }

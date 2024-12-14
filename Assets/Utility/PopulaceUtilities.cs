@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Utility
 {
-    public enum PersonAgeGroup { None, Child, Teen, Adult, Elder, Deceased, All }
+    public enum PersonAgeGroup { All, Child, Teen, Adult, Elder, Deceased }
 
     public static class PopulationUtility
     {

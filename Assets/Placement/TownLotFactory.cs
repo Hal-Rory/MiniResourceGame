@@ -17,11 +17,19 @@ namespace Placement
         {
             GameObject lotObject = Instantiate(_lotPrefab, position, Quaternion.identity);
             TownLot newLot = lotObjBase.AddLotType(lotObject);
-            _placedGameObjects.Add(newLot);
-            newLot.SetID(_placedGameObjects.Count - 1);
+            newLot.SetID(_placedGameObjects.Count);
             newLot.Create(lotObjBase);
             newLot.CellBlock = position;
-            OnLotAdded?.Invoke(newLot);
+            if(Application.isPlaying){
+                _placedGameObjects.Add(newLot);
+                OnLotAdded?.Invoke(newLot);
+            }
+            return _placedGameObjects.Count - 1;
+        }
+
+        public int AddLot(TownLot newLot)
+        {
+            _placedGameObjects.Add(newLot);
             return _placedGameObjects.Count - 1;
         }
 
@@ -46,7 +54,7 @@ namespace Placement
         public bool TryGetLots<T>(out List<T> lots)
         {
             lots = _placedGameObjects.Count > 0
-                ? _placedGameObjects.FindAll(lot => lot && lot.GetType() is T) as List<T>
+                ? _placedGameObjects.FindAll(lot => lot && lot is T) as List<T>
                 : null;
 
             return lots != null && lots.Count != 0;

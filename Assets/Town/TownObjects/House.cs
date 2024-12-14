@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Placement;
 using Town.TownPopulation;
@@ -11,17 +10,9 @@ public class House : TownLot
     public void SetHousehold(Household household)
     {
         Household = household;
-        SetName(household.HouseholdName);
-    }
-
-    public override List<Person> GetPersons()
-    {
-        return Household?.GetInhabitants().ToList();
-    }
-
-    public override int GetPersonsCount()
-    {
-        return Household != null ? Household.GetInhabitants().Length : 0;
+        _persons.Clear();
+        _persons.AddRange(Household.GetInhabitants());
+        SetName(household?.HouseholdName);
     }
 
     public override string GetName()
