@@ -30,7 +30,7 @@ public class WorkplaceLotObj : TownLotObj
             return $"{PersonAgeGroup.All} ages";
         }
 
-        string employeeCriteria = EmployeeAgeGroups.GroupedString(true);
+        string employeeCriteria = EmployeeAgeGroups.GroupedString(true, true);
         return employeeCriteria;
     }
 }

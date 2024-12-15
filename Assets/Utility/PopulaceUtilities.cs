@@ -7,9 +7,9 @@ namespace Utility
 
     public static class PopulationUtility
     {
-        public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural)
+        public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural, bool uppercase)
         {
-            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural().ToString().ToUpper() : age.ToString().ToUpper()).ToList());
+            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural(uppercase).ToString() : uppercase ? age.CapitalizeFirst() : age.ToString()).ToList());
             return ageGroup;
         }
 
@@ -31,22 +31,27 @@ namespace Utility
             }
         }
 
-        public static string Plural(this PersonAgeGroup age)
+        public static string Plural(this PersonAgeGroup age, bool uppercase = false)
         {
             switch (age)
             {
                 case PersonAgeGroup.Child:
-                    return "children";
+                    return uppercase ? "Children" : "children";
                 case PersonAgeGroup.Teen:
-                    return "teenagers";
+                    return uppercase ? "Teenagers" : "teenagers";
                 case PersonAgeGroup.Adult:
-                    return "adults";
+                    return uppercase ? "Adults" : "adults";
                 case PersonAgeGroup.Elder:
-                    return "elderly";
+                    return uppercase ? "Elderly": "elderly";
                 case PersonAgeGroup.Deceased:
                 default:
-                    return age.ToString();
+                    return uppercase ? CapitalizeFirst(age) : age.ToString();
             }
+        }
+
+        private static string CapitalizeFirst(this PersonAgeGroup age)
+        {
+            return char.ToUpperInvariant(age.ToString()[0]) + age.ToString()[1..];
         }
     }
 }

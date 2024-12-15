@@ -37,7 +37,7 @@ namespace Town.TownObjectData
                 return $"{PersonAgeGroup.All} ages";
             }
 
-            string visitorCriteria = VisitorAgeTarget.GroupedString(true);
+            string visitorCriteria = VisitorAgeTarget.GroupedString(true, true);
             return visitorCriteria;
         }
 
