@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Controllers;
+using Interfaces;
 using Placement;
 using Town.TownObjects;
 using Town.TownPopulation;
@@ -54,9 +55,26 @@ namespace UI
             GameController.Instance.Selection.OnTownObjectSelected += TownLotSelected;
             GameController.Instance.Selection.OnTownObjectDeselected += TownLotDeselected;
             GameController.Instance.RegisterPlacementListener(null, OnRemoveLot);
-            GameController.Instance.GameTime.RegisterListener(lateClockUpdate: ClockUpdate, lateStateClockUpdate:LateStateClockUpdate);
+            GameController.Instance.GameTime.RegisterListener(lateStateClockUpdate:LateStateClockUpdate);
+            GameController.Instance.Population.OnPopulationCreated += OnPopulationCreated;
+            GameController.Instance.Workplace.OnWorkplaceUpdated += OnWorkplaceUpdated;
         }
 
+        private void OnDestroy()
+        {
+            if (!GameController.Instance) return;
+            if(GameController.Instance.Selection)
+            {
+                GameController.Instance.Selection.OnTownObjectSelected -= TownLotSelected;
+                GameController.Instance.Selection.OnTownObjectDeselected -= TownLotDeselected;
+            }
+            GameController.Instance.UnregisterPlacementListener(null, OnRemoveLot);
+            if(GameController.Instance.GameTime) GameController.Instance.GameTime.UnregisterListener(lateStateClockUpdate:LateStateClockUpdate);
+            if(GameController.Instance.Population != null) GameController.Instance.Population.OnPopulationCreated -= OnPopulationCreated;
+            if(GameController.Instance.Workplace != null) GameController.Instance.Workplace.OnWorkplaceUpdated -= OnWorkplaceUpdated;
+        }
+
+        #region Townlots
         private void TownLotSelected(TownLot lot)
         {
             if (lot == null) return;
@@ -65,7 +83,9 @@ namespace UI
             _soundManager.PlaySelect();
             CloseTooltip();
             _current = lot;
-            SetDisplay();
+            UpdateHeaders();
+            SetCapacityCards();
+            _lotPanel.SetActive(true);
             LayoutRebuilder.ForceRebuildLayoutImmediate(_baseCardContainer);
         }
 
@@ -85,7 +105,9 @@ namespace UI
             if (_current != obj) return;
             TownLotDeselected(null);
         }
+        #endregion
 
+        #region Menu controls
         public void CloseMenu()
         {
             _uiManager.EndControl(this);
@@ -99,14 +121,39 @@ namespace UI
             _current = null;
         }
 
-        private void SetDisplay()
+        /// <summary>
+        /// Close the tooltip, clear the current tooltip card, and reset the view position
+        /// </summary>
+        private void CloseTooltip()
         {
-            UpdateDisplay();
+            _currentTooltip = null;
+            _personScroll.verticalNormalizedPosition = 1;
+            _tooltipPanel.SetActive(false);
+        }
+        #endregion
+
+        private void OnWorkplaceUpdated(Workplace obj)
+        {
+            UpdateHeaders();
             SetCapacityCards();
-            _lotPanel.SetActive(true);
+            if (!_currentTooltip) return;
+            RefreshTooltip(_currentTooltip.ID);
         }
 
-        private void UpdateDisplay()
+        private void OnPopulationCreated(IPopulation population)
+        {
+            if (!Active || population is not Household) return;
+            UpdateHeaders();
+            SetCapacityCards();
+            if (!_currentTooltip) return;
+            RefreshTooltip(_currentTooltip.ID);
+        }
+
+        /// <summary>
+        /// Will update the primary header cards
+        /// (Header, Type, Perks)
+        /// </summary>
+        private void UpdateHeaders()
         {
             _headerCard.SetHeader(_current.GetLotName());
             _headerCard.SetIcon(_current.GetLotDepiction());
@@ -114,6 +161,10 @@ namespace UI
             _perksCard.SetLabel($"{_current.GetLotPerks()}");
         }
 
+        /// <summary>
+        /// Iterates through the capacity cards to set them according to the lot's data
+        /// (Employee count, inhabitants count, visitor count(if applicable))
+        /// </summary>
         private void SetCapacityCards()
         {
             foreach (ToggleCardTMP card in _capacityCards)
@@ -124,23 +175,24 @@ namespace UI
                     case not House when card.ID == CardTypes.Visitors.ToString():
                         card.SetLabel(_current.ColoredVisitorText());
                         card.gameObject.SetActive(_current.CanHaveVisitors());
-                        card.Interactable = _current.CanHaveVisitors() && _current.GetVisitorCount() > 0;
-                        card.gameObject.SetActive(true);
                         break;
                     case Workplace workplace when card.ID == CardTypes.Employees.ToString():
                         card.SetLabel(workplace.ColoredEmployeeText());
-                        card.Interactable = workplace.EmployeeCount > 0;
                         card.gameObject.SetActive(true);
                         break;
                     case House house when card.ID == CardTypes.Inhabitants.ToString():
                         card.SetLabel(house.ColoredInhabitantsText());
-                        card.Interactable = house.GetInhabitantsCount() > 0;
                         card.gameObject.SetActive(true);
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// The UI toggles will open or close the tooltip
+        /// depending on which card is being passed in
+        /// </summary>
+        /// <param name="card"></param>
         public void OpenTooltip_UI(CardTMP card)
         {
             if (_currentTooltip && _currentTooltip.ID == card.ID)
@@ -149,12 +201,17 @@ namespace UI
                 _soundManager.PlayCancel();
                 return;
             }
-
             _soundManager.PlaySelect();
             _currentTooltip = card as ToggleCardTMP;
             RefreshTooltip(card.ID);
         }
 
+        /// <summary>
+        /// Depending on the card ID this will update the tool tips for that type
+        /// (Employees, Inhabitants, Visitors (if applicable))
+        /// by recreating the person list view completely
+        /// </summary>
+        /// <param name="card"></param>
         private void RefreshTooltip(string card)
         {
             UpdateTooltip = null;
@@ -178,6 +235,9 @@ namespace UI
             _tooltipPanel.SetActive(true);
         }
 
+        /// <summary>
+        /// Create the list view using the employee list
+        /// </summary>
         private void UpdateEmployeeTooltip()
         {
             if (_current is not Workplace workplace) return;
@@ -186,11 +246,19 @@ namespace UI
             {
                 CardTMP personCard = _personListView.SpawnItem(e.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
-                personCard.SetLabel(workplace.GetEmployees()[e].Name);
+                Person p = workplace.GetEmployees()[e];
+                personCard.SetLabel(p.Name);
                 personCard.SetIcon(_employeeIcon);
+                UpdateTooltip += () =>
+                {
+                    personCard.SetLabel(p.Name);
+                };
             }
         }
 
+        /// <summary>
+        /// Create the list view using the inhabitants list
+        /// </summary>
         private void UpdateHouseTooltip()
         {
             if (_current is not House house) return;
@@ -208,6 +276,9 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Create the list view using the visitors list
+        /// </summary>
         private void UpdateLotTooltip()
         {
             if (_current.GetVisitorCount() == 0) return;
@@ -215,38 +286,21 @@ namespace UI
             {
                 CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
-                personCard.SetLabel(_current.GetVisitors()[v].Name);
+                Person p = _current.GetVisitors()[v];
+                personCard.SetLabel(p.Name);
                 personCard.SetIcon(_visitorIcon);
+                UpdateTooltip += () =>
+                {
+                    personCard.SetLabel(p.Name);
+                };
             }
-        }
-
-        private void CloseTooltip()
-        {
-            _currentTooltip = null;
-            _personScroll.verticalNormalizedPosition = 1;
-            _tooltipPanel.SetActive(false);
-        }
-
-        private void ClockUpdate(int tick)
-        {
-            if (!_current || !Active) return;
-            UpdateDisplay();
-            SetCapacityCards();
-            if(_tooltipPanel.activeSelf) RefreshTooltip(_currentTooltip.ID);
         }
 
         private void LateStateClockUpdate(GameTimeManager.TimesOfDay obj)
         {
-            if (!Active) return;
+            if (!Active || !_currentTooltip) return;
             SetCapacityCards();
-            if (!_currentTooltip) return;
-            if (!_tooltipPanel.activeSelf && _currentTooltip.ID != CardTypes.Inhabitants.ToString()) return;
-            UpdateTooltip?.Invoke();
-            if (_currentTooltip.ID == CardTypes.Visitors.ToString() && _current.GetVisitorCount() <= 0)
-            {
-                _currentTooltip.SetActive(false);
-                OpenTooltip_UI(_currentTooltip);
-            }
+            RefreshTooltip(_currentTooltip.ID);
         }
     }
 }

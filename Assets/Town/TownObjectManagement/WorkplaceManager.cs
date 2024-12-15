@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utility;
@@ -13,6 +14,7 @@ namespace Town.TownObjectManagement
     {
         public Dictionary<int, Workplace> Workplaces { get; } = new Dictionary<int, Workplace>();
         private PopulationFactory _population => GameController.Instance.Population;
+        public event Action<Workplace> OnWorkplaceUpdated;
 
         public void SetUp()
         {
@@ -72,7 +74,9 @@ namespace Town.TownObjectManagement
             if (Workplaces.Count == 0) return;
             Workplace[] workplaces = Workplaces.Where(pair => pair.Value.CanHire(person)).Select(pair => pair.Value).ToArray();
             if (workplaces.Length == 0) return;
-            workplaces.GetRandomIndex().Employ(person);
+            Workplace workplace = workplaces.GetRandomIndex();
+            workplace.Employ(person);
+            OnWorkplaceUpdated?.Invoke(workplace);
         }
 
         private void ShutdownWorkplace(Workplace workplace)

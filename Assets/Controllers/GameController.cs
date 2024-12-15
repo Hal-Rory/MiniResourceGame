@@ -67,7 +67,7 @@ namespace Controllers
                 Workplace.SetUp();
                 Income ??= new IncomeManager();
                 Income.SetUp();
-                Income.Pay(100);
+                Income.Pay(125);
                 GameTime.SetTimeActive(true);
             }
             else

@@ -21,6 +21,7 @@ namespace Town.TownPopulation
         //all references to the person is by index in the dict so update references on person exit
         [SerializeField] private List<Household> _populationHouseholds;
         [SerializeField] private List<Person> _population;
+        public event Action<IPopulation> OnPopulationCreated;
         public event Action<IPopulation> OnPopulationRemoved;
         private Names _populationNames;
         public int PopulationCount { get; private set; }
@@ -66,6 +67,8 @@ namespace Town.TownPopulation
             Household household = CreateHousehold(house.MaxHouseholdCapacity, house.PlacementID);
             house.SetHousehold(household);
             PopulationCount = GetActivePopulation().Count;
+            household.GetInhabitants().ForEach(GameController.Instance.GetPersonLocation);
+            OnPopulationCreated?.Invoke(household);
         }
 
         public Household GetHousehold(int id)
@@ -110,7 +113,6 @@ namespace Town.TownPopulation
                         : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1), //Child-Teen
                     -1,household.HouseholdID);
                 household.AddInhabitant(householdMember);
-                GameController.Instance.GetPersonLocation(householdMember);
             }
             return household;
         }
