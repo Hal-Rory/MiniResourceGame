@@ -14,20 +14,6 @@ public class GridManager : MonoBehaviour
         _placedLots = new Dictionary<Vector3Int, PlacedLot>();
     }
 
-    public void AddLot(TownLot lotObj, Vector3Int gridPosition, Vector2Int size)
-    {
-        List<Vector3Int> positions = CalculatePositions(gridPosition, size);
-        PlacedLot lot = new PlacedLot
-        {
-            OccupiedPositions = positions,
-            PlacedIndex = _placementManager.AddLot(lotObj)
-        };
-        foreach (Vector3Int pos in positions)
-        {
-            _placedLots.Add(pos, lot);
-        }
-    }
-
     public void AddLot(TownLotObj lotObj, Vector3Int gridPosition)
     {
         List<Vector3Int> positions = CalculatePositions(gridPosition, lotObj.LotSize);

@@ -1,119 +1,121 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Controllers;
-using Placement;
-using UI;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.UI;
 
-public class Tutorial : MonoBehaviour
+namespace Utility
 {
-    public List<GameObject> TutorialWindows;
-    [SerializeField] private Button _menuButton;
-    [SerializeField] private Image _selectionMenuButtonImage;
-    [SerializeField] private GameObject _placementBorder;
-    [SerializeField] private TownLotSelectionManager _townLotSelection;
-    private TownLot _placedLot;
-    private int _tutorialIndex;
-    private string _tutorialName;
-    [SerializeField] private int _lotWindow;
-    public ObjectSelectionUI Selection;
-
-    private void Start()
+    public class Tutorial : MonoBehaviour
     {
-        Assert.IsTrue(TutorialWindows is { Count: > 0 }, "Add the tutorial windows");
-        GoBackToStep(0);
-        GameController.Instance.TownPopulace.SetStagnant(true);
-        GameController.Instance.GameTime.SetTimeActive(false);
 
-        _menuButton.onClick.AddListener(MenuButton);
-        TutorialWindows[_tutorialIndex].gameObject.SetActive(true);
-        _tutorialName = TutorialWindows[_tutorialIndex].name;
-    }
-
-    private void MenuButton()
-    {
-        ColorBlock colors = _menuButton.colors;
-        colors.normalColor = Color.white;
-        _menuButton.colors = colors;
-        _menuButton.onClick.RemoveListener(MenuButton);
-
-        MoveOn();
-        GameController.Instance.TownObject.OnStateChanged += MoveOnSelection;
-    }
-
-    private void MoveOnSelection(bool moveOn)
-    {
-        if (!moveOn) return;
-        GameController.Instance.RegisterPlacementListener(PlacedLot);
-        _placementBorder.SetActive(true);
-        MoveOn();
-    }
-
-    private void PlacedLot(TownLot lot)
-    {
-        _placementBorder.SetActive(false);
-        MoveOn();
-        ((RectTransform)TutorialWindows[_lotWindow].transform).position =
-            GameController.Instance.Input.WorldToScreen(lot.CellBlock + Vector3.up * 2);
-        _placedLot = lot;
-        Selection.ForceShutdown();
-        _townLotSelection.gameObject.SetActive(true);
-        GameController.Instance.GameTime.SetTimeActive(true);
-        GameController.Instance.Selection.OnTownObjectSelected += OnTownObjectSelected;
-    }
-
-    private void OnTownObjectSelected(TownLot obj)
-    {
-        MoveOn();
-        _selectionMenuButtonImage.color = Color.yellow;
-        GameController.Instance.Selection.OnTownObjectSelected -= OnTownObjectSelected;
-        GameController.Instance.Selection.OnTownObjectDeselected += OnTownObjectDeselected;
-    }
-
-    private void OnTownObjectDeselected(TownLot obj)
-    {
-        MoveOn();
-        GameController.Instance.Selection.OnTownObjectDeselected -= OnTownObjectDeselected;
-        StartCoroutine(WaitForClock());
-    }
-
-    private IEnumerator WaitForClock()
-    {
-        _menuButton.interactable = false;
-        _townLotSelection.gameObject.SetActive(false);
-        yield return new WaitForSeconds(1);
-        yield return new WaitUntil(() => GameController.Instance.Input.PrimaryPressed);
-        MoveOn();
-        GameController.Instance.Population.CreateHome(_placedLot as House);
-        yield return new WaitForSeconds(1);
-        yield return new WaitUntil(() => GameController.Instance.Input.PrimaryPressed);
-        MoveOn();
-        GameController.Instance.Income.Pay(100);
-        yield return new WaitForSeconds(1);
-        yield return new WaitUntil(() => GameController.Instance.Input.PrimaryPressed);
-        MoveOn();
-        enabled = false;
-    }
-
-    public void MoveOn()
-    {
-        if (TutorialWindows[_tutorialIndex].name != _tutorialName) return;
-        TutorialWindows[_tutorialIndex++].SetActive(false);
-        TutorialWindows[_tutorialIndex].SetActive(true);
-        _tutorialName = TutorialWindows[_tutorialIndex].name;
-    }
-
-    private void GoBackToStep(int index)
-    {
-        foreach (GameObject window in TutorialWindows)
+        [Serializable]
+        private struct Tutorials
         {
-            window.SetActive(false);
+            public string TutorialTitle;
+            public int[] TutorialClips;
+            public int TutorialClipIndex;
+
+            public int NextClip()
+            {
+                TutorialClipIndex = (TutorialClipIndex + TutorialClips.Length + 1) % TutorialClips.Length;
+                return TutorialClips[TutorialClipIndex];
+            }
+
+            public int PreviousClip()
+            {
+                TutorialClipIndex = (TutorialClipIndex + TutorialClips.Length - 1) % TutorialClips.Length;
+                return TutorialClips[TutorialClipIndex];
+            }
+
+            public int CurrentClip()
+            {
+                return TutorialClips[TutorialClipIndex];
+            }
         }
 
-        _tutorialIndex = index;
-        TutorialWindows[_tutorialIndex].SetActive(true);
-        _tutorialName = TutorialWindows[_tutorialIndex].name;
+        private string[] _tutorialTexts;
+        [SerializeField] private Tutorials[] _tutorials;
+        [SerializeField] private string _switchTrigger;
+        [SerializeField] private string _animationIndex;
+        [SerializeField] private CardTMP _tutorialCardTMP;
+        private int _currentTutorial;
+        private Animator _tutorialAnimations;
+
+        private void Start()
+        {
+            DefineTutorialText();
+            _tutorialAnimations = _tutorialCardTMP.GetComponentInChildren<Animator>();
+            StartTutorial();
+        }
+
+        private void DefineTutorialText()
+        {
+            _tutorialTexts = new[]
+            {
+                //building menu tutorial
+                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Build Menu</color>: The build menu has several collections to choose a town lot from. Select a lot to display the various stats that are available." +
+                $"\n\nSelect build to place the building on the map using the placement guide.",
+
+                //lot types
+                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Name</color>: Each lot has a price and various stats that are displayed when selected." +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Price</color>: The price of the lot" +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Type</color>: The lot type" +
+                "\n\tResidential lots provide housing, commercial lots provide work, and recreational lots provide happiness, a trait that some commercial lots share." +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Perks</color>: What the building provides, such as income or happiness" +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Inhabiting/Employee Capacity</color>: The type of people that can that will reside in this lot and the max capacity allowed" +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Visitor Capacity</color>: The type of people that can visit this lot, if any, and the max capacity allowed",
+
+                //lot display tutorial
+                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Information</color>: Once placed, lots have their own stats that are displayed, varying by the lot type." +
+                "\n\nBy selecting a lot, this information can be viewed as well as additional information based on the stat." +
+                "\n\nIt is also possible to demolish the lot entirely.",
+
+                //town info tutorial
+                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Town Information</color>: In addition to the game's date and time, the town has several stats that contribute to it's attractiveness." +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Income</color>: The funds available and the net income of the residents\n" +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Population</color>: The current population\n" +
+                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Happiness</color>: The total happiness of the town\n" +
+                "\n\nThese stats combined contribute to the likelihood of new residents moving in." +
+                $"\n\nIf a lot is destroyed, these stats are updated. All resources used will be returned, but when removing a home lot, the residents will also be evicted."
+            };
+        }
+
+        public void NextAnimationInTutorial()
+        {
+            SetAnimation(_tutorials[_currentTutorial].NextClip());
+        }
+
+        public void PreviousAnimationInTutorial()
+        {
+            SetAnimation(_tutorials[_currentTutorial].PreviousClip());
+        }
+
+        public void NextTutorial()
+        {
+            _tutorials[_currentTutorial].TutorialClipIndex = 0;
+            _currentTutorial = (_currentTutorial + _tutorials.Length + 1) % _tutorials.Length;
+            _tutorials[_currentTutorial].TutorialClipIndex = 0;
+            StartTutorial();
+        }
+
+        public void PreviousTutorial()
+        {
+            _tutorials[_currentTutorial].TutorialClipIndex = 0;
+            _currentTutorial = (_currentTutorial + _tutorials.Length - 1) % _tutorials.Length;
+            _tutorials[_currentTutorial].TutorialClipIndex = 0;
+            StartTutorial();
+        }
+
+        private void StartTutorial()
+        {
+            _tutorialCardTMP.SetHeader(_tutorials[_currentTutorial].TutorialTitle);
+            _tutorialCardTMP.SetLabel(_tutorialTexts[_currentTutorial]);
+            SetAnimation(_tutorials[_currentTutorial].CurrentClip());
+        }
+
+        private void SetAnimation(int index)
+        {
+            _tutorialAnimations.SetInteger(_animationIndex, index);
+            _tutorialAnimations.SetTrigger(_switchTrigger);
+        }
     }
 }

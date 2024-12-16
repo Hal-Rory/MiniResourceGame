@@ -20,7 +20,7 @@ MonoBehaviour:
   ObjPlacement: {fileID: -133400331, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0
   VisitorAgeTarget: 
-  LotType: Industrial
+  LotType: Commercial
   VisitorCapacity: 0
   Wages: 10
   EmployeeAgeGroups: 03000000

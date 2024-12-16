@@ -77,11 +77,6 @@ namespace Town.TownPopulation
             return (int)_totalHappiness;
         }
 
-        public void AddHousing(int id)
-        {
-            _availableHousing.Add(id);
-        }
-
         private void OnNewLot(TownLot obj)
         {
             if (obj is not House) return;

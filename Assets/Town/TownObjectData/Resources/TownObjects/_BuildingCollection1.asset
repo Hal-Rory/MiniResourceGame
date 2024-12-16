@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c1d65ca161a5fd4c97e35086de0cd08, type: 3}
   m_Name: _BuildingCollection1
   m_EditorClassIdentifier: 
-  Name: Jobs
+  Name: Commercial
   Objects:
   - {fileID: 11400000, guid: 80415ed0dd1c813479625db6e83ce0c9, type: 2}
   - {fileID: 11400000, guid: 0495b48a1178b6440a065c3bd0d7988c, type: 2}

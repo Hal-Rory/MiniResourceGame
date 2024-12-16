@@ -80,7 +80,7 @@ public class GameTimeManager : MonoBehaviour
             {
                 _onEarlyClockUpdate?.Invoke(1);
                 _onClockUpdate?.Invoke(1);
-                _onLateClockUpdate.Invoke(1);
+                _onLateClockUpdate?.Invoke(1);
             }
 
             TimesOfDay timeOfDay = TimeOfDay;

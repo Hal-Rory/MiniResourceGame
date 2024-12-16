@@ -36,18 +36,6 @@ namespace Controllers
 
         private Dictionary<IActionBoxHolder, ActionBox> Actions;
 
-        public bool CreateHouse;
-        public HousingLotObj StartingHouse;
-        public TownLot StartingLot;
-
-        private void OnValidate()
-        {
-            if (!CreateHouse) return;
-            CreateHouse = false;
-            LotFactory.PlaceObject(StartingHouse, Vector3Int.zero);
-            StartingLot = FindObjectOfType<TownLot>();
-        }
-
         private void Awake()
         {
             if (Instance == null)
@@ -90,13 +78,6 @@ namespace Controllers
             {
                 box.PuttingDown();
             }
-        }
-
-        private IEnumerator Start()
-        {
-            yield return new WaitForEndOfFrame();
-            _gridManager.AddLot(StartingLot, Vector3Int.zero, StartingHouse.LotSize);
-            TownPopulace.AddHousing(StartingLot.PlacementID);
         }
 
         private void OnDestroy()

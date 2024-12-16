@@ -20,6 +20,6 @@ MonoBehaviour:
   ObjPlacement: {fileID: 850013509, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   Happiness: 0.25
   VisitorAgeTarget: 05000000
-  LotType: graveyard
+  LotType: Graveyard
   VisitorCapacity: 10
   CanBeOverwritten: 0

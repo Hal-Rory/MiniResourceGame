@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c1d65ca161a5fd4c97e35086de0cd08, type: 3}
   m_Name: _BuildingCollection2
   m_EditorClassIdentifier: 
-  Name: Recreation
+  Name: Recreational
   Objects:
   - {fileID: 11400000, guid: 94ee0bbcb32831c49ad2d88bb2b84e16, type: 2}
   - {fileID: 11400000, guid: 0764e5651287bd14696942e10f6ff7dd, type: 2}
