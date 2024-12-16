@@ -31,12 +31,12 @@ public class TownObjectManager : IControllable
 
     public void NextCollection()
     {
-        ChangeCollection((int)Mathf.Repeat(_currentCollection+1, _objectCollections.Count));
+        ChangeCollection(1);
     }
 
     public void PreviousCollection()
     {
-        ChangeCollection((int)Mathf.Repeat(_currentCollection-1, _objectCollections.Count - 1));
+        ChangeCollection(-1);
     }
 
     public bool SetObjectSelection(string id)
@@ -52,13 +52,8 @@ public class TownObjectManager : IControllable
 
     private void ChangeCollection(int index)
     {
-        if(!index.IsBetweenRange(0, _objectCollections.Count))
-        {
-            Debug.LogWarning($"{nameof(TownObjectManager)}: Index is out of bounds");
-            return;
-        }
         _currentObject = 0;
-        _currentCollection = index;
+        _currentCollection = (_currentCollection + _objectCollections.Count + index) % _objectCollections.Count;
         OnCollectionChanged?.Invoke();
     }
 
