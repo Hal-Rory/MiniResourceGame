@@ -8,7 +8,7 @@ namespace Utility
     {
 
         [Serializable]
-        private struct Tutorials
+        private class Tutorials
         {
             public string TutorialTitle;
             public int[] TutorialClips;
@@ -37,6 +37,7 @@ namespace Utility
         [SerializeField] private string _switchTrigger;
         [SerializeField] private string _animationIndex;
         [SerializeField] private CardTMP _tutorialCardTMP;
+
         private int _currentTutorial;
         private Animator _tutorialAnimations;
 
@@ -77,6 +78,21 @@ namespace Utility
                 "\n\nThese stats combined contribute to the likelihood of new residents moving in." +
                 $"\n\nIf a lot is destroyed, these stats are updated. All resources used will be returned, but when removing a home lot, the residents will also be evicted."
             };
+        }
+
+        public void ToggleTutorial()
+        {
+            if (!_tutorialCardTMP.gameObject.activeSelf)
+            {
+                _currentTutorial = 0;
+                foreach (Tutorials tutorial in _tutorials)
+                {
+                    tutorial.TutorialClipIndex = 0;
+                }
+                StartTutorial();
+            }
+
+            _tutorialCardTMP.gameObject.SetActive(!_tutorialCardTMP.gameObject.activeSelf);
         }
 
         public void NextAnimationInTutorial()
