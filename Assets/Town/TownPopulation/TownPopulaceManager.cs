@@ -1,28 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utility;
 using Controllers;
-using Interfaces;
 using Placement;
 using UnityEngine;
-using Utility;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation
 {
     [Serializable]
-    public class TownPopulaceManager : IControllable, IActionBoxHolder
+    public class TownPopulaceManager : IControllable
     {
         private float _totalHappiness;
         private int _totalPopulation;
         private int _growthThreshold;
         private List<int> _availableHousing;
-        [SerializeField] private float _housingWait;
-        private Coroutine _checkForHousingAllowed;
-        private ActionBox _housingCoroutine;
-        private bool _stagnantGrowth;
 
         private PopulationFactory _populationFactory => GameController.Instance.Population;
         private IncomeManager _incomeManager => GameController.Instance.Income;
@@ -32,21 +25,6 @@ namespace Town.TownPopulation
             GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
             GameController.Instance.RegisterPlacementListener(OnNewLot, OnRemoveLot);
             _availableHousing = new List<int>();
-            if (_housingCoroutine != null) return;
-            _housingCoroutine = new ActionBox(() =>
-                {
-                    _housingCoroutine.Running = _checkForHousingAllowed == null;
-                    _checkForHousingAllowed ??= GameController.Instance.StartCoroutine(CheckHousingCO());
-                },
-                () =>
-                {
-                    _housingCoroutine.Running = false;
-                    if (_checkForHousingAllowed == null || !GameController.Instance) return;
-                    GameController.Instance.StopCoroutine(_checkForHousingAllowed);
-                    _checkForHousingAllowed = null;
-                }
-            );
-            GameController.Instance.PickupAction(this, _housingCoroutine);
             _totalHappiness = 0;
         }
 
@@ -64,12 +42,7 @@ namespace Town.TownPopulation
             float happinessValue = Random.value;
             float averageHappiness =
                 _populationFactory.UsePopulationAsAverage(_totalHappiness / 100, 1);
-            return !_stagnantGrowth && _growthThreshold >= _populationFactory.GetActivePopulation().Count && happinessValue <= averageHappiness;
-        }
-
-        public void SetStagnant(bool stagnant)
-        {
-            _stagnantGrowth = stagnant;
+            return _growthThreshold >= _populationFactory.GetActivePopulation().Count && happinessValue <= averageHappiness;
         }
 
         public int GetHappiness()
@@ -93,17 +66,6 @@ namespace Town.TownPopulation
         {
             AdjustStockpiles();
             CheckHouseholdAvailability();
-            if (_checkForHousingAllowed == null)
-            {
-                _housingCoroutine.Start();
-            }
-        }
-
-        private IEnumerator CheckHousingCO()
-        {
-            yield return new WaitForSeconds(_housingWait);
-            _checkForHousingAllowed = null;
-            _housingCoroutine.Stop();
         }
 
         private void AdjustStockpiles()
@@ -120,20 +82,11 @@ namespace Town.TownPopulation
 
         private void CheckHouseholdAvailability()
         {
-            if (_checkForHousingAllowed != null || !CanPopulationGrow() || _availableHousing.Count == 0) return;
+            if (!CanPopulationGrow() || _availableHousing.Count == 0) return;
             int nextAvailable = _availableHousing.GetRandomIndex();
             House house = GameController.Instance.LotFactory.GetLot(nextAvailable) as House;
             _availableHousing.Remove(nextAvailable);
             GameController.Instance.Population.CreateHome(house);
-        }
-
-        public void PickingUp()
-        {
-        }
-
-        public void PuttingDown()
-        {
-            _housingCoroutine.Stop();
         }
     }
 }

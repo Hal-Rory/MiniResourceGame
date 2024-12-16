@@ -59,6 +59,8 @@ public class GameTimeManager : MonoBehaviour
     public void SetMultiplier(float multiplier)
     {
         TimeMultiplier = multiplier;
+        SetTimeActive(false);
+        SetTimeActive(true);
     }
 
     public float GetClockSpeed()
@@ -75,22 +77,26 @@ public class GameTimeManager : MonoBehaviour
     {
         while (TimeActive)
         {
-            yield return new WaitForSeconds(_tickDelta * TimeMultiplier);
-            if (_gameTime.AddHours(1).Day != _gameTime.Day)
+            if (TimeMultiplier != 0)
             {
-                _onEarlyClockUpdate?.Invoke(1);
-                _onClockUpdate?.Invoke(1);
-                _onLateClockUpdate?.Invoke(1);
-            }
+                yield return new WaitForSeconds(_tickDelta * TimeMultiplier);
+                if (_gameTime.AddHours(1).Day != _gameTime.Day)
+                {
+                    _onEarlyClockUpdate?.Invoke(1);
+                    _onClockUpdate?.Invoke(1);
+                    _onLateClockUpdate?.Invoke(1);
+                }
 
-            TimesOfDay timeOfDay = TimeOfDay;
-            _gameTime = _gameTime.AddHours(1);
-            if (timeOfDay != TimeOfDay)
-            {
-                _onClockStateUpdate?.Invoke(TimeOfDay);
-                _onLateClockStateUpdate?.Invoke(TimeOfDay);
-            }
-            _shortDate = GetTime();
+                TimesOfDay timeOfDay = TimeOfDay;
+                _gameTime = _gameTime.AddHours(1);
+                if (timeOfDay != TimeOfDay)
+                {
+                    _onClockStateUpdate?.Invoke(TimeOfDay);
+                    _onLateClockStateUpdate?.Invoke(TimeOfDay);
+                }
+
+                _shortDate = GetTime();
+            } else yield return null;
         }
 
         _clockUpdating = null;

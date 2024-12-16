@@ -6,7 +6,6 @@ namespace Utility
 {
     public class Tutorial : MonoBehaviour
     {
-
         [Serializable]
         private class Tutorials
         {
@@ -33,6 +32,7 @@ namespace Utility
         }
 
         private string[] _tutorialTexts;
+        [SerializeField] private GameObject _tutorialPanel;
         [SerializeField] private Tutorials[] _tutorials;
         [SerializeField] private string _switchTrigger;
         [SerializeField] private string _animationIndex;
@@ -82,7 +82,7 @@ namespace Utility
 
         public void ToggleTutorial()
         {
-            if (!_tutorialCardTMP.gameObject.activeSelf)
+            if (!_tutorialPanel.gameObject.activeSelf)
             {
                 _currentTutorial = 0;
                 foreach (Tutorials tutorial in _tutorials)
@@ -92,7 +92,7 @@ namespace Utility
                 StartTutorial();
             }
 
-            _tutorialCardTMP.gameObject.SetActive(!_tutorialCardTMP.gameObject.activeSelf);
+            _tutorialPanel.gameObject.SetActive(!_tutorialPanel.gameObject.activeSelf);
         }
 
         public void NextAnimationInTutorial()
