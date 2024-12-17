@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Common.Utility;
-using Interfaces;
 using Placement;
 using Town.TownObjectData;
 using Town.TownObjectManagement;
@@ -27,6 +25,7 @@ namespace Controllers
         public TownLotSelectionManager Selection;
         public UIManager UI;
         public TownPopulaceManager TownPopulace;
+
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private GameObject _game;
 
@@ -34,14 +33,11 @@ namespace Controllers
 
         public bool PlacementMode { get; private set; }
 
-        private Dictionary<IActionBoxHolder, ActionBox> Actions;
-
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
-                Actions = new Dictionary<IActionBoxHolder, ActionBox>();
                 TownPopulace ??= new TownPopulaceManager();
                 TownPopulace.SetUp();
                 TownObject ??= new TownObjectManager();
@@ -60,22 +56,6 @@ namespace Controllers
             else
             {
                 Destroy(gameObject);
-            }
-        }
-
-        private void OnEnable()
-        {
-            foreach (IActionBoxHolder box in Actions.Keys)
-            {
-                box.PickingUp();
-            }
-        }
-
-        private void OnDisable()
-        {
-            foreach (IActionBoxHolder box in Actions.Keys)
-            {
-                box.PuttingDown();
             }
         }
 
@@ -188,28 +168,6 @@ namespace Controllers
         public void SetTimeMultiplier(float multiplier)
         {
             GameTime.SetMultiplier(multiplier);
-        }
-
-        /// <summary>
-        /// Allows a holder to manually add a box
-        /// </summary>
-        /// <param name="holder">The holder of the box</param>
-        /// <param name="box">The action box</param>
-        /// <param name="start">Should the box be started now</param>
-        public void PickupAction(IActionBoxHolder holder, ActionBox box)
-        {
-            Actions.TryAdd(holder, box);
-        }
-        /// <summary>
-        /// Allows a holder to manually remove itself and therefore it's box.
-        /// All removed holders will have their box put down.
-        /// </summary>
-        /// <param name="holder">The holder of the box</param>
-        /// <param name="box">The action box</param>
-        public void PutdownAction(IActionBoxHolder holder, ActionBox box)
-        {
-            Actions.Remove(holder);
-            holder.PuttingDown();
         }
     }
 }

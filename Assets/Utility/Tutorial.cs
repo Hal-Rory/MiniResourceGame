@@ -53,28 +53,28 @@ namespace Utility
             _tutorialTexts = new[]
             {
                 //building menu tutorial
-                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Build Menu</color>: The build menu has several collections to choose a town lot from. Select a lot to display the various stats that are available." +
+                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Build Menu</color>: The build menu has several collections to choose a town lot from. Select a lot to display the various stats that are available." +
                 $"\n\nSelect build to place the building on the map using the placement guide.",
 
                 //lot types
-                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Name</color>: Each lot has a price and various stats that are displayed when selected." +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Price</color>: The price of the lot" +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Type</color>: The lot type" +
+                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Name</color>: Each lot has a price and various stats that are displayed when selected." +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Price</color>: The price of the lot" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Type</color>: The lot type" +
                 "\n\tResidential lots provide housing, commercial lots provide work, and recreational lots provide happiness, a trait that some commercial lots share." +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Perks</color>: What the building provides, such as income or happiness" +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Inhabiting/Employee Capacity</color>: The type of people that can that will reside in this lot and the max capacity allowed" +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Visitor Capacity</color>: The type of people that can visit this lot, if any, and the max capacity allowed",
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Perks</color>: What the building provides, such as income or happiness" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Inhabiting/Employee Capacity</color>: The type of people that can that will reside in this lot and the max capacity allowed" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Visitor Capacity</color>: The type of people that can visit this lot, if any, and the max capacity allowed",
 
                 //lot display tutorial
-                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Lot Information</color>: Once placed, lots have their own stats that are displayed, varying by the lot type." +
+                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Information</color>: Once placed, lots have their own stats that are displayed, varying by the lot type." +
                 "\n\nBy selecting a lot, this information can be viewed as well as additional information based on the stat." +
                 "\n\nIt is also possible to demolish the lot entirely.",
 
                 //town info tutorial
-                $"<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Town Information</color>: In addition to the game's date and time, the town has several stats that contribute to it's attractiveness." +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Income</color>: The funds available and the net income of the residents\n" +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Population</color>: The current population\n" +
-                $"\n\n<color=#{GameController.Instance.UI.ColorPalette.DarkBrownHex}>Happiness</color>: The total happiness of the town\n" +
+                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Town Information</color>: In addition to the game's date and time, the town has several stats that contribute to it's attractiveness." +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Income</color>: The funds available and the net income of the residents\n" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Population</color>: The current population\n" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Happiness</color>: The total happiness of the town\n" +
                 "\n\nThese stats combined contribute to the likelihood of new residents moving in." +
                 $"\n\nIf a lot is destroyed, these stats are updated. All resources used will be returned, but when removing a home lot, the residents will also be evicted."
             };

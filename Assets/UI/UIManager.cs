@@ -1,5 +1,6 @@
 using System;
 using Controllers;
+using UnityEngine;
 using Utility;
 
 namespace UI
@@ -8,13 +9,13 @@ namespace UI
     public class UIManager : IControllable
     {
         private IUIControl _currentControl;
-        public ColorPaletteUtilities ColorPalette = new ColorPaletteUtilities();
+        [SerializeField] private ColorPaletteObject _palette;
         private SoundManager _soundManager => GameController.Instance.Sound;
 
         public void SetUp()
         {
             _currentControl = null;
-            ColorPalette.GetHex();
+            ColorPaletteUtilities.GetHex(_palette);
         }
 
         public void SetDown()

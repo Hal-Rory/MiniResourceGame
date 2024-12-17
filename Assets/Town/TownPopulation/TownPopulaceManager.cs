@@ -4,7 +4,6 @@ using System.Linq;
 using Common.Utility;
 using Controllers;
 using Placement;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation

@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Samples.RebindUI;
 using UnityEngine.UI;
+using Utility;
 
 public class GameUI : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class GameUI : MonoBehaviour
     private IncomeManager _income => GameController.Instance.Income;
     private TownPopulaceManager _populace => GameController.Instance.TownPopulace;
     private PopulationFactory _population => GameController.Instance.Population;
-    private TownObjectManager _town => GameController.Instance.TownObject;
     public TextMeshProUGUI CurrentDate;
     public TextMeshProUGUI CurrentPopulation;
     public TextMeshProUGUI CurrentIncome;
@@ -32,22 +32,6 @@ public class GameUI : MonoBehaviour
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
         _income.OnIncomeChanged += AnimateIncome;
-        _town.OnStateChanged += OnGameStateChanged;
-    }
-
-    private void OnGameStateChanged(bool changed)
-    {
-        switch (changed)
-        {
-            case true when _secondaryInfo.activeSelf:
-                _secondaryPanelToggle.SetIsOnWithoutNotify(false);
-                _secondaryPanelToggle.interactable = false;
-                _secondaryInfo.SetActive(false);
-                break;
-            case false:
-                _secondaryPanelToggle.interactable = true;
-                break;
-        }
     }
 
     private void Update()
@@ -55,6 +39,17 @@ public class GameUI : MonoBehaviour
         CurrentDate.text = $"{_gameTime.GetDate()} @ {_gameTime.GetTime()}";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
         CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
+        switch (GameController.Instance.PlacementMode)
+        {
+            case true when _secondaryInfo.activeSelf:
+                _secondaryPanelToggle.SetIsOnWithoutNotify(false);
+                _secondaryPanelToggle.interactable = false;
+                _secondaryInfo.SetActive(false);
+                break;
+            case false when !_secondaryPanelToggle.interactable:
+                _secondaryPanelToggle.interactable = true;
+                break;
+        }
     }
 
     public void UpdateControls(PlayerInput controls)

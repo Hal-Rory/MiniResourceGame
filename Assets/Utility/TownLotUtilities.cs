@@ -8,7 +8,7 @@ namespace Utility
     {
         private static string ColorTextCount(int count, int max)
         {
-            return $"<color=#{GameController.Instance.UI.ColorPalette.YellowHex}>{count}</color> / {max}";
+            return $"<color=#{ColorPaletteUtilities.YellowHex}>{count}</color> / {max}";
         }
 
         public static string ColoredPersonsText(this TownLot lot)

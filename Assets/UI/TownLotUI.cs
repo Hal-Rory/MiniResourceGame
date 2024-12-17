@@ -134,6 +134,7 @@ namespace UI
 
         private void OnWorkplaceUpdated(Workplace obj)
         {
+            if (!Active) return;
             UpdateHeaders();
             SetCapacityCards();
             if (!_currentTooltip) return;
@@ -298,8 +299,9 @@ namespace UI
 
         private void LateStateClockUpdate(GameTimeManager.TimesOfDay obj)
         {
-            if (!Active || !_currentTooltip) return;
+            if (!Active) return;
             SetCapacityCards();
+            if (!_currentTooltip) return;
             RefreshTooltip(_currentTooltip.ID);
         }
     }

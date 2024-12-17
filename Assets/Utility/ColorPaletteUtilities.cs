@@ -4,27 +4,25 @@ using UnityEngine;
 namespace Utility
 {
     [Serializable]
-    public class ColorPaletteUtilities
+    public static class ColorPaletteUtilities
     {
-        public ColorPaletteObject Palette;
+        public static string YellowHex { get; private set; }
+        public static string RedHex { get; private set; }
+        public static string GreenHex { get; private set; }
+        public static string TanHex { get; private set; }
+        public static string DarkBrownHex { get; private set; }
+        public static string BrownHex { get; private set; }
+        public static string LightBrownHex { get; private set; }
 
-        public string YellowHex { get; private set; }
-        public string RedHex { get; private set; }
-        public string GreenHex { get; private set; }
-        public string TanHex { get; private set; }
-        public string DarkBrownHex { get; private set; }
-        public string BrownHex { get; private set; }
-        public string LightBrownHex { get; private set; }
-
-        public void GetHex()
+        public static void GetHex(ColorPaletteObject palette)
         {
-            YellowHex = ColorUtility.ToHtmlStringRGB(Palette.Yellow);
-            RedHex =  ColorUtility.ToHtmlStringRGB(Palette.Red);
-            GreenHex =  ColorUtility.ToHtmlStringRGB(Palette.Green);
-            TanHex =  ColorUtility.ToHtmlStringRGB(Palette.White);
-            DarkBrownHex =  ColorUtility.ToHtmlStringRGB(Palette.DarkBrown);
-            BrownHex =  ColorUtility.ToHtmlStringRGB(Palette.Brown);
-            LightBrownHex =  ColorUtility.ToHtmlStringRGB(Palette.LightBrown);
+            YellowHex = ColorUtility.ToHtmlStringRGB(palette.Yellow);
+            RedHex =  ColorUtility.ToHtmlStringRGB(palette.Red);
+            GreenHex =  ColorUtility.ToHtmlStringRGB(palette.Green);
+            TanHex =  ColorUtility.ToHtmlStringRGB(palette.White);
+            DarkBrownHex =  ColorUtility.ToHtmlStringRGB(palette.DarkBrown);
+            BrownHex =  ColorUtility.ToHtmlStringRGB(palette.Brown);
+            LightBrownHex =  ColorUtility.ToHtmlStringRGB(palette.LightBrown);
         }
     }
 }
