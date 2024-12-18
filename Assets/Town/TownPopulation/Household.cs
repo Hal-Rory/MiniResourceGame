@@ -9,7 +9,7 @@ namespace Town.TownPopulation
     [Serializable]
     public class Household : IPopulation
     {
-        [SerializeField] private List<Person> _inhabitants = new List<Person>();
+        private List<Person> _inhabitants = new List<Person>();
         public int HouseID { get; private set; }
         public int HouseholdID { get; private set; }
         public string HouseholdName{ get; private set; }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Tavern
   ID: tv
-  LotSize: {x: 1, y: 1}
+  LotSize: {x: 1, y: 2}
   LotPrice: 200
   ObjPreview: {fileID: 1910249055, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
   ObjPlacement: {fileID: 1910249055, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}

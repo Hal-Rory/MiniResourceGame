@@ -2,20 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Placement;
 using Town.TownPopulation;
-using UnityEngine;
 
 public class House : TownLot
 {
-    [field: SerializeField] public Household Household { get; private set; }
-    [SerializeField] private List<Person> _inhabitants = new List<Person>();
+    public Household Household { get; private set; }
     private HousingLotObj _houseLotObj => _townLotData as HousingLotObj;
     public int MaxHouseholdCapacity => _houseLotObj.InhabitantCapacity;
 
     public void SetHousehold(Household household)
     {
         Household = household;
-        _inhabitants.Clear();
-        _inhabitants.AddRange(Household.GetInhabitants());
         SetLotName(household?.HouseholdName);
     }
 
