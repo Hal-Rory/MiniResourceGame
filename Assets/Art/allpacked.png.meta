@@ -44,7 +44,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -68,7 +68,7 @@ TextureImporter:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 256
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -890,7 +890,7 @@ TextureImporter:
         serializedVersion: 2
         x: 16
         y: 32
-        width: 16
+        width: 32
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -901,27 +901,6 @@ TextureImporter:
       bones: []
       spriteID: 929c8342612f5ad4e8861923ef8c575f
       internalID: 406621163
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: allpacked_47
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 32
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 73ee68052905fb040860399868da490e
-      internalID: -852618937
       vertices: []
       indices: 
       edges: []
@@ -957,7 +936,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 4, y: 4, z: 4, w: 5}
+      border: {x: 3, y: 3, z: 3, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -1294,7 +1273,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      allpacked_49: -1090066381
+      allpacked_19: 1446564428
       allpacked_5: -1108025055
       allpacked_45: -352039850
       allpacked_57: -869203083
@@ -1360,8 +1339,8 @@ TextureImporter:
       allpacked_11: -420359287
       allpacked_18: 1432865326
       allpacked_64: -674647035
-      allpacked_19: 1446564428
       allpacked_43: -513887310
+      allpacked_49: -1090066381
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

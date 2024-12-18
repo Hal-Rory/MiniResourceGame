@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: shp
   LotSize: {x: 1, y: 1}
   LotPrice: 100
-  ObjPreview: {fileID: -126722723, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: -550906504, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: -340854441, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
+  ObjPlacement: {fileID: -340854441, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0.05
   VisitorAgeTarget: 0300000004000000
   LotType: Commercial

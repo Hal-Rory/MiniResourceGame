@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: cem
   LotSize: {x: 1, y: 1}
   LotPrice: 0
-  ObjPreview: {fileID: 850013509, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: 850013509, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: 1743908773, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
+  ObjPlacement: {fileID: 1743908773, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0.25
   VisitorAgeTarget: 05000000
   LotType: Graveyard

@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: off
   LotSize: {x: 1, y: 1}
   LotPrice: 100
-  ObjPreview: {fileID: -133400331, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: -133400331, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: -2003838788, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
+  ObjPlacement: {fileID: -2003838788, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0
   VisitorAgeTarget: 
   LotType: Commercial

@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: mvth
   LotSize: {x: 1, y: 1}
   LotPrice: 400
-  ObjPreview: {fileID: 1842370273, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: -1300580861, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: -1178392460, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
+  ObjPlacement: {fileID: -1178392460, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0.25
   VisitorAgeTarget: 010000000200000003000000
   LotType: Commercial

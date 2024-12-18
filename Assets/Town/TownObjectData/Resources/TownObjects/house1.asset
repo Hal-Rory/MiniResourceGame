@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ec9497153abe64c98497ed701e15ce, type: 3}
   m_Name: house1
   m_EditorClassIdentifier: 
-  Name: Trailer
+  Name: Small Home
   ID: h1
   LotSize: {x: 1, y: 1}
   LotPrice: 25
-  ObjPreview: {fileID: -2000431880, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
-  ObjPlacement: {fileID: -2000431880, guid: a9708bf6d355dd54782a759e3ffc8212, type: 3}
+  ObjPreview: {fileID: 1446564428, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
+  ObjPlacement: {fileID: 1446564428, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0
   VisitorAgeTarget: 
   LotType: Housing
