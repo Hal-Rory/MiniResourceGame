@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Controllers;
 using UnityEngine;
 
 public class GameTimeManager : MonoBehaviour
@@ -20,8 +21,14 @@ public class GameTimeManager : MonoBehaviour
     private Action<TimesOfDay> _onLateClockStateUpdate;
     private Coroutine _clockUpdating;
     [SerializeField] private float _tickDelta;
-    public float TimeMultiplier;
-    public bool TimeActive { get; private set; }
+    public int TimeMultiplier { get; private set; }
+
+    private bool _timeActive { get; set; }
+
+    private static readonly int[] _timeSpeeds =
+    {
+        0, 1, 10
+    };
 
     public TimesOfDay TimeOfDay
     {
@@ -43,7 +50,7 @@ public class GameTimeManager : MonoBehaviour
 
     public void SetTimeActive(bool active)
     {
-        TimeActive = active;
+        _timeActive = active;
         switch (active)
         {
             case true when _clockUpdating == null:
@@ -56,16 +63,26 @@ public class GameTimeManager : MonoBehaviour
         }
     }
 
-    public void SetMultiplier(float multiplier)
+    public void IncrementSpeed()
     {
-        TimeMultiplier = multiplier;
+        SetMultiplier((TimeMultiplier + 1 + _timeSpeeds.Length) % _timeSpeeds.Length);
+    }
+
+    public void SetMultiplier(int index)
+    {
+        TimeMultiplier = index;
         SetTimeActive(false);
         SetTimeActive(true);
     }
 
+    public void StopTime()
+    {
+        SetTimeActive(false);
+    }
+
     public float GetClockSpeed()
     {
-        return _tickDelta * TimeMultiplier;
+        return _tickDelta * _timeSpeeds[TimeMultiplier];
     }
 
     public float GetTimePercentage()
@@ -75,11 +92,11 @@ public class GameTimeManager : MonoBehaviour
 
     private IEnumerator Tick()
     {
-        while (TimeActive)
+        while (_timeActive)
         {
             if (TimeMultiplier != 0)
             {
-                yield return new WaitForSeconds(_tickDelta * TimeMultiplier);
+                yield return new WaitForSeconds(_tickDelta / _timeSpeeds[TimeMultiplier]);
                 if (_gameTime.AddHours(1).Day != _gameTime.Day)
                 {
                     _onEarlyClockUpdate?.Invoke(1);

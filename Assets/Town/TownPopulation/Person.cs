@@ -1,6 +1,7 @@
 using System;
 using Interfaces;
 using Placement;
+using Town.TownObjects;
 using Utility;
 using Random = UnityEngine.Random;
 

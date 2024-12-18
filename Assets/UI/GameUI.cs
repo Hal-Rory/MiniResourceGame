@@ -23,6 +23,7 @@ public class GameUI : MonoBehaviour
     public RebindActionUI[] _bindings;
     [SerializeField] private GameObject _secondaryInfo;
     [SerializeField] private Toggle _secondaryPanelToggle;
+    [SerializeField] private Toggle[] _timeToggles;
 
     private SoundManager _soundManager => GameController.Instance.Sound;
 
@@ -31,7 +32,7 @@ public class GameUI : MonoBehaviour
         CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
-        _income.OnIncomeChanged += AnimateIncome;
+        _income.OnIncomeChanged += UpdateIncome;
     }
 
     private void Update()
@@ -49,6 +50,24 @@ public class GameUI : MonoBehaviour
             case false when !_secondaryPanelToggle.interactable:
                 _secondaryPanelToggle.interactable = true;
                 break;
+            case false:
+                switch (GameController.Instance.Input.Movement.y)
+                {
+                    case > 0:
+                        SetPanelActive_Toggle(false);
+                        _secondaryPanelToggle.SetIsOnWithoutNotify(false);
+                        break;
+                    case < 0:
+                        SetPanelActive_Toggle(true);
+                        _secondaryPanelToggle.SetIsOnWithoutNotify(true);
+                        break;
+                }
+                break;
+        }
+        if (GameController.Instance.Input.TimePressed)
+        {
+            GameController.Instance.GameTime.IncrementSpeed();
+            _timeToggles[GameController.Instance.GameTime.TimeMultiplier].SetIsOnWithoutNotify(true);
         }
     }
 
@@ -63,15 +82,22 @@ public class GameUI : MonoBehaviour
         }
     }
 
-    private void AnimateIncome(int i)
+    private void UpdateIncome(int i)
     {
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
     }
 
     public void SetPanelActive_Toggle(bool active)
     {
-        if(active) _soundManager.PlaySelect();
-        else _soundManager.PlayCancel();
+        switch (active)
+        {
+            case true when !_secondaryInfo.activeSelf:
+                _soundManager.PlaySelect();
+                break;
+            case false when _secondaryInfo.activeSelf:
+                _soundManager.PlayCancel();
+                break;
+        }
         _secondaryInfo.SetActive(active);
     }
 }

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Common.Utility;
 using Placement;
+using Town.TownManagement;
 using Town.TownObjectData;
 using Town.TownObjectManagement;
+using Town.TownObjects;
 using Town.TownPopulation;
 using UI;
 using UnityEngine;
@@ -25,6 +27,8 @@ namespace Controllers
         public TownLotSelectionManager Selection;
         public UIManager UI;
         public TownPopulaceManager TownPopulace;
+
+        public bool KeyMenuPause { get; private set; }
 
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private GameObject _game;
@@ -118,7 +122,7 @@ namespace Controllers
                 }
                 if (!location) return;
                 person.SetLocation(location);
-                if (person.CurrentLocationID == houseID) return;
+                if (person.CurrentLocationID == houseID || person.CurrentLocationID == person.JobIndex) return;
                 location.AddVisitors(person);
             }
         }
@@ -165,9 +169,17 @@ namespace Controllers
             return Income.CanPurchase(obj.LotPrice);
         }
 
-        public void SetTimeMultiplier(float multiplier)
+        public void SetTimeMultiplier(int index)
         {
-            GameTime.SetMultiplier(multiplier);
+            if (index == GameTime.TimeMultiplier) return;
+            GameTime.SetMultiplier(index);
+        }
+
+        public void SetKeyMenuPause(bool paused)
+        {
+            KeyMenuPause = paused;
+            if(paused) GameTime.StopTime();
+            else GameTime.SetMultiplier(GameTime.TimeMultiplier);
         }
     }
 }

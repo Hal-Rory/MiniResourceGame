@@ -1,46 +1,48 @@
 using System.Collections.Generic;
 using System.Linq;
-using Placement;
 using Town.TownPopulation;
 
-public class House : TownLot
+namespace Town.TownObjects
 {
-    public Household Household { get; private set; }
-    private HousingLotObj _houseLotObj => _townLotData as HousingLotObj;
-    public int MaxHouseholdCapacity => _houseLotObj.InhabitantCapacity;
-
-    public void SetHousehold(Household household)
+    public class House : TownLot
     {
-        Household = household;
-        SetLotName(household?.HouseholdName);
-    }
+        public Household Household { get; private set; }
+        private HousingLotObj _houseLotObj => _townLotData as HousingLotObj;
+        public int MaxHouseholdCapacity => _houseLotObj.InhabitantCapacity;
 
-    public List<Person> GetInhabitants()
-    {
-        return Household?.GetInhabitants();
-    }
+        public void SetHousehold(Household household)
+        {
+            Household = household;
+            SetLotName(household?.HouseholdName);
+        }
 
-    public int GetInhabitantsCount()
-    {
-        return Household != null ? Household.GetInhabitants().Count : 0;
-    }
+        public List<Person> GetInhabitants()
+        {
+            return Household?.GetInhabitants();
+        }
 
-    public override string GetLotName()
-    {
-        return Household == null ? $"{_townLotData.Name} Home" : base.GetLotName();
-    }
+        public int GetInhabitantsCount()
+        {
+            return Household != null ? Household.GetInhabitants().Count : 0;
+        }
 
-    public override string ToString()
-    {
-        string inhabitants = string.Empty;
-        if (Household != null)
-            inhabitants = Household.GetInhabitants().Aggregate(
-                inhabitants,
-                (current, inhabitant) => current + $"\n{inhabitant}");
+        public override string GetLotName()
+        {
+            return Household == null ? $"{_townLotData.Name}" : base.GetLotName();
+        }
 
-        return $"{(Household == null ? _townLotData.Name : GetLotName())}" +
-               (!string.IsNullOrEmpty(inhabitants)
-                   ? $"\nResidents: {inhabitants}"
-                   : "\nCurrently Vacant");
+        public override string ToString()
+        {
+            string inhabitants = string.Empty;
+            if (Household != null)
+                inhabitants = Household.GetInhabitants().Aggregate(
+                    inhabitants,
+                    (current, inhabitant) => current + $"\n{inhabitant}");
+
+            return $"{(Household == null ? _townLotData.Name : GetLotName())}" +
+                   (!string.IsNullOrEmpty(inhabitants)
+                       ? $"\nResidents: {inhabitants}"
+                       : "\nCurrently Vacant");
+        }
     }
 }

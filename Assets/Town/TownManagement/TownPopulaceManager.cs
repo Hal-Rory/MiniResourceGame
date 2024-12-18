@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utility;
 using Controllers;
-using Placement;
+using Town.TownObjects;
 using Random = UnityEngine.Random;
 
 namespace Town.TownPopulation

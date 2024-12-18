@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Controllers;
-using Interfaces;
 using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
 using Utility;
 
-namespace Placement
+namespace Town.TownObjects
 {
     public abstract class TownLot : MonoBehaviour
     {
@@ -18,8 +15,10 @@ namespace Placement
         public string LotType => _townLotData.LotType;
         [SerializeField] protected SpriteRenderer _renderer;
         [SerializeField] protected BoxCollider2D _collider;
+        [SerializeField] protected SpriteRenderer _hoverObject;
         private string _name;
         [SerializeField] protected List<Person> _persons = new List<Person>();
+        public bool Selected { get; protected set; }
         public void AddVisitors(params Person[] persons)
         {
             _persons.AddRange(persons);
@@ -104,10 +103,22 @@ namespace Placement
 
         public virtual void StartHovering()
         {
+            _hoverObject.gameObject.SetActive(true);
         }
 
         public virtual void EndHovering()
         {
+            _hoverObject.gameObject.SetActive(false);
+        }
+
+        public virtual void Select()
+        {
+            Selected = true;
+        }
+
+        public virtual void Deselect()
+        {
+            Selected = false;
         }
 
         /// <summary>
@@ -120,9 +131,18 @@ namespace Placement
             _name = _townLotData.Name;
             _renderer = transform.Find("Display").GetComponent<SpriteRenderer>();
             _collider = GetComponentInChildren<BoxCollider2D>();
+            _hoverObject = transform.Find("outline").GetComponent<SpriteRenderer>();
+
+            Vector3 placementPosition = new Vector3(
+                lotObj.LotSize.x * .5f,
+                lotObj.LotSize.y * -.5f,
+                0);
+
             _renderer.sprite = lotObj.ObjPlacement;
-            _collider.size = _renderer.bounds.size;
-            _collider.offset = transform.InverseTransformPoint(_renderer.bounds.center);
+            _renderer.transform.localPosition = placementPosition;
+            _collider.size = lotObj.LotSize;
+            _hoverObject.size = lotObj.LotSize;
+            _hoverObject.transform.localPosition = placementPosition;
         }
     }
 }

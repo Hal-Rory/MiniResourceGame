@@ -1751,6 +1751,7 @@ MonoBehaviour:
   SecondaryPressed: 0
   ExitPressed: 0
   MenuPressed: 0
+  TimePressed: 0
   ControlScheme: 
 --- !u!114 &266107966
 MonoBehaviour:
@@ -1869,6 +1870,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 1c5aff1c-aeeb-4406-ab94-4666fd28842b
     m_ActionName: Player/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1ad8a67f-b13a-490e-8802-a44931302d21
+    m_ActionName: Player/Time[/DualSenseGamepadHID/touchpadButton,/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2055,11 +2060,11 @@ MonoBehaviour:
       - m_Target: {fileID: 1024175949}
         m_TargetAssemblyTypeName: Controllers.GameController, Assembly-CSharp
         m_MethodName: SetTimeMultiplier
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0.05
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2164,7 +2169,6 @@ MonoBehaviour:
   _startDateTime: 3/1/2024 6:00AM
   _shortDate: 
   _tickDelta: 1
-  TimeMultiplier: 1
 --- !u!1 &354928795
 GameObject:
   m_ObjectHideFlags: 0
@@ -2292,6 +2296,10 @@ MonoBehaviour:
   - {fileID: 1532930322}
   _secondaryInfo: {fileID: 22354912}
   _secondaryPanelToggle: {fileID: 616310899}
+  _timeToggles:
+  - {fileID: 1099807076}
+  - {fileID: 729180019}
+  - {fileID: 345277049}
 --- !u!1 &360297066
 GameObject:
   m_ObjectHideFlags: 0
@@ -4499,11 +4507,11 @@ MonoBehaviour:
       - m_Target: {fileID: 1024175949}
         m_TargetAssemblyTypeName: Controllers.GameController, Assembly-CSharp
         m_MethodName: SetTimeMultiplier
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7572,7 +7580,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1024175949}
         m_TargetAssemblyTypeName: Controllers.GameController, Assembly-CSharp
         m_MethodName: SetTimeMultiplier
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8213,6 +8221,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5340847676316505011, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5340847676316505011, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5340847676316505011, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5340847677581702928, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
       propertyPath: m_Name
       value: Scrollbar Vertical
@@ -8247,7 +8267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5340847677581702929, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 10
+      value: 12.918
       objectReference: {fileID: 0}
     - target: {fileID: 5340847677581702929, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
       propertyPath: m_SizeDelta.y
@@ -8283,7 +8303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5340847677581702929, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 2.918
       objectReference: {fileID: 0}
     - target: {fileID: 5340847677581702929, guid: 6ed2e0bc5379eac42ae0ae873a413019, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -12605,8 +12625,8 @@ RectTransform:
   m_Father: {fileID: 1742579340}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.04, y: 0.04}
-  m_AnchorMax: {x: 0.96, y: 0.96}
+  m_AnchorMin: {x: 0.03, y: 0.05}
+  m_AnchorMax: {x: 0.97, y: 0.95}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -12749,7 +12769,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf5a5253c22daa47b1b484cc6363d15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellIndicator: {fileID: 1788172214}
+  _cellIndicator: {fileID: 193482107}
+  _cellOffset: {fileID: 1788172214}
   _currentCell: {x: 0, y: 0, z: 0}
   _worldGrid: {fileID: 1827157022}
 --- !u!1 &1853475130

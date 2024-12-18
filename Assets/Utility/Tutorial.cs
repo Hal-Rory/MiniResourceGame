@@ -37,6 +37,7 @@ namespace Utility
         [SerializeField] private string _switchTrigger;
         [SerializeField] private string _animationIndex;
         [SerializeField] private CardTMP _tutorialCardTMP;
+        private bool _active;
 
         private int _currentTutorial;
         private Animator _tutorialAnimations;
@@ -46,6 +47,12 @@ namespace Utility
             DefineTutorialText();
             _tutorialAnimations = _tutorialCardTMP.GetComponentInChildren<Animator>();
             StartTutorial();
+            _active = _tutorialPanel.activeSelf;
+        }
+
+        private void OnEnable()
+        {
+            GameController.Instance.SetKeyMenuPause(true);
         }
 
         private void DefineTutorialText()
@@ -82,6 +89,7 @@ namespace Utility
 
         public void ToggleTutorial()
         {
+            _active = !_active;
             if (!_tutorialPanel.gameObject.activeSelf)
             {
                 _currentTutorial = 0;
@@ -91,8 +99,15 @@ namespace Utility
                 }
                 StartTutorial();
             }
+            _tutorialPanel.gameObject.SetActive(_active);
+            GameController.Instance.SetKeyMenuPause(_active);
+        }
 
-            _tutorialPanel.gameObject.SetActive(!_tutorialPanel.gameObject.activeSelf);
+        public void CloseTutorial_UI()
+        {
+            _active = false;
+            _tutorialPanel.gameObject.SetActive(_active);
+            GameController.Instance.SetKeyMenuPause(_active);
         }
 
         public void NextAnimationInTutorial()

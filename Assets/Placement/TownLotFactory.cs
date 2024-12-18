@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Town.TownObjectData;
+using Town.TownObjects;
 using UnityEngine;
 
 namespace Placement

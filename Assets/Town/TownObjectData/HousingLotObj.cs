@@ -1,5 +1,6 @@
 using Placement;
 using Town.TownObjectData;
+using Town.TownObjects;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New House", menuName = "Town/Create House Object")]

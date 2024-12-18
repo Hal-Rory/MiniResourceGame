@@ -48,19 +48,20 @@ namespace UI
                 SetMenuOpen(!Active);
             }
 
+            if (!Active) return;
             if (_input.ExitPressed)
             {
-                if (Active)
-                {
-                    SetMenuOpen(false);
-                }
+                SetMenuOpen(false);
             }
 
-            if (_input.SecondaryPressed)
+            switch (_input.Movement.x)
             {
-                // print(_townObject.GetObjectsInCollection()[_currentSelection].ID);
-                // print(SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID).ID);
-                // ((ButtonCard)SelectionDisplay.GetCard(_townObject.GetObjectsInCollection()[_currentSelection].ID)).Select();
+                case > 0:
+                    SetNextCollection();
+                    break;
+                case < 0:
+                    SetPreviousCollection();
+                    break;
             }
         }
 

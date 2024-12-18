@@ -199,6 +199,7 @@ namespace UI
             if (_currentTooltip && _currentTooltip.ID == card.ID)
             {
                 CloseTooltip();
+                _personListView.ClearCards();
                 _soundManager.PlayCancel();
                 return;
             }
@@ -216,7 +217,8 @@ namespace UI
         private void RefreshTooltip(string card)
         {
             UpdateTooltip = null;
-            _personListView.ClearCards();
+
+            _personListView.StashCards();
 
             if (card == CardTypes.Employees.ToString())
             {
@@ -248,6 +250,7 @@ namespace UI
                 CardTMP personCard = _personListView.SpawnItem(e.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
                 Person p = workplace.GetEmployees()[e];
+                personCard.SetEmpty();
                 personCard.SetLabel(p.Name);
                 personCard.SetIcon(_employeeIcon);
                 UpdateTooltip += () =>
@@ -268,6 +271,7 @@ namespace UI
                 CardTMP personCard = _personListView.SpawnItem(i.ToString(), _lotCardPrefab.gameObject)
                     .GetComponent<CardTMP>();
                 Person p = house.GetInhabitants()[i];
+                personCard.SetEmpty();
                 personCard.SetHeader(p.Name);
                 personCard.SetLabel(p.ToString());
                 UpdateTooltip += () =>
@@ -288,6 +292,7 @@ namespace UI
                 CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
                 Person p = _current.GetVisitors()[v];
+                personCard.SetEmpty();
                 personCard.SetLabel(p.Name);
                 personCard.SetIcon(_visitorIcon);
                 UpdateTooltip += () =>
