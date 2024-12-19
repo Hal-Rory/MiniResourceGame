@@ -34,7 +34,11 @@ namespace UI
 
         public bool TrySetActive(IUIControl control)
         {
-            if (_currentControl != null) return false;
+            //Swapping controls
+            if (_currentControl != null)
+            {
+                EndControl();
+            }
             _currentControl = control;
             _currentControl.Active = true;
             return true;
@@ -43,15 +47,16 @@ namespace UI
         public void EndControl(IUIControl control)
         {
             if (_currentControl != control) return;
-            _currentControl.ForceShutdown();
-            _currentControl.Active = false;
-            _currentControl = null;
+            EndControl();
             _soundManager.PlayCancel();
         }
 
         public void EndControl()
         {
-            EndControl(_currentControl);
+            if (_currentControl == null) return;
+            _currentControl.ForceShutdown();
+            _currentControl.Active = false;
+            _currentControl = null;
         }
     }
 }
