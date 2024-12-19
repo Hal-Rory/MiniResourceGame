@@ -18,7 +18,8 @@ namespace Utility.Editor
         private enum SelectableColoring
         {
             Positive = 0,
-            Negative = 1
+            Negative = 1,
+            Alternative
         }
         private ColorPaletteObject _palette;
         private List<bool> _showWindows = new List<bool>();
@@ -125,12 +126,22 @@ namespace Utility.Editor
                                             disabled.a = .2f;
                                             colors.disabledColor = disabled;
                                             break;
+                                        case SelectableColoring.Alternative:
+                                            colors.normalColor = _palette.LightBrown;
+                                            colors.highlightedColor = _palette.Brown;
+                                            colors.pressedColor = _palette.Yellow;
+                                            colors.selectedColor = _palette.LightBrown;
+                                            disabled = _palette.LightBrown;
+                                            disabled.a = .2f;
+                                            colors.disabledColor = disabled;
+                                            break;
                                         default:
                                             colors = target.colors;
                                             break;
                                     }
                                     target.colors = colors;
                                     SceneView.RepaintAll();
+                                    EditorUtility.SetDirty(target);
                                 }
                                 break;
                             }

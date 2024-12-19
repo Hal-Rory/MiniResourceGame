@@ -1,6 +1,7 @@
 using System;
 using Controllers;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Utility
 {
@@ -10,32 +11,19 @@ namespace Utility
         private class Tutorials
         {
             public string TutorialTitle;
-            public int[] TutorialClips;
             public int TutorialClipIndex;
-
-            public int NextClip()
-            {
-                TutorialClipIndex = (TutorialClipIndex + TutorialClips.Length + 1) % TutorialClips.Length;
-                return TutorialClips[TutorialClipIndex];
-            }
-
-            public int PreviousClip()
-            {
-                TutorialClipIndex = (TutorialClipIndex + TutorialClips.Length - 1) % TutorialClips.Length;
-                return TutorialClips[TutorialClipIndex];
-            }
-
-            public int CurrentClip()
-            {
-                return TutorialClips[TutorialClipIndex];
-            }
         }
 
         private string[] _tutorialTexts;
-        [SerializeField] private GameObject _tutorialPanel;
         [SerializeField] private Tutorials[] _tutorials;
+
+        [SerializeField] private ScrollRect _scrollPanel;
+
+        [SerializeField] private GameObject _tutorialPanel;
+
         [SerializeField] private string _switchTrigger;
         [SerializeField] private string _animationIndex;
+
         [SerializeField] private CardTMP _tutorialCardTMP;
         private bool _active;
 
@@ -60,30 +48,32 @@ namespace Utility
             _tutorialTexts = new[]
             {
                 //building menu tutorial
-                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Build Menu</color>: The build menu has several collections to choose a town lot from. Select a lot to display the various stats that are available." +
-                $"\n\nSelect build to place the building on the map using the placement guide.",
+                "Open the build menu and look through the categories to find a lot. Select that lot to look at the specific perks and information. " +
+                "When you're ready, click build and place it wherever you want (and wherever the placement guide allows).",
+
+                //destroy lot
+                "Simply click on your building and click the big destroy button. Easy! " +
+                "Be careful though: you do get resources back, but this could still affect overall town needs and perks.",
 
                 //lot types
-                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Name</color>: Each lot has a price and various stats that are displayed when selected." +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Price</color>: The price of the lot" +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Type</color>: The lot type" +
-                "\n\tResidential lots provide housing, commercial lots provide work, and recreational lots provide happiness, a trait that some commercial lots share." +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Perks</color>: What the building provides, such as income or happiness" +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Inhabiting/Employee Capacity</color>: The type of people that can that will reside in this lot and the max capacity allowed" +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Visitor Capacity</color>: The type of people that can visit this lot, if any, and the max capacity allowed",
-
-                //lot display tutorial
-                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Lot Information</color>: Once placed, lots have their own stats that are displayed, varying by the lot type." +
-                "\n\nBy selecting a lot, this information can be viewed as well as additional information based on the stat." +
-                "\n\nIt is also possible to demolish the lot entirely.",
+                "Before you commit to building, you can see the information for that lot," +
+                " such as name, the price, and the category it's from. You can also click on any already built lots to get this information as well." +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Categories/Perks</color>:" +
+                "\t\nResidential lots provide housing and increases population. " +
+                "\t\nCommercial lots provide work and money. " +
+                "\t\nRecreational category lots provide happiness. Sometimes, a lot can even provide multiple perks!" +
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Capacity</color>: Basically, how many people you can fit in one lot. " +
+                "Depending on the type of lot, this can mean how many people can live there, how many people can work there, or even max capacity if it's a recreational building (our lots are up to code after all).",
 
                 //town info tutorial
-                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Town Information</color>: In addition to the game's date and time, the town has several stats that contribute to it's attractiveness." +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Income</color>: The funds available and the net income of the residents\n" +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Population</color>: The current population\n" +
-                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Happiness</color>: The total happiness of the town\n" +
-                "\n\nThese stats combined contribute to the likelihood of new residents moving in." +
-                $"\n\nIf a lot is destroyed, these stats are updated. All resources used will be returned, but when removing a home lot, the residents will also be evicted."
+                "In addition to the game's date and time, you'll see that everyone who lives on the town helps contribute to the overall stats as well as their own stats. " +
+                //"This is important, because some lots or people aren't available until the town perks have raised enough overall." This is V2
+                $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Perk Specifics</color>:" +
+                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Income</color>: The funds you have to buy new lots and the net income of the residents that have jobs." +
+                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Population</color>: How many people are living there right now. " +
+                "(It's important to have enough housing to fit new residents.)" +
+                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Happiness</color>: The total happiness of the town. This goes up and down depending on each resident." +
+                "\n\nAll of these help attract new people to your town, so keep those numbers up!"
             };
         }
 
@@ -93,11 +83,12 @@ namespace Utility
             if (!_tutorialPanel.gameObject.activeSelf)
             {
                 _currentTutorial = 0;
-                foreach (Tutorials tutorial in _tutorials)
-                {
-                    tutorial.TutorialClipIndex = 0;
-                }
                 StartTutorial();
+                GameController.Instance.Sound.PlaySelect();
+            }
+            else
+            {
+                GameController.Instance.Sound.PlayCancel();
             }
             _tutorialPanel.gameObject.SetActive(_active);
             GameController.Instance.SetKeyMenuPause(_active);
@@ -110,37 +101,27 @@ namespace Utility
             GameController.Instance.SetKeyMenuPause(_active);
         }
 
-        public void NextAnimationInTutorial()
-        {
-            SetAnimation(_tutorials[_currentTutorial].NextClip());
-        }
-
-        public void PreviousAnimationInTutorial()
-        {
-            SetAnimation(_tutorials[_currentTutorial].PreviousClip());
-        }
-
         public void NextTutorial()
         {
-            _tutorials[_currentTutorial].TutorialClipIndex = 0;
             _currentTutorial = (_currentTutorial + _tutorials.Length + 1) % _tutorials.Length;
-            _tutorials[_currentTutorial].TutorialClipIndex = 0;
             StartTutorial();
+            GameController.Instance.Sound.PlaySelect();
         }
 
         public void PreviousTutorial()
         {
-            _tutorials[_currentTutorial].TutorialClipIndex = 0;
             _currentTutorial = (_currentTutorial + _tutorials.Length - 1) % _tutorials.Length;
-            _tutorials[_currentTutorial].TutorialClipIndex = 0;
             StartTutorial();
+            GameController.Instance.Sound.PlaySelect();
         }
 
         private void StartTutorial()
         {
             _tutorialCardTMP.SetHeader(_tutorials[_currentTutorial].TutorialTitle);
             _tutorialCardTMP.SetLabel(_tutorialTexts[_currentTutorial]);
-            SetAnimation(_tutorials[_currentTutorial].CurrentClip());
+            _scrollPanel.verticalNormalizedPosition = 1;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollPanel.content);
+            SetAnimation(_tutorials[_currentTutorial].TutorialClipIndex);
         }
 
         private void SetAnimation(int index)
