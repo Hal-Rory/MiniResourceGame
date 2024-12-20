@@ -69,8 +69,8 @@ public class CardTMP : MonoBehaviour
     {
         ID = string.Empty;
         SetIcon(_emptyImage);
-        _label.text = label;
-        _header.text = header;
+        SetLabel(label);
+        SetHeader(header);
     }
 
     public void SetIconActive(bool active)
