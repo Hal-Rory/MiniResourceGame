@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Controllers;
 using Interfaces;
 using Placement;
+using TMPro;
 using Town.TownObjects;
 using Town.TownPopulation;
 using UnityEngine;
@@ -36,6 +37,7 @@ namespace UI
         [SerializeField] private ListView _personListView;
         [SerializeField] private ScrollRect _personScroll;
 
+        [SerializeField] private TextMeshProUGUI _tooltipHeaderCard;
         [SerializeField] private CardTMP _headerCard;
         [SerializeField] private CardTMP _typeCard;
         [SerializeField] private CardTMP _perksCard;
@@ -113,6 +115,12 @@ namespace UI
             _uiManager.EndControl(this);
         }
 
+        public void FinishAndClose()
+        {
+            //if this doesn't trigger, there's a problem with the selected lot not being officially selected
+            bool closed = GameController.Instance.Selection.TryDeselectTownLot();
+        }
+
         public void ForceShutdown()
         {
             _lotPanel.SetActive(false);
@@ -132,8 +140,9 @@ namespace UI
         }
         #endregion
 
-        private void OnWorkplaceUpdated(Workplace obj)
+        private void OnWorkplaceUpdated(Workplace lot)
         {
+            GameController.Instance.LotFactory.GetLot(lot.PlacementID).Popup($"+{lot.EmployeeCount}", _employeeIcon);
             if (!Active) return;
             UpdateHeaders();
             SetCapacityCards();
@@ -143,7 +152,9 @@ namespace UI
 
         private void OnPopulationCreated(IPopulation population)
         {
-            if (!Active || population is not Household) return;
+            if (population is not Household household) return;
+            GameController.Instance.LotFactory.GetLot(household.HouseID).Popup($"+{household.GetInhabitants().Count}", _visitorIcon);
+            if (!Active) return;
             UpdateHeaders();
             SetCapacityCards();
             if (!_currentTooltip) return;
@@ -208,6 +219,16 @@ namespace UI
             RefreshTooltip(card.ID);
         }
 
+        public void ToggleOffTooltip()
+        {
+            if (_currentTooltip)
+            {
+                CloseTooltip();
+                _personListView.ClearCards();
+                _soundManager.PlayCancel();
+            }
+        }
+
         /// <summary>
         /// Depending on the card ID this will update the tool tips for that type
         /// (Employees, Inhabitants, Visitors (if applicable))
@@ -219,6 +240,8 @@ namespace UI
             UpdateTooltip = null;
 
             _personListView.StashCards();
+
+            _tooltipHeaderCard.text = _current.GetLotName();
 
             if (card == CardTypes.Employees.ToString())
             {
@@ -251,11 +274,13 @@ namespace UI
                     .GetComponent<CardTMP>();
                 Person p = workplace.GetEmployees()[e];
                 personCard.SetEmpty();
-                personCard.SetLabel(p.Name);
+                personCard.SetHeader($"{p.Name} ({p.AgeGroup.ToString()})");
+                personCard.SetLabel(p.ToString());
                 personCard.SetIcon(_employeeIcon);
                 UpdateTooltip += () =>
                 {
-                    personCard.SetLabel(p.Name);
+                    personCard.SetHeader(p.Name);
+                    personCard.SetLabel(p.ToString());
                 };
             }
         }
@@ -272,7 +297,7 @@ namespace UI
                     .GetComponent<CardTMP>();
                 Person p = house.GetInhabitants()[i];
                 personCard.SetEmpty();
-                personCard.SetHeader(p.Name);
+                personCard.SetHeader($"{p.Name} ({p.AgeGroup.ToString()})");
                 personCard.SetLabel(p.ToString());
                 UpdateTooltip += () =>
                 {
@@ -293,11 +318,15 @@ namespace UI
                     .GetComponent<CardTMP>();
                 Person p = _current.GetVisitors()[v];
                 personCard.SetEmpty();
-                personCard.SetLabel(p.Name);
+                personCard.SetHeader($"{p.Name} ({p.AgeGroup.ToString()})");
+                personCard.SetLabel($"{p.PrintLocation()}" +
+                                    $"\n{p.PrintHappiness()}");
                 personCard.SetIcon(_visitorIcon);
                 UpdateTooltip += () =>
                 {
-                    personCard.SetLabel(p.Name);
+                    personCard.SetHeader($"{p.Name} ({p.AgeGroup.ToString()})");
+                    personCard.SetLabel($"{p.PrintLocation()}" +
+                                        $"\n{p.PrintHappiness()}");
                 };
             }
         }

@@ -113,7 +113,7 @@ namespace Utility.Editor
                                             colors.highlightedColor = _palette.Red;
                                             colors.pressedColor = _palette.White;
                                             colors.selectedColor = _palette.Yellow;
-                                            disabled = _palette.Yellow;
+                                            disabled = _palette.LightGray;
                                             disabled.a = .2f;
                                             colors.disabledColor = disabled;
                                             break;
@@ -122,7 +122,7 @@ namespace Utility.Editor
                                             colors.highlightedColor = _palette.Yellow;
                                             colors.pressedColor = _palette.White;
                                             colors.selectedColor = _palette.Red;
-                                            disabled = _palette.Red;
+                                            disabled = _palette.LightGray;
                                             disabled.a = .2f;
                                             colors.disabledColor = disabled;
                                             break;
@@ -131,7 +131,7 @@ namespace Utility.Editor
                                             colors.highlightedColor = _palette.Brown;
                                             colors.pressedColor = _palette.Yellow;
                                             colors.selectedColor = _palette.LightBrown;
-                                            disabled = _palette.LightBrown;
+                                            disabled = _palette.LightGray;
                                             disabled.a = .2f;
                                             colors.disabledColor = disabled;
                                             break;

@@ -7,13 +7,13 @@ public class GameTimeManager : MonoBehaviour
 {
     public enum TimesOfDay
     {
+        Morning,
         Work,
         Relax,
         Rest
     }
     private DateTime _gameTime;
     [SerializeField] private string _startDateTime;
-    [SerializeField] private string _shortDate;
     private Action<int> _onEarlyClockUpdate;
     private Action<int> _onClockUpdate;
     private Action<int> _onLateClockUpdate;
@@ -36,9 +36,10 @@ public class GameTimeManager : MonoBehaviour
         {
             return _gameTime.Hour switch
             {
-                >= 7 and < 16 => TimesOfDay.Work,
-                >= 16 and < 22 => TimesOfDay.Relax,
-                < 7 or >= 22 => TimesOfDay.Rest
+                >= 5 and < 9 => TimesOfDay.Morning,
+                >= 9 and < 17 => TimesOfDay.Work,
+                >= 17 and < 23 => TimesOfDay.Relax,
+                < 5 or >= 23 => TimesOfDay.Rest
             };
         }
     }
@@ -111,8 +112,6 @@ public class GameTimeManager : MonoBehaviour
                     _onClockStateUpdate?.Invoke(TimeOfDay);
                     _onLateClockStateUpdate?.Invoke(TimeOfDay);
                 }
-
-                _shortDate = GetTime();
             } else yield return null;
         }
 
@@ -149,7 +148,7 @@ public class GameTimeManager : MonoBehaviour
 
     public string GetDate()
     {
-        return _gameTime.ToShortDateString();
+        return _gameTime.ToString("MMM dd");
     }
 
     public string GetTime()

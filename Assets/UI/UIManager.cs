@@ -58,5 +58,10 @@ namespace UI
             _currentControl.Active = false;
             _currentControl = null;
         }
+
+        public ColorPaletteObject GetPalette()
+        {
+            return _palette;
+        }
     }
 }

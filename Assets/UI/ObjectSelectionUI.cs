@@ -3,12 +3,14 @@ using Controllers;
 using Town.TownObjectData;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 namespace UI
 {
     public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
         private InputManager _input => GameController.Instance.Input;
+        private UIManager _ui => GameController.Instance.UI;
         private TownObjectManager _townObject => GameController.Instance.TownObject;
         public GameObject MenuContainer;
         public bool Active { get; set; }
@@ -74,11 +76,11 @@ namespace UI
 
         private void SetMenuOpen(bool open)
         {
-            if (open && !GameController.Instance.UI.TrySetActive(this)) return;
+            if (open && !_ui.TrySetActive(this)) return;
             ClearCards();
             if(!open)
             {
-                GameController.Instance.UI.EndControl(this);
+                _ui.EndControl(this);
             }
             else
             {
@@ -91,7 +93,7 @@ namespace UI
 
         public void ForceShutdown()
         {
-            if (!GameController.Instance.UI.HasControl(this)) return;
+            if (!_ui.HasControl(this)) return;
             _townObject.StartPlacing(false);
         }
 
@@ -131,6 +133,9 @@ namespace UI
                 }
                 card.AddListener(onSelect);
                 card.SetIcon(lot.ObjPreview);
+                card.GetToggle().image.color = GameController.Instance.CanPurchase(_townObject.CurrentObject)
+                    ? card.GetToggle().image.color
+                    : _ui.GetPalette().LightGray;
                 card.GetToggle().group = _selectionToggleGroup;
             }
 
@@ -152,20 +157,19 @@ namespace UI
                     card.gameObject.SetActive(false);
                     switch (lot)
                     {
-                        case not null when card.ID == TownLotUI.CardTypes.Perks.ToString():
-                            card.SetLabel($"{lot.GetPerks()}");
+                        case WorkplaceLotObj workplace when card.ID == TownLotUI.CardTypes.Employees.ToString():
+                            card.SetLabel($"[max: {workplace.EmployeeCapacity}] {workplace.GetEmployeeCriteria()}" +
+                                          $"\n{workplace.GetWorkplacePerks()}");
                             card.gameObject.SetActive(true);
                             break;
                         case not HousingLotObj when card.ID == TownLotUI.CardTypes.Visitors.ToString():
-                            card.SetLabel($"[Age Groups: {lot.GetVisitorCriteria()}]{(lot.VisitorAgeTarget.Length > 0 ? $"\n{lot.VisitorCapacity}" : "")}");
-                            card.gameObject.SetActive(true);
-                            break;
-                        case WorkplaceLotObj workplace when card.ID == TownLotUI.CardTypes.Employees.ToString():
-                            card.SetLabel($"[Age Groups: {workplace.GetEmployeeCriteria()}]\n{workplace.EmployeeCapacity}");
+                            card.SetLabel($"[max: {(lot.VisitorAgeTarget.Length > 0 ? $"{lot.VisitorCapacity}" : "0")}] {lot.GetVisitorCriteria()}" +
+                                          $"\n+{lot.GetPerks()}");
                             card.gameObject.SetActive(true);
                             break;
                         case HousingLotObj house when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
-                            card.SetLabel($"{house.InhabitantCapacity}");
+                            card.SetLabel($"[max: {house.InhabitantCapacity}]"+
+                                          $"\n+{lot.GetPerks()}");
                             card.gameObject.SetActive(true);
                             break;
                     }
@@ -201,6 +205,9 @@ namespace UI
         {
             if (!Active || !_lotDescription.activeSelf) return;
             bool canAfford = GameController.Instance.CanPurchase(_townObject.CurrentObject);
+            _currentSelection.image.color = canAfford
+                ? _currentSelection.image.color
+                : _ui.GetPalette().LightGray;
             _buildButton.gameObject.SetActive(canAfford);
             _fundsWarning.gameObject.SetActive(!canAfford);
         }

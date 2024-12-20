@@ -10,7 +10,8 @@ namespace Town.TownManagement
         private InputManager _input => GameController.Instance.Input;
         public event Action<TownLot> OnTownObjectSelected;
         public event Action<TownLot> OnTownObjectDeselected;
-        private TownLot _lastFound;
+        private TownLot _lastSelected;
+        private TownLot _lastHovered;
 
         private void Start()
         {
@@ -25,7 +26,6 @@ namespace Town.TownManagement
         private void Update()
         {
             if (GameController.Instance.PlacementMode) return;
-            TryHover();
             if (_input.ExitPressed)
             {
                 DeselectTownLot();
@@ -35,35 +35,63 @@ namespace Town.TownManagement
             {
                 SelectTownLot();
             }
+            TryHover();
         }
 
         public void SelectTownLot()
         {
             if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode) return;
-            OnTownObjectSelected?.Invoke(_lastFound);
+            if (_lastHovered)
+            {
+                if (_lastSelected == _lastHovered) return;
+                if(_lastSelected) _lastSelected.Deselect();
+                _lastSelected = _lastHovered;
+                _lastSelected.Select();
+                OnTownObjectSelected?.Invoke(_lastSelected);
+            }
         }
 
         public void DeselectTownLot()
         {
+            if (_lastSelected)
+            {
+                _lastSelected.Deselect();
+                _lastSelected.EndHovering();
+            }
+            _lastSelected = null;
             OnTownObjectDeselected?.Invoke(null);
+        }
+
+        public bool TryDeselectTownLot()
+        {
+            if (!_lastSelected) return false;
+
+            _lastSelected.Deselect();
+            _lastSelected.EndHovering();
+            _lastSelected = null;
+            OnTownObjectDeselected?.Invoke(null);
+            return true;
         }
 
         private void TryHover()
         {
             if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode) return;
-
             _input.GetSelectionPosition(1 << LayerMask.NameToLayer("TownLot"), out Collider2D col);
 
+            //found target lot
             if (col && col.transform.parent.TryGetComponent(out TownLot lot) && lot)
             {
-                if (lot == _lastFound) return;
-                if(_lastFound) _lastFound.EndHovering();
-                _lastFound = lot;
-                lot.StartHovering();
-                return;
+                //if it's the same lot, stop
+                if (lot == _lastHovered || !lot) return;
+                if(_lastHovered) _lastHovered.EndHovering();
+                _lastHovered = lot;
+                _lastHovered.StartHovering();
             }
-            if (_lastFound) _lastFound.EndHovering();
-            _lastFound = null;
+            else
+            {
+                if(_lastHovered) _lastHovered.EndHovering();
+                _lastHovered = null;
+            }
         }
     }
 }

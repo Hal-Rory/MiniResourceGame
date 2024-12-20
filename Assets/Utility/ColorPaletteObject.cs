@@ -13,10 +13,11 @@ namespace Utility
         public Color DarkBrown = Color.white;
         public Color Brown = Color.white;
         public Color LightBrown = Color.white;
+        public Color LightGray = Color.white;
 
         public List<Color> Colors => new List<Color>
         {
-            Yellow, Red, Green, White, DarkBrown, Brown, LightBrown
+            Yellow, Red, Green, White, DarkBrown, Brown, LightBrown, LightGray
         };
     }
 }

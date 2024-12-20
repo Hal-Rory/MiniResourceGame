@@ -24,29 +24,33 @@ namespace Town.TownPopulation
         private float _age;
         public int JobIndex = -1;
         public int HouseholdIndex;
+        public int HouseID;
         public int IncomeContribution;
         public float Happiness { get; private set; }
+        public string JobName;
         public string CurrentLocation;
         public int CurrentLocationID;
 
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
 
-        public void Setup(string name, PersonAgeGroup ageGroup, int jobIndex, int household)
+        public void Setup(string name, PersonAgeGroup ageGroup, int household, int houseID)
         {
             Name = name;
             AgeGroup = ageGroup;
-            JobIndex = jobIndex;
             HouseholdIndex = household;
             int ageMin = (int)AgeGroup - 1; //0-1, 1-2, 2-3 ...
             int ageMax = (int)AgeGroup;
             _age = Random.Range(_ageRanges[ageMin], _ageRanges[ageMax]);
             Happiness = 0;
+            HouseID = houseID;
+            Employ(-1, 0, "Unemployed");
         }
 
-        public void Employ(int placementID, int wages)
+        public void Employ(int placementID, int wages, string jobName)
         {
             JobIndex = placementID;
             IncomeContribution = wages;
+            JobName = jobName;
         }
 
         public void ClockUpdate(int tick)
@@ -95,14 +99,35 @@ namespace Town.TownPopulation
         public void Unemploy()
         {
             if (CurrentLocationID == JobIndex) CurrentLocationID = -1;
-            Employ(-1, 0);
+            Employ(-1, 0, "Unemployed");
+        }
+
+        public string PrintJob()
+        {
+            return $"Job: {JobName}";
+        }
+
+        public string PrintIncome()
+        {
+            return $"{(AgeGroup is not PersonAgeGroup.Deceased ? $"Income: +${IncomeContribution} / d" : "")}";
+        }
+
+        public string PrintLocation()
+        {
+            return $"Location: {CurrentLocation}";
+        }
+
+        public string PrintHappiness()
+        {
+            return $"Happiness: {Happiness}";
         }
 
         public override string ToString()
         {
-            return $"Age: {AgeGroup}\n" +
-                   (AgeGroup is not PersonAgeGroup.Deceased ? $"Income: {IncomeContribution:+0;-#}\n" : "") +
-                   $"Location: {CurrentLocation}";
+            return $"{PrintJob()}" +
+                   $"\n{PrintIncome()}" +
+                   $"\n{PrintLocation()}" +
+                   $"\n{PrintHappiness()}";
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Town.TownObjects
         public void Employ(Person person)
         {
             _employees.Add(person);
-            person.Employ(PlacementID, _workLotData.Wages);
+            person.Employ(PlacementID, _workLotData.Wages, GetLotName());
         }
 
         public void Unemploy(params Person[] persons)

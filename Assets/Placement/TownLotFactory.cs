@@ -21,16 +21,11 @@ namespace Placement
             newLot.SetLotID(_placedGameObjects.Count);
             newLot.Create(lotObjBase);
             newLot.CellBlock = position;
+            newLot.ValidLot = true;
             if(Application.isPlaying){
                 _placedGameObjects.Add(newLot);
                 OnLotAdded?.Invoke(newLot);
             }
-            return _placedGameObjects.Count - 1;
-        }
-
-        public int AddLot(TownLot newLot)
-        {
-            _placedGameObjects.Add(newLot);
             return _placedGameObjects.Count - 1;
         }
 
@@ -39,6 +34,7 @@ namespace Placement
             if (_placedGameObjects.Count <= gameObjectIndex
                 || !_placedGameObjects[gameObjectIndex].gameObject)
                 return;
+            _placedGameObjects[gameObjectIndex].ValidLot = false;
             OnLotRemoved?.Invoke(_placedGameObjects[gameObjectIndex]);
             Destroy(_placedGameObjects[gameObjectIndex].gameObject);
             _placedGameObjects[gameObjectIndex] = null;

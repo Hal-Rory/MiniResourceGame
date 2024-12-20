@@ -9,7 +9,7 @@ namespace Utility
     {
         public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural, bool uppercase)
         {
-            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural(uppercase).ToString() : uppercase ? age.CapitalizeFirst() : age.ToString()).ToList());
+            string ageGroup = string.Join(", ", enumerable.Select(age => isPlural ? age.Plural(uppercase).ToString() : age.ToString()).ToList());
             return ageGroup;
         }
 
@@ -49,7 +49,7 @@ namespace Utility
             }
         }
 
-        private static string CapitalizeFirst(this PersonAgeGroup age)
+        public static string CapitalizeFirst(this PersonAgeGroup age)
         {
             return char.ToUpperInvariant(age.ToString()[0]) + age.ToString()[1..];
         }

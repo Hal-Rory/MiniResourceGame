@@ -13,6 +13,7 @@ namespace Utility
         public static string DarkBrownHex { get; private set; }
         public static string BrownHex { get; private set; }
         public static string LightBrownHex { get; private set; }
+        public static string LightGrayHex { get; private set; }
 
         public static void GetHex(ColorPaletteObject palette)
         {
@@ -23,6 +24,7 @@ namespace Utility
             DarkBrownHex =  ColorUtility.ToHtmlStringRGB(palette.DarkBrown);
             BrownHex =  ColorUtility.ToHtmlStringRGB(palette.Brown);
             LightBrownHex =  ColorUtility.ToHtmlStringRGB(palette.LightBrown);
+            LightGrayHex =  ColorUtility.ToHtmlStringRGB(palette.LightGray);
         }
     }
 }

@@ -15,6 +15,7 @@ public class GameUI : MonoBehaviour
     private IncomeManager _income => GameController.Instance.Income;
     private TownPopulaceManager _populace => GameController.Instance.TownPopulace;
     private PopulationFactory _population => GameController.Instance.Population;
+    public TextMeshProUGUI CurrentTimeOfDay;
     public TextMeshProUGUI CurrentDate;
     public TextMeshProUGUI CurrentPopulation;
     public TextMeshProUGUI CurrentIncome;
@@ -40,6 +41,7 @@ public class GameUI : MonoBehaviour
         CurrentDate.text = $"{_gameTime.GetDate()} @ {_gameTime.GetTime()}";
         CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
         CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
+        CurrentTimeOfDay.text = $"{_gameTime.TimeOfDay}";
         switch (GameController.Instance.PlacementMode)
         {
             case true when _secondaryInfo.activeSelf:

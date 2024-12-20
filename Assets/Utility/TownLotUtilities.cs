@@ -11,24 +11,19 @@ namespace Utility
             return $"<color=#{ColorPaletteUtilities.YellowHex}>{count}</color> / {max}";
         }
 
-        public static string ColoredPersonsText(this TownLot lot)
-        {
-            return ColorTextCount(lot.GetVisitorCount(), lot.GetMaxVisitorCapacity());
-        }
-
         public static string ColoredVisitorText(this TownLot lot)
         {
-            return $"[Age Groups: {lot.GetVisitorCriteria()}]\n{(lot.CanHaveVisitors() ? ColorTextCount(lot.GetVisitorCount(), lot.GetMaxVisitorCapacity()) : "")}";
+            return $"Capacity: {(lot.CanHaveVisitors() ? ColorTextCount(lot.GetVisitorCount(), lot.GetMaxVisitorCapacity()) : "")}\n{lot.GetVisitorCriteria()}";
         }
 
         public static string ColoredEmployeeText(this Workplace lot)
         {
-            return $"[Age Groups: {lot.GetWorkCriteria()}]\n{ColorTextCount(lot.EmployeeCount, lot.MaxEmployeeCapacity)}";
+            return $"Capacity: {ColorTextCount(lot.EmployeeCount, lot.MaxEmployeeCapacity)}\n{lot.GetWorkCriteria()}";
         }
 
         public static string ColoredInhabitantsText(this House house)
         {
-            return $"{ColorTextCount(house.GetInhabitantsCount(), house.MaxHouseholdCapacity)}";
+            return $"Capacity: {ColorTextCount(house.GetInhabitantsCount(), house.MaxHouseholdCapacity)}";
         }
     }
 }

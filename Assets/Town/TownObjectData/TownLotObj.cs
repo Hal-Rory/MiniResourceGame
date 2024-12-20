@@ -42,9 +42,9 @@ namespace Town.TownObjectData
             return visitorCriteria;
         }
 
-        public virtual string GetPerks()
+        public string GetPerks()
         {
-            string happinessPerk = $"{Happiness} mood / d";
+            string happinessPerk = $"{Happiness} mood / visit";
             return happinessPerk;
         }
     }

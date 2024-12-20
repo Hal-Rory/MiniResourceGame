@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Town.TownObjectData;
 using Town.TownPopulation;
 using UnityEngine;
@@ -16,9 +17,13 @@ namespace Town.TownObjects
         [SerializeField] protected SpriteRenderer _renderer;
         [SerializeField] protected BoxCollider2D _collider;
         [SerializeField] protected SpriteRenderer _hoverObject;
+        [SerializeField] protected SpriteRenderer _popupIcon;
+        [SerializeField] protected TextMeshPro _popupText;
+        [SerializeField] protected Animator _popupAnimator;
         private string _name;
         [SerializeField] protected List<Person> _persons = new List<Person>();
         public bool Selected { get; protected set; }
+        public bool ValidLot;
         public void AddVisitors(params Person[] persons)
         {
             _persons.AddRange(persons);
@@ -101,24 +106,33 @@ namespace Town.TownObjects
             RemoveVisitor(_persons.ToArray());
         }
 
-        public virtual void StartHovering()
+        public void StartHovering()
         {
             _hoverObject.gameObject.SetActive(true);
         }
 
-        public virtual void EndHovering()
+        public void EndHovering()
         {
-            _hoverObject.gameObject.SetActive(false);
+            if(!Selected) _hoverObject.gameObject.SetActive(false);
         }
 
-        public virtual void Select()
+        public void Select()
         {
             Selected = true;
+            StartHovering();
         }
 
-        public virtual void Deselect()
+        public void Deselect()
         {
             Selected = false;
+            EndHovering();
+        }
+
+        public void Popup(string text, Sprite icon)
+        {
+            _popupText.text = text;
+            _popupIcon.sprite = icon;
+            _popupAnimator.SetTrigger("popup");
         }
 
         /// <summary>
@@ -129,9 +143,12 @@ namespace Town.TownObjects
         {
             _townLotData = lotObj;
             _name = _townLotData.Name;
-            _renderer = transform.Find("Display").GetComponent<SpriteRenderer>();
-            _collider = GetComponentInChildren<BoxCollider2D>();
-            _hoverObject = transform.Find("outline").GetComponent<SpriteRenderer>();
+
+            TownLotCase lotCase = GetComponent<TownLotCase>();
+
+            _renderer = lotCase.Renderer;
+            _collider = lotCase.Collider;
+            _hoverObject = lotCase.HoverObject;
 
             Vector3 placementPosition = new Vector3(
                 lotObj.LotSize.x * .5f,
@@ -141,8 +158,12 @@ namespace Town.TownObjects
             _renderer.sprite = lotObj.ObjPlacement;
             _renderer.transform.localPosition = placementPosition;
             _collider.size = lotObj.LotSize;
-            _hoverObject.size = lotObj.LotSize;
+            _hoverObject.size = lotObj.LotSize + new Vector2(.25f, .25f);
             _hoverObject.transform.localPosition = placementPosition;
+
+            _popupAnimator = lotCase.PopupAnimator;
+            _popupIcon = lotCase.PopupIcon;
+            _popupText = lotCase.PopupText;
         }
     }
 }

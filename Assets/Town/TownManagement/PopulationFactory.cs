@@ -111,7 +111,7 @@ namespace Town.TownPopulation
                     i < startingAdults
                         ? (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Adult, (int)PersonAgeGroup.Elder + 1) //Adult-Elder
                         : (PersonAgeGroup)Random.Range((int)PersonAgeGroup.Child, (int)PersonAgeGroup.Teen + 1), //Child-Teen
-                    -1,household.HouseholdID);
+                    household.HouseholdID, id);
                 household.AddInhabitant(householdMember);
             }
             return household;

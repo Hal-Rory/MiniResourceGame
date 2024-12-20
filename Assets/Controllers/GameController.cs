@@ -86,16 +86,19 @@ namespace Controllers
             lock (_townLotLock)
             {
                 if (Population.GetHousehold(person.HouseholdIndex) == null) return;
-                int houseID = Population.GetHousehold(person.HouseholdIndex).HouseID;
-                TownLot location = LotFactory.GetLot(houseID);
+                TownLot location = null;
+                if(person.CurrentLocationID != -1)
+                {
+                    location = LotFactory.GetLot(person.CurrentLocationID);
+                    if (location)
+                    {
+                        RemovePersonLocation(person);
+                    }
+                }
 
                 if (person.AgeGroup == PersonAgeGroup.Deceased)
                 {
-                    if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
-                    {
-                        location = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup))
-                            .GetRandomIndex();
-                    }
+                    location = FindRecreationalLot(person);
                 }
                 else if (timeOfDay == GameTimeManager.TimesOfDay.Work)
                 {
@@ -104,27 +107,29 @@ namespace Controllers
                         location = LotFactory.GetLot(person.JobIndex);
                     }
                 }
-                else if(timeOfDay != GameTimeManager.TimesOfDay.Rest)
+                else if(timeOfDay is not (GameTimeManager.TimesOfDay.Rest or GameTimeManager.TimesOfDay.Morning))
                 {
-                    if (LotFactory.TryGetLots(out List<TownLot> locations) && locations.Count > 0)
-                    {
-                        List<TownLot> viableLocations = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup));
-                        if (viableLocations.Count > 0)
-                        {
-                            location = viableLocations.GetRandomIndex();
-                        }
-                    }
+                    location = FindRecreationalLot(person);
                 }
-
-                if (person.CurrentLocationID != houseID || !location)
+                else
                 {
-                    RemovePersonLocation(person);
+                    location = LotFactory.GetLot(person.HouseID);
                 }
-                if (!location) return;
+                //this should never be null. If so, the person shouldn't exist in the first place
+                //(no home, no available lots to visit, no workplace would all have to be true)
                 person.SetLocation(location);
-                if (person.CurrentLocationID == houseID || person.CurrentLocationID == person.JobIndex) return;
-                location.AddVisitors(person);
             }
+        }
+
+        private TownLot FindRecreationalLot(Person person)
+        {
+            if (!LotFactory.TryGetLots(out List<TownLot> locations) || locations.Count <= 0)
+                return LotFactory.GetLot(person.HouseID);
+            List<TownLot> viableLocations = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup) && lot.ValidLot);
+            if (viableLocations.Count <= 0) return LotFactory.GetLot(person.HouseID);
+            TownLot location = viableLocations.GetRandomIndex();
+            location.AddVisitors(person);
+            return location;
         }
 
         public void RemovePersonLocation(Person person)
