@@ -15,6 +15,7 @@ namespace Town.TownPopulation
         private int _totalPopulation;
         private int _growthThreshold;
         private List<int> _availableHousing;
+        public int LastHappinessUpdate { get; private set; }
 
         private PopulationFactory _populationFactory => GameController.Instance.Population;
         private IncomeManager _incomeManager => GameController.Instance.Income;
@@ -70,9 +71,9 @@ namespace Town.TownPopulation
         private void AdjustStockpiles()
         {
             //average happiness of people
-            float averageHappiness = _populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
+            LastHappinessUpdate = (int)_populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
                 .Sum(person => person.Happiness));
-            _totalHappiness += (int)(averageHappiness);
+            _totalHappiness += LastHappinessUpdate;
         }
 
         private void CheckHouseholdAvailability()

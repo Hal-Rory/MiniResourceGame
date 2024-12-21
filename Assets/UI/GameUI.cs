@@ -2,6 +2,8 @@ using System;
 using Controllers;
 using Interfaces;
 using TMPro;
+using Town.TownObjectManagement;
+using Town.TownObjects;
 using Town.TownPopulation;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,9 +17,11 @@ public class GameUI : MonoBehaviour
     private IncomeManager _income => GameController.Instance.Income;
     private TownPopulaceManager _populace => GameController.Instance.TownPopulace;
     private PopulationFactory _population => GameController.Instance.Population;
+    private WorkplaceManager _workplace => GameController.Instance.Workplace;
     public TextMeshProUGUI CurrentTimeOfDay;
     public TextMeshProUGUI CurrentDate;
     public TextMeshProUGUI CurrentPopulation;
+    public TextMeshProUGUI CurrentUnemployed;
     public TextMeshProUGUI CurrentIncome;
     public TextMeshProUGUI CurrentHappiness;
     [SerializeField] private int _abbreviationMax;
@@ -25,6 +29,8 @@ public class GameUI : MonoBehaviour
     [SerializeField] private GameObject _secondaryInfo;
     [SerializeField] private Toggle _secondaryPanelToggle;
     [SerializeField] private Toggle[] _timeToggles;
+
+    [SerializeField] private StatUpdates _stats;
 
     private SoundManager _soundManager => GameController.Instance.Sound;
 
@@ -39,18 +45,20 @@ public class GameUI : MonoBehaviour
     private void Update()
     {
         CurrentDate.text = $"{_gameTime.GetDate()} @ {_gameTime.GetTime()}";
-        CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount:2)}";
-        CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
         CurrentTimeOfDay.text = $"{_gameTime.TimeOfDay}";
+        if(_secondaryInfo.activeSelf)
+        {
+            CurrentHappiness.text = $"{_populace.GetHappiness().Abbreviate(_abbreviationMax, trailingDigitsCount: 2)}";
+            CurrentPopulation.text = $"{_population.PopulationCount.Abbreviate(_abbreviationMax)}";
+            CurrentUnemployed.text = $"{_workplace.TotalWorkforce}/{_population.PopulationCount}";
+        }
+        _secondaryPanelToggle.interactable = !GameController.Instance.PlacementMode;
         switch (GameController.Instance.PlacementMode)
         {
             case true when _secondaryInfo.activeSelf:
                 _secondaryPanelToggle.SetIsOnWithoutNotify(false);
-                _secondaryPanelToggle.interactable = false;
                 _secondaryInfo.SetActive(false);
-                break;
-            case false when !_secondaryPanelToggle.interactable:
-                _secondaryPanelToggle.interactable = true;
+                _stats.gameObject.SetActive(true);
                 break;
             case false:
                 switch (GameController.Instance.Input.Movement.y)
@@ -66,11 +74,10 @@ public class GameUI : MonoBehaviour
                 }
                 break;
         }
-        if (GameController.Instance.Input.TimePressed)
-        {
-            GameController.Instance.GameTime.IncrementSpeed();
-            _timeToggles[GameController.Instance.GameTime.TimeMultiplier].SetIsOnWithoutNotify(true);
-        }
+
+        if (!GameController.Instance.Input.TimePressed) return;
+        GameController.Instance.GameTime.IncrementSpeed();
+        _timeToggles[GameController.Instance.GameTime.TimeMultiplier].SetIsOnWithoutNotify(true);
     }
 
     public void UpdateControls(PlayerInput controls)
@@ -86,6 +93,7 @@ public class GameUI : MonoBehaviour
 
     private void UpdateIncome(int i)
     {
+        if (!_secondaryInfo.activeSelf) return;
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
     }
 
@@ -101,5 +109,6 @@ public class GameUI : MonoBehaviour
                 break;
         }
         _secondaryInfo.SetActive(active);
+        _stats.gameObject.SetActive(!active);
     }
 }

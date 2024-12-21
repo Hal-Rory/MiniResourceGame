@@ -47,6 +47,7 @@ namespace UI
         [SerializeField] private CardTMP _personCard;
         [SerializeField] private Sprite _employeeIcon;
         [SerializeField] private Sprite _visitorIcon;
+        [SerializeField] private Sprite _moneyIcon;
 
         private ToggleCardTMP _currentTooltip;
         private Action UpdateTooltip;
@@ -56,7 +57,7 @@ namespace UI
             ForceShutdown();
             GameController.Instance.Selection.OnTownObjectSelected += TownLotSelected;
             GameController.Instance.Selection.OnTownObjectDeselected += TownLotDeselected;
-            GameController.Instance.RegisterPlacementListener(null, OnRemoveLot);
+            GameController.Instance.RegisterPlacementListener(OnAddLot, OnRemoveLot);
             GameController.Instance.GameTime.RegisterListener(lateStateClockUpdate:LateStateClockUpdate);
             GameController.Instance.Population.OnPopulationCreated += OnPopulationCreated;
             GameController.Instance.Workplace.OnWorkplaceUpdated += OnWorkplaceUpdated;
@@ -70,7 +71,7 @@ namespace UI
                 GameController.Instance.Selection.OnTownObjectSelected -= TownLotSelected;
                 GameController.Instance.Selection.OnTownObjectDeselected -= TownLotDeselected;
             }
-            GameController.Instance.UnregisterPlacementListener(null, OnRemoveLot);
+            GameController.Instance.UnregisterPlacementListener(OnAddLot, OnRemoveLot);
             if(GameController.Instance.GameTime) GameController.Instance.GameTime.UnregisterListener(lateStateClockUpdate:LateStateClockUpdate);
             if(GameController.Instance.Population != null) GameController.Instance.Population.OnPopulationCreated -= OnPopulationCreated;
             if(GameController.Instance.Workplace != null) GameController.Instance.Workplace.OnWorkplaceUpdated -= OnWorkplaceUpdated;
@@ -99,6 +100,11 @@ namespace UI
         public void DemolishLot_Button()
         {
             GameController.Instance.RemoveLot(_current.CellBlock);
+        }
+
+        private void OnAddLot(TownLot lot)
+        {
+            lot.Popup($"-${lot.GetLotPrice()}", _moneyIcon);
         }
 
         private void OnRemoveLot(TownLot obj)
@@ -142,7 +148,6 @@ namespace UI
 
         private void OnWorkplaceUpdated(Workplace lot)
         {
-            GameController.Instance.LotFactory.GetLot(lot.PlacementID).Popup($"+{lot.EmployeeCount}", _employeeIcon);
             if (!Active) return;
             UpdateHeaders();
             SetCapacityCards();

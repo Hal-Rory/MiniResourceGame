@@ -86,14 +86,10 @@ namespace Controllers
             lock (_townLotLock)
             {
                 if (Population.GetHousehold(person.HouseholdIndex) == null) return;
-                TownLot location = LotFactory.GetLot(person.HouseID);;
-                if(person.CurrentLocationID != -1)
+                TownLot location = LotFactory.GetLot(person.HouseID);
+                if(person.CurrentLocationID != person.HouseID)
                 {
-                    location = LotFactory.GetLot(person.CurrentLocationID);
-                    if (location)
-                    {
-                        RemovePersonLocation(person);
-                    }
+                    RemovePersonLocation(person);
                 }
                 if (person.AgeGroup == PersonAgeGroup.Deceased)
                 {
@@ -103,7 +99,7 @@ namespace Controllers
                 {
                     if (person.JobIndex != -1)
                     {
-                        location = LotFactory.GetLot(person.JobIndex);
+                        location = FindJobLot(person);
                     }
                 }
                 else if(timeOfDay == GameTimeManager.TimesOfDay.Relax)
@@ -118,6 +114,13 @@ namespace Controllers
                 }
                 person.SetLocation(location);
             }
+        }
+
+        private TownLot FindJobLot(Person person)
+        {
+            if (person.JobIndex == -1) return LotFactory.GetLot(person.HouseID);
+            TownLot jobLocation = LotFactory.GetLot(person.JobIndex);
+            return !jobLocation.ValidLot ? LotFactory.GetLot(person.HouseID) : jobLocation;
         }
 
         private TownLot FindRecreationalLot(Person person)

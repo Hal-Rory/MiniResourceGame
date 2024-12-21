@@ -78,7 +78,7 @@ namespace Controllers
             CurrentFunds += amount;
             if (amount == 0) return;
             OnIncomeUpdated?.Invoke();
-            OnIncomeChanged?.Invoke((int)Mathf.Sign(amount));
+            OnIncomeChanged?.Invoke(amount);
         }
 
         private void RegisterIncomeContributor(IIncomeContributor contributor)
@@ -91,6 +91,10 @@ namespace Controllers
             _incomeContributors.Remove(contributor);
         }
 
+        /// <summary>
+        /// Payouts happen immediately after work hours
+        /// </summary>
+        /// <param name="timeOfDay"></param>
         private void ClockUpdate(int tick)
         {
             CollectPayments();

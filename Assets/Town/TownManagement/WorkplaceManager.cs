@@ -15,6 +15,7 @@ namespace Town.TownObjectManagement
         public Dictionary<int, Workplace> Workplaces { get; } = new Dictionary<int, Workplace>();
         private PopulationFactory _population => GameController.Instance.Population;
         public event Action<Workplace> OnWorkplaceUpdated;
+        public int TotalWorkforce;
 
         public void SetUp()
         {
@@ -39,11 +40,13 @@ namespace Town.TownObjectManagement
                     {
                         if (inhabitant.JobIndex == -1) continue;
                         Workplaces[inhabitant.JobIndex].Unemploy(inhabitant);
+                        TotalWorkforce--;
                     }
                     break;
                 case Person person:
                     if (person.JobIndex == -1) return;
                     Workplaces[person.JobIndex].Unemploy(person);
+                    TotalWorkforce--;
                     break;
             }
         }
@@ -76,6 +79,7 @@ namespace Town.TownObjectManagement
             if (workplaces.Length == 0) return;
             Workplace workplace = workplaces.GetRandomIndex();
             workplace.Employ(person);
+            TotalWorkforce++;
             OnWorkplaceUpdated?.Invoke(workplace);
         }
 
