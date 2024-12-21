@@ -137,12 +137,6 @@ namespace Town.TownPopulation
             return PopulationCount == 0 ? defaultValue : amount / PopulationCount;
         }
 
-        public float AverageHouseholdSize()
-        {
-            float amount = _populationHouseholds.Aggregate(0, (total, household) => total + household.GetHousingDensity());
-            return UsePopulationAsAverage(amount);
-        }
-
         public void OrphanHousehold(House house)
         {
             if (house.Household == null) return;

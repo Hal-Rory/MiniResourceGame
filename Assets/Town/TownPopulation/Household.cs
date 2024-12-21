@@ -15,11 +15,6 @@ namespace Town.TownPopulation
         public string HouseholdName{ get; private set; }
         public int MaxSize { get; private set; } = 1;
 
-        public int GetHousingDensity()
-        {
-            return _inhabitants.Count / (MaxSize == 0? 1 : MaxSize);
-        }
-
         public Household(int id, int houseID, string householdName)
         {
             HouseholdID = id;

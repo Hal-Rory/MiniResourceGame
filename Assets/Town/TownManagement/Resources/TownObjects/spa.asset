@@ -15,10 +15,10 @@ MonoBehaviour:
   Name: Hot Spring
   ID: hspr
   LotSize: {x: 2, y: 2}
-  LotPrice: 300
+  LotPrice: 950
   ObjPreview: {fileID: -40370873, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: -820591430, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.3
+  Happiness: 7
   VisitorAgeTarget: 0300000004000000
   LotType: Recreational
   VisitorCapacity: 5

@@ -18,7 +18,7 @@ MonoBehaviour:
   LotPrice: 150
   ObjPreview: {fileID: -435839241, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: -649464866, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.125
+  Happiness: 1
   VisitorAgeTarget: 
   LotType: Housing
   VisitorCapacity: 0

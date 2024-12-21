@@ -15,13 +15,13 @@ MonoBehaviour:
   Name: Office
   ID: off
   LotSize: {x: 1, y: 1}
-  LotPrice: 100
+  LotPrice: 150
   ObjPreview: {fileID: -2003838788, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: -2003838788, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   Happiness: 0
   VisitorAgeTarget: 
   LotType: Commercial
   VisitorCapacity: 0
-  Wages: 10
+  Wages: 20
   EmployeeAgeGroups: 03000000
   EmployeeCapacity: 5

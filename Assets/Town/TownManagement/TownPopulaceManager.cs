@@ -11,7 +11,7 @@ namespace Town.TownPopulation
     [Serializable]
     public class TownPopulaceManager : IControllable
     {
-        private float _totalHappiness;
+        private int _totalHappiness;
         private int _totalPopulation;
         private int _growthThreshold;
         private List<int> _availableHousing;
@@ -40,13 +40,13 @@ namespace Town.TownPopulation
             //is the average high enough to warrant new growth?
             float happinessValue = Random.value;
             float averageHappiness =
-                _populationFactory.UsePopulationAsAverage(_totalHappiness / 100, 1);
+                _populationFactory.UsePopulationAsAverage(_totalHappiness, 1);
             return _growthThreshold >= _populationFactory.GetActivePopulation().Count && happinessValue <= averageHappiness;
         }
 
         public int GetHappiness()
         {
-            return (int)_totalHappiness;
+            return _totalHappiness;
         }
 
         private void OnNewLot(TownLot obj)
@@ -69,14 +69,10 @@ namespace Town.TownPopulation
 
         private void AdjustStockpiles()
         {
-            //how crowded are the households
-            float densityHappinessDecay = _populationFactory.AverageHouseholdSize();
             //average happiness of people
             float averageHappiness = _populationFactory.UsePopulationAsAverage(_populationFactory.GetActivePopulation()
                 .Sum(person => person.Happiness));
-            //total decay due to population size vs housing
-            float loss = averageHappiness * densityHappinessDecay;
-            _totalHappiness += averageHappiness - loss;
+            _totalHappiness += (int)(averageHappiness);
         }
 
         private void CheckHouseholdAvailability()

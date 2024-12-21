@@ -18,7 +18,7 @@ MonoBehaviour:
   LotPrice: 0
   ObjPreview: {fileID: 1743908773, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: 1743908773, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.25
+  Happiness: 1
   VisitorAgeTarget: 05000000
   LotType: Graveyard
   VisitorCapacity: 10

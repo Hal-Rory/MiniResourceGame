@@ -14,8 +14,8 @@ namespace Town.TownObjectData
         public int LotPrice;
         public Sprite ObjPreview;
         public Sprite ObjPlacement;
-        [Range(0,1)]
-        public float Happiness;
+        [Range(0,10)]
+        public int Happiness;
         public PersonAgeGroup[] VisitorAgeTarget;
         public string LotType;
         /// <summary>

@@ -15,10 +15,10 @@ MonoBehaviour:
   Name: Small Park
   ID: smpark
   LotSize: {x: 2, y: 1}
-  LotPrice: 75
+  LotPrice: 125
   ObjPreview: {fileID: -352039850, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: 406621163, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.1
+  Happiness: 5
   VisitorAgeTarget: 010000000200000004000000
   LotType: Recreational
   VisitorCapacity: 5

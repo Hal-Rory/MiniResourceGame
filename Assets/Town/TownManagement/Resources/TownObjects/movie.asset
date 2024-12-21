@@ -15,13 +15,13 @@ MonoBehaviour:
   Name: Theater
   ID: mvth
   LotSize: {x: 1, y: 1}
-  LotPrice: 400
+  LotPrice: 600
   ObjPreview: {fileID: -1178392460, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: -1178392460, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.25
+  Happiness: 4
   VisitorAgeTarget: 010000000200000003000000
   LotType: Commercial
   VisitorCapacity: 7
-  Wages: 15
+  Wages: 18
   EmployeeAgeGroups: 0200000003000000
   EmployeeCapacity: 4

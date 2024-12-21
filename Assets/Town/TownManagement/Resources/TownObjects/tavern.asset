@@ -15,13 +15,13 @@ MonoBehaviour:
   Name: Tavern
   ID: tv
   LotSize: {x: 1, y: 2}
-  LotPrice: 200
+  LotPrice: 800
   ObjPreview: {fileID: 493674518, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
   ObjPlacement: {fileID: 1626960537, guid: c258eaeba3a66864ba55b81cbef249c4, type: 3}
-  Happiness: 0.3
+  Happiness: 7
   VisitorAgeTarget: 03000000
   LotType: Commercial
   VisitorCapacity: 6
-  Wages: 10
+  Wages: 19
   EmployeeAgeGroups: 03000000
   EmployeeCapacity: 3
