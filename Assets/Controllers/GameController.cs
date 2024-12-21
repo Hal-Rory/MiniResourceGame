@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Common.Utility;
 using Placement;
@@ -61,6 +62,12 @@ namespace Controllers
             {
                 Destroy(gameObject);
             }
+        }
+
+        private IEnumerator Start()
+        {
+            yield return new WaitForSeconds(1);
+            _game.SetActive(true);
         }
 
         private void OnDestroy()

@@ -48,11 +48,9 @@ namespace Utility
             _tutorialTexts = new[]
             {
                 //building menu tutorial
-                "Open the build menu and look through the categories to find a lot. Select that lot to look at the specific perks and information. " +
-                "When you're ready, click build and place it wherever you want (and wherever the placement guide allows).",
-
-                //destroy lot
-                "Simply click on your building and click the big destroy button. Easy! " +
+                $"<color=#{ColorPaletteUtilities.DarkBrownHex}>Building</color>: Open the build menu and look through the categories to find a lot. Select that lot to look at the specific perks and information. " +
+                "When you're ready, click build and place it wherever you want (and wherever the placement guide allows)." +
+                $"\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Destroying</color>: Simply click on your building and click the big destroy button. Easy! " +
                 "Be careful though: you do get resources back, but this could still affect overall town needs and perks.",
 
                 //lot types
@@ -61,17 +59,20 @@ namespace Utility
                 $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Categories/Perks</color>:" +
                 "\t\nResidential lots provide housing and increases population. " +
                 "\t\nCommercial lots provide work and money. " +
+                "\t\n(Certain lot requirements, such as employment or visiting type, involves a person's age.)" +
                 "\t\nRecreational category lots provide happiness. Sometimes, a lot can even provide multiple perks!" +
                 $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Capacity</color>: Basically, how many people you can fit in one lot. " +
                 "Depending on the type of lot, this can mean how many people can live there, how many people can work there, or even max capacity if it's a recreational building (our lots are up to code after all).",
 
                 //town info tutorial
                 "In addition to the game's date and time, you'll see that everyone who lives on the town helps contribute to the overall stats as well as their own stats. " +
-                //"This is important, because some lots or people aren't available until the town perks have raised enough overall." This is V2
+                "If you don't see a particular stat raising, be sure to check your lot requirements are being met!" +
                 $"\n\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Perk Specifics</color>:" +
-                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Income</color>: The funds you have to buy new lots and the net income of the residents that have jobs." +
+                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Income</color>: The funds you have to buy new lots and the net income of the residents that have jobs. " +
+                "Certain people must available to work at some locations." +
                 $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Population</color>: How many people are living there right now. " +
-                "(It's important to have enough housing to fit new residents.)" +
+                "\t\n(It's important to have enough housing to fit new residents.)" +
+                $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Unemployed</color>: The current balance of people currently employed." +
                 $"\t\n<color=#{ColorPaletteUtilities.DarkBrownHex}>Happiness</color>: The total happiness of the town. This goes up and down depending on each resident." +
                 "\n\nAll of these help attract new people to your town, so keep those numbers up!"
             };
@@ -126,8 +127,8 @@ namespace Utility
 
         private void SetAnimation(int index)
         {
-            _tutorialAnimations.SetInteger(_animationIndex, index);
-            _tutorialAnimations.SetTrigger(_switchTrigger);
+            //_tutorialAnimations.SetInteger(_animationIndex, index);
+            //_tutorialAnimations.SetTrigger(_switchTrigger);
         }
     }
 }

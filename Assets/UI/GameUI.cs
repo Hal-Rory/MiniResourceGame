@@ -93,7 +93,6 @@ public class GameUI : MonoBehaviour
 
     private void UpdateIncome(int i)
     {
-        if (!_secondaryInfo.activeSelf) return;
         CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
     }
 
