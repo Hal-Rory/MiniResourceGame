@@ -55,7 +55,7 @@ namespace Controllers
                 Workplace.SetUp();
                 Income ??= new IncomeManager();
                 Income.SetUp();
-                Income.Pay(125);
+                Income.Pay(300);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace Controllers
             lock (_townLotLock)
             {
                 if (Population.GetHousehold(person.HouseholdIndex) == null) return;
-                TownLot location = null;
+                TownLot location = LotFactory.GetLot(person.HouseID);;
                 if(person.CurrentLocationID != -1)
                 {
                     location = LotFactory.GetLot(person.CurrentLocationID);
@@ -95,7 +95,6 @@ namespace Controllers
                         RemovePersonLocation(person);
                     }
                 }
-
                 if (person.AgeGroup == PersonAgeGroup.Deceased)
                 {
                     location = FindRecreationalLot(person);
@@ -107,16 +106,16 @@ namespace Controllers
                         location = LotFactory.GetLot(person.JobIndex);
                     }
                 }
-                else if(timeOfDay is not (GameTimeManager.TimesOfDay.Rest or GameTimeManager.TimesOfDay.Morning))
+                else if(timeOfDay == GameTimeManager.TimesOfDay.Relax)
                 {
                     location = FindRecreationalLot(person);
                 }
-                else
+
+                if (location == null || !location.ValidLot)
                 {
-                    location = LotFactory.GetLot(person.HouseID);
+                    person.SetLocation();
+                    return;
                 }
-                //this should never be null. If so, the person shouldn't exist in the first place
-                //(no home, no available lots to visit, no workplace would all have to be true)
                 person.SetLocation(location);
             }
         }
