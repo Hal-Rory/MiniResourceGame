@@ -128,14 +128,10 @@ namespace UI
                             _soundManager.PlayCancel();
                         }
                     }
-
                     SetLotDescription(_townObject.SetObjectSelection(selected ? card.ID : string.Empty), lot);
                 }
                 card.AddListener(onSelect);
                 card.SetIcon(lot.ObjPreview);
-                card.GetToggle().image.color = GameController.Instance.CanPurchase(_townObject.CurrentObject)
-                    ? card.GetToggle().image.color
-                    : _ui.GetPalette().LightGray;
                 card.GetToggle().group = _selectionToggleGroup;
             }
 

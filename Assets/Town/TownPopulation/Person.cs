@@ -69,7 +69,7 @@ namespace Town.TownPopulation
 
         public void SetLocation()
         {
-            CurrentLocation = String.Empty;
+            CurrentLocation = "Wandering...";
             CurrentLocationID = -1;
             Happiness += 0;
         }
