@@ -66,9 +66,9 @@ namespace Town.TownObjects
 
         public bool CheckHappinessGroup(PersonAgeGroup age)
         {
-            return _townLotData.VisitorAgeTarget.Length > 0 &&
+            return CanHaveVisitors() &&
                    (_townLotData.VisitorAgeTarget.Contains(age) ||
-                    _townLotData.VisitorAgeTarget.Contains(PersonAgeGroup.All));
+                    (_townLotData.VisitorAgeTarget.Contains(PersonAgeGroup.All) && age != PersonAgeGroup.Deceased));
         }
 
         protected void SetLotName(string lotName)
