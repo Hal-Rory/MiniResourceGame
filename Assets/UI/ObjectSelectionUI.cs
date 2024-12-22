@@ -159,9 +159,13 @@ namespace UI
                             card.gameObject.SetActive(true);
                             break;
                         case not HousingLotObj when card.ID == TownLotUI.CardTypes.Visitors.ToString():
-                            card.SetLabel($"[max: {(lot.VisitorAgeTarget.Length > 0 ? $"{lot.VisitorCapacity}" : "0")}] {lot.GetVisitorCriteria()}" +
-                                          $"\n+{lot.GetPerks()}");
-                            card.gameObject.SetActive(true);
+                            if (lot.CanHaveVisitors())
+                            {
+                                card.SetLabel(
+                                    $"[max: {(lot.VisitorAgeTarget.Length > 0 ? $"{lot.VisitorCapacity}" : "0")}] {lot.GetVisitorCriteria()}" +
+                                    $"\n+{lot.GetPerks()}");
+                            }
+                            card.gameObject.SetActive(lot.CanHaveVisitors());
                             break;
                         case HousingLotObj house when card.ID == TownLotUI.CardTypes.Inhabitants.ToString():
                             card.SetLabel($"[max: {house.InhabitantCapacity}]"+

@@ -29,6 +29,11 @@ namespace Town.TownObjectData
             return null;
         }
 
+        public bool CanHaveVisitors()
+        {
+            return VisitorAgeTarget.Length > 0;
+        }
+
         public string GetVisitorCriteria()
         {
             if (VisitorAgeTarget == null || VisitorAgeTarget.Length == 0)

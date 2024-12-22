@@ -64,11 +64,12 @@ namespace Town.TownManagement
 
         public bool TryDeselectTownLot()
         {
-            if (!_lastSelected) return false;
-
-            _lastSelected.Deselect();
-            _lastSelected.EndHovering();
-            _lastSelected = null;
+            if(_lastSelected)
+            {
+                _lastSelected.Deselect();
+                _lastSelected.EndHovering();
+                _lastSelected = null;
+            }
             OnTownObjectDeselected?.Invoke(null);
             return true;
         }

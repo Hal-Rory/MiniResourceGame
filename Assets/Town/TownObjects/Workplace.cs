@@ -19,6 +19,11 @@ namespace Town.TownObjects
             return _workLotData.GetEmployeeCriteria();
         }
 
+        public string GetWorkplacePerks()
+        {
+            return _workLotData.GetWorkplacePerks();
+        }
+
         public List<Person> GetEmployees()
         {
             return _employees;

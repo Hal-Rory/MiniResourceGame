@@ -109,7 +109,7 @@ namespace Town.TownPopulation
 
         public string PrintIncome()
         {
-            return $"{(AgeGroup is not PersonAgeGroup.Deceased ? $"Income: +${IncomeContribution} / d" : "")}";
+            return $"Income: +${IncomeContribution} / d";
         }
 
         public string PrintLocation()

@@ -43,8 +43,8 @@ namespace UI
         [SerializeField] private CardTMP _perksCard;
         [SerializeField] private List<ToggleCardTMP> _capacityCards;
 
-        [SerializeField] private CardTMP _lotCardPrefab;
         [SerializeField] private CardTMP _personCard;
+        [SerializeField] private CardTMP _shortCard;
         [SerializeField] private Sprite _employeeIcon;
         [SerializeField] private Sprite _visitorIcon;
         [SerializeField] private Sprite _moneyIcon;
@@ -94,6 +94,7 @@ namespace UI
 
         private void TownLotDeselected(TownLot _)
         {
+            if (!_current) return;
             CloseMenu();
         }
 
@@ -133,6 +134,7 @@ namespace UI
             _cardsScroll.verticalNormalizedPosition = 1;
             CloseTooltip();
             _current = null;
+            FinishAndClose();
         }
 
         /// <summary>
@@ -175,7 +177,24 @@ namespace UI
             _headerCard.SetHeader(_current.GetLotName());
             _headerCard.SetIcon(_current.GetLotDepiction());
             _typeCard.SetLabel($"{_current.LotType}");
-            _perksCard.SetLabel($"{_current.GetLotPerks()}");
+            string perks = string.Empty;
+            if (_current is Workplace workplace)
+            {
+                perks = $"{workplace.GetWorkplacePerks()}{(_current.CanHaveVisitors() ? "\n" : "")}";
+            }
+            if(_current.CanHaveVisitors())
+            {
+                perks += $"{_current.GetLotPerks()}";
+            }
+            if(!string.IsNullOrEmpty(perks))
+            {
+                _perksCard.SetLabel(perks);
+                _perksCard.gameObject.SetActive(true);
+            }
+            else
+            {
+                _perksCard.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>
@@ -220,6 +239,7 @@ namespace UI
                 return;
             }
             _soundManager.PlaySelect();
+            _personListView.ClearCards();
             _currentTooltip = card as ToggleCardTMP;
             RefreshTooltip(card.ID);
         }
@@ -298,12 +318,13 @@ namespace UI
             if (_current is not House house) return;
             for (int i = 0; i < house.GetInhabitantsCount(); i++)
             {
-                CardTMP personCard = _personListView.SpawnItem(i.ToString(), _lotCardPrefab.gameObject)
+                CardTMP personCard = _personListView.SpawnItem(i.ToString(), _personCard.gameObject)
                     .GetComponent<CardTMP>();
                 Person p = house.GetInhabitants()[i];
                 personCard.SetEmpty();
                 personCard.SetHeader($"{p.Name} ({p.AgeGroup.ToString()})");
                 personCard.SetLabel(p.ToString());
+                personCard.SetIcon(_visitorIcon);
                 UpdateTooltip += () =>
                 {
                     personCard.SetLabel(p.ToString());
@@ -319,7 +340,7 @@ namespace UI
             if (_current.GetVisitorCount() == 0) return;
             for (int v = 0; v < _current.GetVisitorCount(); v++)
             {
-                CardTMP personCard = _personListView.SpawnItem(v.ToString(), _personCard.gameObject)
+                CardTMP personCard = _personListView.SpawnItem(v.ToString(), _shortCard.gameObject)
                     .GetComponent<CardTMP>();
                 Person p = _current.GetVisitors()[v];
                 personCard.SetEmpty();

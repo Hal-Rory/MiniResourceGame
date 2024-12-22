@@ -93,7 +93,7 @@ namespace Town.TownObjects
 
         public bool CanHaveVisitors()
         {
-            return _townLotData.VisitorAgeTarget.Length > 0;
+            return _townLotData.CanHaveVisitors();
         }
 
         public void RemoveVisitor(params Person[] persons)

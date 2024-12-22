@@ -134,7 +134,7 @@ namespace Controllers
         {
             if (!LotFactory.TryGetLots(out List<TownLot> locations) || locations.Count <= 0)
                 return LotFactory.GetLot(person.HouseID);
-            List<TownLot> viableLocations = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup) && lot.ValidLot);
+            List<TownLot> viableLocations = locations.FindAll(lot => lot.CheckHappinessGroup(person.AgeGroup) && lot.ValidLot && lot.GetVisitorCount() < lot.GetMaxVisitorCapacity());
             if (viableLocations.Count <= 0) return LotFactory.GetLot(person.HouseID);
             TownLot location = viableLocations.GetRandomIndex();
             location.AddVisitors(person);

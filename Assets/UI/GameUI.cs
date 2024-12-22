@@ -93,7 +93,7 @@ public class GameUI : MonoBehaviour
 
     private void UpdateIncome(int i)
     {
-        CurrentIncome.text = $"{_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} ({_income.NetIncome.Abbreviate(_abbreviationMax, "+0;-#")})";
+        CurrentIncome.text = $"${_income.CurrentFunds.Abbreviate(_abbreviationMax, trailingDigitsCount:2)} (+${_income.NetIncome.Abbreviate(_abbreviationMax, trailingDigitsCount:2)})";
     }
 
     public void SetPanelActive_Toggle(bool active)

@@ -28,7 +28,7 @@ namespace Utility
                     trailingDigits = $".{remainder.ToString()[..Math.Min(trailingDigitsCount, stringCount)]}";
                 }
                 if (!(Math.Abs(amount) >= divisor)) continue;
-                return $"{amount / divisor}{trailingDigits}{abbreviation}";
+                return $"{amount / divisor}{trailingDigits} {abbreviation}";
             }
             return amount.ToString(format);
         }
