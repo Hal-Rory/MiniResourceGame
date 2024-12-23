@@ -6,7 +6,7 @@ using Controllers;
 using Town.TownObjects;
 using Random = UnityEngine.Random;
 
-namespace Town.TownPopulation
+namespace Town.TownManagement
 {
     [Serializable]
     public class TownPopulaceManager : IControllable
@@ -34,6 +34,11 @@ namespace Town.TownPopulation
             GameController.Instance.UnregisterPlacementListener(OnNewLot, OnRemoveLot);
         }
 
+        /// <summary>
+        /// Checks if the population can be supported by getting the average net income of the current population
+        /// as well as the average happiness of the population. Both have to reach a certain threshold
+        /// </summary>
+        /// <returns></returns>
         public bool CanPopulationGrow()
         {
             //is the net income able to support the population count
@@ -50,18 +55,30 @@ namespace Town.TownPopulation
             return _totalHappiness;
         }
 
+        /// <summary>
+        /// When a housing lot is created, add it to the list of available housing
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnNewLot(TownLot obj)
         {
             if (obj is not House) return;
             _availableHousing.Add(obj.PlacementID);
         }
 
+        /// <summary>
+        /// When a housing lot is destroyed, remove it from the list of available housing if it was previously available
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnRemoveLot(TownLot obj)
         {
             if (obj is not House) return;
             _availableHousing.Remove(obj.PlacementID);
         }
 
+        /// <summary>
+        /// On early clock update, adjust the current happiness total from the previous day and check if new residents can move in
+        /// </summary>
+        /// <param name="tick"></param>
         public void ClockUpdate(int tick)
         {
             AdjustStockpiles();
@@ -76,6 +93,9 @@ namespace Town.TownPopulation
             _totalHappiness += LastHappinessUpdate;
         }
 
+        /// <summary>
+        /// Attempts to move in a new household
+        /// </summary>
         private void CheckHouseholdAvailability()
         {
             if (!CanPopulationGrow() || _availableHousing.Count == 0) return;

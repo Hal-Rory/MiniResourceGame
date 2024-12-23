@@ -6,14 +6,23 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    /// <summary>
+    /// The position the lot starts at
+    /// </summary>
     private Dictionary<Vector3Int, PlacedLot> _placedLots;
     private TownLotFactory _placementManager => GameController.Instance.LotFactory;
     [SerializeField] private Collider2D _gridCollider;
+
     private void Awake()
     {
         _placedLots = new Dictionary<Vector3Int, PlacedLot>();
     }
 
+    /// <summary>
+    /// Place a lot by finding all positions it would take and passing it into the <see cref="_placementManager"/> for the ID of the new object
+    /// </summary>
+    /// <param name="lotObj">The type of lot</param>
+    /// <param name="gridPosition">The starting position</param>
     public void AddLot(TownLotObj lotObj, Vector3Int gridPosition)
     {
         List<Vector3Int> positions = CalculatePositions(gridPosition, lotObj.LotSize);
@@ -40,6 +49,12 @@ public class GridManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Determine the size of the lot/the positions it would take up
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <param name="objectSize"></param>
+    /// <returns></returns>
     private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objectSize)
     {
         List<Vector3Int> returnVal = new();
@@ -57,7 +72,7 @@ public class GridManager : MonoBehaviour
         return returnVal;
     }
 
-    public bool CanPlaceObejctAt(Vector3Int gridPosition, Vector2Int objectSize)
+    public bool CanPlaceObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
         foreach (var pos in positionToOccupy)

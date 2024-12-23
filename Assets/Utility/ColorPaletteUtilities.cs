@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Utility
 {
+    /// <summary>
+    /// A utility that stores the hex values for a given color palette for fast conversion in ui
+    /// </summary>
     [Serializable]
     public static class ColorPaletteUtilities
     {

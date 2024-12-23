@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Utility
 {
+    /// <summary>
+    /// An object containing the current color scheme
+    /// </summary>
     [CreateAssetMenu(fileName = "ColorPalette", menuName = "UIUtilities/Create color palette")]
     public class ColorPaletteObject : ScriptableObject
     {

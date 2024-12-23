@@ -10,12 +10,21 @@ public class WorkplaceLotObj : TownLotObj
     public int Wages;
     public PersonAgeGroup[] EmployeeAgeGroups;
     public int EmployeeCapacity;
+
+    /// <inheritdoc/>
+    ///<remarks>
+    /// This adds a workplace lot
+    /// </remarks>
     public override TownLot AddLotType(GameObject go)
     {
         TownLot lot = go.gameObject.AddComponent<Workplace>();
         return lot;
     }
 
+    /// <summary>
+    /// Get the employee perks
+    /// </summary>
+    /// <returns></returns>
     public string GetWorkplacePerks()
     {
         return $"+${Wages} / d";

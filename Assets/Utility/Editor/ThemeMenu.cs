@@ -1,17 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Utility.Editor;
 
-public class ThemeMenu : MonoBehaviour
+namespace Utility.Editor
 {
-    [MenuItem("GameObject/Get UI Elements")]
-    private static void GetUIElements()
+    /// <summary>
+    /// Context menu to open the Color Palette Editor when clicking a game object
+    /// </summary>
+    public class ThemeMenu : MonoBehaviour
     {
-        GameObject go = Selection.activeObject as GameObject;
-        if (!go) return;
-        ColorPaletteEditor editor = EditorWindow.GetWindow<ColorPaletteEditor>();
-        editor.SetTarget(go);
+        [MenuItem("GameObject/Get UI Elements")]
+        private static void GetUIElements()
+        {
+            GameObject go = Selection.activeObject as GameObject;
+            if (!go) return;
+            ColorPaletteEditor editor = EditorWindow.GetWindow<ColorPaletteEditor>();
+            editor.SetTarget(go);
+        }
     }
 }

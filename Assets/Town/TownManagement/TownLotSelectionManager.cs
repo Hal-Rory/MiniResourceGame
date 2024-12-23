@@ -74,6 +74,9 @@ namespace Town.TownManagement
             return true;
         }
 
+        /// <summary>
+        /// Try to find a lot that is currently being hovered over, swap the hovered status between lots unless the lot is selected, in which only deselection can change the hovered state
+        /// </summary>
         private void TryHover()
         {
             if (_input.IsPointerOverUI() || GameController.Instance.PlacementMode) return;

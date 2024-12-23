@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Controllers;
 using Interfaces;
-using Placement;
 using TMPro;
 using Town.TownObjects;
 using Town.TownPopulation;
@@ -12,6 +11,9 @@ using Utility;
 
 namespace UI
 {
+    /// <summary>
+    /// Handles the UI for the lots when selected
+    /// </summary>
     public class TownLotUI : MonoBehaviour, IUIControl
     {
         public enum CardTypes
@@ -122,6 +124,9 @@ namespace UI
             _uiManager.EndControl(this);
         }
 
+        /// <summary>
+        /// Exiting the window in a way that informs the selection manager that a lot's selection has been ended
+        /// </summary>
         public void FinishAndClose()
         {
             //if this doesn't trigger, there's a problem with the selected lot not being officially selected

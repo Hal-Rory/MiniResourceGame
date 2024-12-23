@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    /// <summary>
+    /// A collection of parts that make up a display of information such as a text header, text label, an icon image, a ui selectable, for faster, streamlined access
+    /// </summary>
     public class ToggleCardTMP : CardTMP
     {
         [SerializeField] private Toggle Selectable;

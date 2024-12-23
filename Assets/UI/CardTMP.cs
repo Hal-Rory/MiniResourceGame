@@ -2,79 +2,85 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardTMP : MonoBehaviour
+namespace UI
 {
-    [SerializeField] protected TextMeshProUGUI _header;
-    [SerializeField] protected TextMeshProUGUI _label;
-    [SerializeField] protected Image _icon;
-    [SerializeField] private Sprite _emptyImage;
-
-    [field: SerializeField] public string ID { get; private set; }
-    public string HeaderText => _header != null ? _header.text : string.Empty;
-    public string LabelText => _label != null ? _label.text : string.Empty;
-    public Sprite IconSprite => _icon != null ? _icon.sprite : null;
-
-    public void SetLabel(string label)
+    /// <summary>
+    /// A collection of parts that make up a display of information such as a text header, text label, an icon image, for faster, streamlined access
+    /// </summary>
+    public class CardTMP : MonoBehaviour
     {
-        if (_label == null)
+        [SerializeField] protected TextMeshProUGUI _header;
+        [SerializeField] protected TextMeshProUGUI _label;
+        [SerializeField] protected Image _icon;
+        [SerializeField] private Sprite _emptyImage;
+
+        [field: SerializeField] public string ID { get; private set; }
+        public string HeaderText => _header != null ? _header.text : string.Empty;
+        public string LabelText => _label != null ? _label.text : string.Empty;
+        public Sprite IconSprite => _icon != null ? _icon.sprite : null;
+
+        public void SetLabel(string label)
         {
-            return;
+            if (_label == null)
+            {
+                return;
+            }
+
+            _label.text = label;
         }
 
-        _label.text = label;
-    }
-
-    public void SetHeader(string header)
-    {
-        if (_header == null)
+        public void SetHeader(string header)
         {
-            return;
+            if (_header == null)
+            {
+                return;
+            }
+
+            _header.text = header;
         }
 
-        _header.text = header;
-    }
-
-    public void SetIcon(Sprite sprite)
-    {
-        if (_icon == null)
+        public void SetIcon(Sprite sprite)
         {
-            return;
+            if (_icon == null)
+            {
+                return;
+            }
+
+            if (sprite == null)
+            {
+                _icon.enabled = false;
+            }
+            else
+            {
+                _icon.enabled = true;
+                _icon.sprite = sprite;
+            }
         }
 
-        if (sprite == null)
+        public void Set(string id)
         {
-            _icon.enabled = false;
+            ID = id;
         }
-        else
+
+        public void Set(string id, string header = "", string label = "", Sprite sprite = null)
         {
-            _icon.enabled = true;
-            _icon.sprite = sprite;
+            ID = id;
+            SetLabel(label);
+            SetHeader(header);
+            SetIcon(sprite);
         }
-    }
 
-    public void Set(string id)
-    {
-        ID = id;
-    }
+        public virtual void SetEmpty(string header = "", string label = "")
+        {
+            ID = string.Empty;
+            SetIcon(_emptyImage);
+            SetLabel(label);
+            SetHeader(header);
+        }
 
-    public void Set(string id, string header = "", string label = "", Sprite sprite = null)
-    {
-        ID = id;
-        SetLabel(label);
-        SetHeader(header);
-        SetIcon(sprite);
-    }
-
-    public virtual void SetEmpty(string header = "", string label = "")
-    {
-        ID = string.Empty;
-        SetIcon(_emptyImage);
-        SetLabel(label);
-        SetHeader(header);
-    }
-
-    public void SetIconActive(bool active)
-    {
-        _icon.gameObject.SetActive(active);
+        public void SetIconActive(bool active)
+        {
+            _icon.gameObject.SetActive(active);
+        }
     }
 }

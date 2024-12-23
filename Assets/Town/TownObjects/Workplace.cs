@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Interfaces;
 using Placement;
 using Town.TownPopulation;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Town.TownObjects
         public int EmployeeCount => _employees.Count;
         public int MaxEmployeeCapacity => _workLotData.EmployeeCapacity;
 
+        #region Helpers
         public string GetWorkCriteria()
         {
             return _workLotData.GetEmployeeCriteria();
@@ -23,6 +25,7 @@ namespace Town.TownObjects
         {
             return _workLotData.GetWorkplacePerks();
         }
+        #endregion
 
         public List<Person> GetEmployees()
         {

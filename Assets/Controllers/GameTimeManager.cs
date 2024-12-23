@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class GameTimeManager : MonoBehaviour
 {
+
+    /// <summary>
+    /// The time states of the day that determine person locations
+    /// </summary>
     public enum TimesOfDay
     {
         Morning,
@@ -12,19 +16,50 @@ public class GameTimeManager : MonoBehaviour
         Relax,
         Rest
     }
-    private DateTime _gameTime;
-    [SerializeField] private string _startDateTime;
-    private Action<int> _onEarlyClockUpdate;
-    private Action<int> _onClockUpdate;
-    private Action<int> _onLateClockUpdate;
-    private Action<TimesOfDay> _onClockStateUpdate;
-    private Action<TimesOfDay> _onLateClockStateUpdate;
-    private Coroutine _clockUpdating;
-    [SerializeField] private float _tickDelta;
-    public int TimeMultiplier { get; private set; }
 
+    private DateTime _gameTime;
     private bool _timeActive { get; set; }
 
+    [SerializeField] private string _startDateTime;
+    /// <summary>
+    /// The first round of updates, typically for managers
+    /// </summary>
+    private Action<int> _onEarlyClockUpdate;
+    /// <summary>
+    /// The update for most objects
+    /// </summary>
+    private Action<int> _onClockUpdate;
+    /// <summary>
+    /// The last round of updates typically for UI
+    /// </summary>
+    private Action<int> _onLateClockUpdate;
+
+    /// <summary>
+    /// The change in the time of day, the first round for objects
+    /// </summary>
+    private Action<TimesOfDay> _onClockStateUpdate;
+
+    /// <summary>
+    /// The change in the time of day, the last round of updates
+    /// </summary>
+    private Action<TimesOfDay> _onLateClockStateUpdate;
+
+    /// <summary>
+    /// The actual tick coroutine that is stopped and started based on the time controls
+    /// </summary>
+    private Coroutine _clockUpdating;
+
+    /// <summary>
+    /// How often does the clock update
+    /// </summary>
+    [SerializeField] private float _tickDelta;
+    /// <summary>
+    /// How fast should that update being going
+    /// </summary>
+    public int TimeMultiplier { get; private set; }
+    /// <summary>
+    /// The available multipliers
+    /// </summary>
     private static readonly int[] _timeSpeeds =
     {
         0, 1, 10
@@ -81,16 +116,11 @@ public class GameTimeManager : MonoBehaviour
         SetTimeActive(false);
     }
 
-    public float GetClockSpeed()
-    {
-        return _tickDelta * _timeSpeeds[TimeMultiplier];
-    }
-
-    public float GetTimePercentage()
-    {
-        return _gameTime.Hour / 23f;
-    }
-
+    /// <summary>
+    /// If time is active, wait for the (tick = 1 hour), send the clock updates at (update = 1 day),
+    /// and the state updates at (<see cref="TimeOfDay"/>
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Tick()
     {
         while (_timeActive)

@@ -1,4 +1,7 @@
-public interface IIncomeContributor
+namespace Interfaces
 {
-    public int GetIncomeContribution();
+    public interface IIncomeContributor
+    {
+        public int GetIncomeContribution();
+    }
 }

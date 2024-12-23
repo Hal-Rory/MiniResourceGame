@@ -4,6 +4,9 @@ using Town.TownObjects;
 
 namespace Utility
 {
+    /// <summary>
+    /// A utility to handle displaying several details about town lots
+    /// </summary>
     public static class TownLotUtilities
     {
         private static string ColorTextCount(int count, int max)

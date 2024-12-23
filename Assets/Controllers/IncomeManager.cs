@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Placement;
+using Interfaces;
 using Town.TownObjects;
-using UnityEngine;
 
 namespace Controllers
 {
@@ -55,12 +54,20 @@ namespace Controllers
             Pay(obj.GetLotPrice());
         }
 
+        /// <summary>
+        /// Collect payments based on the net income of all income contributors(workplaces)
+        /// </summary>
         private void CollectPayments()
         {
             NetIncome = _incomeContributors.Sum(c => c.GetIncomeContribution());
             Pay(NetIncome);
         }
 
+        /// <summary>
+        /// Check if this amount can be spent and complete the transaction
+        /// </summary>
+        /// <param name="amount">The amount to remove(-)</param>
+        /// <returns></returns>
         public bool TryPurchase(int amount)
         {
             if (!CanPurchase(amount)) return false;
@@ -68,11 +75,20 @@ namespace Controllers
             return true;
         }
 
+        /// <summary>
+        /// Check if this amount can be spent but do not complete the transaction
+        /// </summary>
+        /// <param name="amount">The amount to remove(-)</param>
+        /// <returns></returns>
         public bool CanPurchase(int amount)
         {
             return CurrentFunds >= amount;
         }
 
+        /// <summary>
+        /// Complete a transaction
+        /// </summary>
+        /// <param name="amount">The amount to give or take(+/-)</param>
         public void Pay(int amount)
         {
             CurrentFunds += amount;

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Utility.Editor
 {
+    /// <summary>
+    /// Editor menu for creating town lot objects (not viewing old ones)
+    /// </summary>
     public class TownLotObjectCreator  : EditorWindow
     {
         private TownLotObj _townLot;

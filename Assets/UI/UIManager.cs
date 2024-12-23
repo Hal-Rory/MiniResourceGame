@@ -5,10 +5,16 @@ using Utility;
 
 namespace UI
 {
+    /// <summary>
+    /// Handles the current state of UI to manage which windows are currently in main control
+    /// </summary>
     [Serializable]
     public class UIManager : IControllable
     {
         private IUIControl _currentControl;
+        /// <summary>
+        /// The color palette object to use for the current scheme
+        /// </summary>
         [SerializeField] private ColorPaletteObject _palette;
         private SoundManager _soundManager => GameController.Instance.Sound;
 
@@ -59,6 +65,10 @@ namespace UI
             _currentControl = null;
         }
 
+        /// <summary>
+        /// Returns the current color palette
+        /// </summary>
+        /// <returns></returns>
         public ColorPaletteObject GetPalette()
         {
             return _palette;

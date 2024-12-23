@@ -78,11 +78,16 @@ namespace Controllers
             }
         }
 
+        /// <summary>
+        /// Set the state of the game to or from placement mode where several features need to be disabled
+        /// </summary>
+        /// <param name="active"></param>
         private void SetPlacementMode(bool active)
         {
             PlacementMode = active;
         }
 
+        #region Person Relocation Management
         public void GetPersonLocation(Person person)
         {
             GetPersonLocation(person, GameTime.TimeOfDay);
@@ -150,22 +155,34 @@ namespace Controllers
             }
             person.SetLocation();
         }
+        #endregion
 
+        /// <summary>
+        /// For fast subscription to the lotfactory's placement process
+        /// </summary>
+        /// <param name="creationListener"></param>
+        /// <param name="destructionListener"></param>
         public void RegisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
         {
             if(creationListener != null) LotFactory.OnLotAdded += creationListener;
             if(destructionListener != null) LotFactory.OnLotRemoved += destructionListener;
         }
 
+        /// <summary>
+        /// For fast subscription removal from lotfactory's placement process
+        /// </summary>
+        /// <param name="creationListener"></param>
+        /// <param name="destructionListener"></param>
         public void UnregisterPlacementListener(Action<TownLot> creationListener = null, Action<TownLot> destructionListener = null)
         {
             if(creationListener != null) LotFactory.OnLotAdded -= creationListener;
             if(destructionListener != null) LotFactory.OnLotRemoved -= destructionListener;
         }
 
+        #region Lot Controls
         public void PlaceLot(TownLotObj townLot, Vector3Int position)
         {
-            if (!_gridManager.CanPlaceObejctAt(position, townLot.LotSize) || !Income.CanPurchase(townLot.LotPrice)) return;
+            if (!_gridManager.CanPlaceObjectAt(position, townLot.LotSize) || !Income.CanPurchase(townLot.LotPrice)) return;
             if(!Income.TryPurchase(townLot.LotPrice)) return;
             _gridManager.AddLot(townLot, position);
         }
@@ -177,12 +194,16 @@ namespace Controllers
                 _gridManager.RemoveLot(position);
             }
         }
+        #endregion
 
+        #region Income Management
         public bool CanPurchase(TownLotObj obj)
         {
             return Income.CanPurchase(obj.LotPrice);
         }
+        #endregion
 
+        #region Game State Management
         public void SetTimeMultiplier(int index)
         {
             if (index == GameTime.TimeMultiplier) return;
@@ -195,5 +216,6 @@ namespace Controllers
             if(paused) GameTime.StopTime();
             else GameTime.SetMultiplier(GameTime.TimeMultiplier);
         }
+        #endregion
     }
 }

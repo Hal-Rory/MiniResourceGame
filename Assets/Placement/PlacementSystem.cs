@@ -1,4 +1,5 @@
 using Controllers;
+using Town.TownManagement;
 using UnityEngine;
 
 namespace Placement
@@ -40,6 +41,9 @@ namespace Placement
             PreviewCell(started);
         }
 
+        /// <summary>
+        /// Reposition the cursor on screen to the player's pointer
+        /// </summary>
         private void PlaceCell()
         {
             Vector3 mousePosition = _input.GetSelectionPosition(1, out Collider2D col);
@@ -49,6 +53,10 @@ namespace Placement
             _cellIndicator.position = _currentCell;
         }
 
+        /// <summary>
+        /// Set the cursor on screen to the size of the object selected
+        /// </summary>
+        /// <param name="visible"></param>
         private void PreviewCell(bool visible)
         {
             _cellIndicator.gameObject.SetActive(visible);
@@ -73,6 +81,9 @@ namespace Placement
             _controller.PlaceLot(_townObject.CurrentObject, _currentCell);
         }
 
+        /// <summary>
+        /// [Debug/Not used by player] Remove the lot without using the menu interface
+        /// </summary>
         private void RemoveObject()
         {
             if (!_placementActive || _townObject.CurrentObject != null) return;

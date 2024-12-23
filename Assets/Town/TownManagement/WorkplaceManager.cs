@@ -5,6 +5,7 @@ using Common.Utility;
 using Controllers;
 using Interfaces;
 using Placement;
+using Town.TownManagement;
 using Town.TownObjects;
 using Town.TownPopulation;
 
@@ -19,18 +20,22 @@ namespace Town.TownObjectManagement
 
         public void SetUp()
         {
-            GameController.Instance.RegisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
+            GameController.Instance.RegisterPlacementListener(OnLotAdded, OnLotRemoved);
             GameController.Instance.GameTime.RegisterListener(earlyClockUpdate: ClockUpdate);
             _population.OnPopulationRemoved += OnPopulationRemoved;
         }
 
         public void SetDown()
         {
-            GameController.Instance.UnregisterPlacementListener(ObjectPlacerOnOnLotAdded, ObjectPlacerOnOnLotRemoved);
+            GameController.Instance.UnregisterPlacementListener(OnLotAdded, OnLotRemoved);
             GameController.Instance.GameTime.UnregisterListener(earlyClockUpdate: ClockUpdate);
             if(_population != null) _population.OnPopulationRemoved -= OnPopulationRemoved;
         }
 
+        /// <summary>
+        /// When the population is modified by a remove, remove the people from any workplaces
+        /// </summary>
+        /// <param name="population"></param>
         private void OnPopulationRemoved(IPopulation population)
         {
             switch (population)
@@ -51,7 +56,7 @@ namespace Town.TownObjectManagement
             }
         }
 
-        private void ObjectPlacerOnOnLotAdded(TownLot obj)
+        private void OnLotAdded(TownLot obj)
         {
             if (obj is Workplace workplace)
             {
@@ -59,7 +64,7 @@ namespace Town.TownObjectManagement
             }
         }
 
-        private void ObjectPlacerOnOnLotRemoved(TownLot obj)
+        private void OnLotRemoved(TownLot obj)
         {
             if (obj is Workplace workplace)
             {
@@ -94,6 +99,9 @@ namespace Town.TownObjectManagement
             Workplaces.Remove(workplace.PlacementID);
         }
 
+        /// <summary>
+        /// Find all unemployed persons and place them in a viable workplace
+        /// </summary>
         private void HireUnemployed()
         {
             List<Person> unemployed = _population.GetActivePopulation().FindAll(person => person.JobIndex == -1 && person.CanWork);
@@ -104,6 +112,10 @@ namespace Town.TownObjectManagement
             }
         }
 
+        /// <summary>
+        /// Early clock update, attempt to hire any eligible unemployed persons
+        /// </summary>
+        /// <param name="tick"></param>
         private void ClockUpdate(int tick)
         {
             HireUnemployed();

@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Utility
 {
+    /// <summary>
+    /// A utility used to abbreviate large numbers based on an amount of visible digits and a choice of abbreviation
+    /// </summary>
     public static class NumericAbbreviationsUtility
     {
         private static readonly SortedDictionary<int, string> _abbrevations = new SortedDictionary<int, string>

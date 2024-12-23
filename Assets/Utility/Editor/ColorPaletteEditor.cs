@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 namespace Utility.Editor
 {
+    /// <summary>
+    /// Edits a set of various UI elements to view the element and update the color palette faster with a given color palette
+    /// <remarks>
+    /// Compound on this further to flesh it out, could be part of the common classes if done correctly
+    /// </remarks>
+    /// </summary>
     public class ColorPaletteEditor : EditorWindow
     {
         private enum Options
@@ -170,41 +176,6 @@ namespace Utility.Editor
             {
                 DestroyUIEditors();
             }
-
-
-
-
-
-            // for (int i = 0; i < _text.Count; i++)
-            // {
-            //     _text[i] = (TextMeshProUGUI)EditorGUILayout.ObjectField(
-            //         $"Target Text:",
-            //         _text[i],
-            //         typeof(TextMeshProUGUI),
-            //         true);
-            //     if (_text[i] == null) continue;
-            // }
-            //
-            // if (GUILayout.Button("Add"))
-            // {
-            //     _text.Add(null);
-            // }
-            //
-            // _palette = (ColorPaletteObject)EditorGUILayout.ObjectField(
-            //     $"Palette:",
-            //     _palette,
-            //     typeof(ColorPaletteObject),
-            //     false);
-            //     GUILayout.BeginHorizontal();
-            //     _target = (Selectable)EditorGUILayout.ObjectField(
-            //         $"Target:",
-            //         _target,
-            //         typeof(Selectable),
-            //         true);
-            //     _option = (Options)EditorGUILayout.EnumPopup("Change to:", _option);
-            //     GUILayout.EndHorizontal();
-            //
-
             GUILayout.EndVertical();
         }
 

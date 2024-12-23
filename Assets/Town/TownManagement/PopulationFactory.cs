@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Common.Utility;
 using Controllers;
 using Interfaces;
 using Newtonsoft.Json;
-using Placement;
 using Town.TownObjects;
+using Town.TownPopulation;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
 
-namespace Town.TownPopulation
+namespace Town.TownManagement
 {
     [Serializable]
     public class PopulationFactory: IControllable
     {
-        //find a way to make this a dict<int, person>.
-        //Remove person, leave int, use .Select(first instance of key->value==null) and repopulate index
-        //all references to the person is by index in the dict so update references on person exit
         [SerializeField] private List<Household> _populationHouseholds;
         [SerializeField] private List<Person> _population;
         public event Action<IPopulation> OnPopulationCreated;
         public event Action<IPopulation> OnPopulationRemoved;
+        /// <summary>
+        /// The available names to use for the person creation, populated by a json at start
+        /// </summary>
         private Names _populationNames;
         public int PopulationCount { get; private set; }
 
@@ -32,6 +31,9 @@ namespace Town.TownPopulation
             public string[] last{ get; set; }
         }
 
+        /// <summary>
+        /// Register for the lots' placement/destruction and read in a json to populate the list of person names
+        /// </summary>
         public void SetUp()
         {
             _population = new List<Person>();
@@ -46,6 +48,10 @@ namespace Town.TownPopulation
             GameController.Instance.UnregisterPlacementListener(destructionListener:OnRemoveLot);
         }
 
+        /// <summary>
+        /// When a lot is destroyed, appropriately handle any persons inside
+        /// </summary>
+        /// <param name="lot"></param>
         private void OnRemoveLot(TownLot lot)
         {
             switch (lot)
@@ -62,6 +68,10 @@ namespace Town.TownPopulation
             }
         }
 
+        /// <summary>
+        /// Set up a house with a new household, place all persons within the household
+        /// </summary>
+        /// <param name="house"></param>
         public void CreateHome(House house)
         {
             Household household = CreateHousehold(house.MaxHouseholdCapacity, house.PlacementID);
@@ -76,6 +86,12 @@ namespace Town.TownPopulation
             return _populationHouseholds.Find(h => h.HouseID != -1 && h.HouseholdID == id);
         }
 
+        /// <summary>
+        /// Create or reuse households to fill with people
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Household CreateHousehold(int size, int id)
         {
             int startingAdults = Random.Range(1, size);
@@ -117,12 +133,21 @@ namespace Town.TownPopulation
             return household;
         }
 
+        /// <summary>
+        /// Relocate a person based on the time of day
+        /// </summary>
+        /// <param name="person"></param>
+        /// <param name="timeOfDay"></param>
         public void RelocatePerson(Person person, GameTimeManager.TimesOfDay timeOfDay)
         {
             if(person.HouseholdIndex != -1)
                 GameController.Instance.GetPersonLocation(person, timeOfDay);
         }
 
+        /// <summary>
+        /// Get only the Persons in a valid household(because the households can be reused on "destruction" which keeps them in the list)
+        /// </summary>
+        /// <returns></returns>
         public List<Person> GetActivePopulation()
         {
             return _population.FindAll(person => person.HouseholdIndex != -1);
@@ -137,6 +162,10 @@ namespace Town.TownPopulation
             return PopulationCount == 0 ? defaultValue : amount / PopulationCount;
         }
 
+        /// <summary>
+        /// Dump the household, store it for reuse, handle/destroy the people inside
+        /// </summary>
+        /// <param name="house"></param>
         public void OrphanHousehold(House house)
         {
             if (house.Household == null) return;

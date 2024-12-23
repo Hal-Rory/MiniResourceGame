@@ -5,6 +5,9 @@ namespace Utility
 {
     public enum PersonAgeGroup { All, Child, Teen, Adult, Elder, Deceased }
 
+    /// <summary>
+    /// A utility for displaying several details about the age groups
+    /// </summary>
     public static class PopulationUtility
     {
         public static string GroupedString(this IEnumerable<PersonAgeGroup> enumerable, bool isPlural, bool uppercase)

@@ -16,14 +16,25 @@ namespace Town.TownObjectData
         public Sprite ObjPlacement;
         [Range(0,10)]
         public int Happiness;
-        public PersonAgeGroup[] VisitorAgeTarget;
         public string LotType;
+
+        /// <summary>
+        /// The intended visitor age groups
+        /// </summary>
+        public PersonAgeGroup[] VisitorAgeTarget;
+
         /// <summary>
         /// How many Persons can fill this lot.
         /// Each lot may use this differently
         /// </summary>
         public int VisitorCapacity;
 
+        /// <summary>
+        /// This populates the various states on a gameobject and returns the townlot component the lot object would create
+        /// This is null for a townlot without a type
+        /// </summary>
+        /// <param name="go">The gameobject that will be getting the town lot component</param>
+        /// <returns></returns>
         public virtual TownLot AddLotType(GameObject go)
         {
             return null;
@@ -47,6 +58,10 @@ namespace Town.TownObjectData
             return visitorCriteria;
         }
 
+        /// <summary>
+        /// Get the perks for visitor happiness
+        /// </summary>
+        /// <returns></returns>
         public string GetPerks()
         {
             string happinessPerk = $"{Happiness} mood / visit";

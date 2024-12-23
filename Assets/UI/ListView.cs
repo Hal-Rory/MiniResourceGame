@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    /// <summary>
+    /// Object pool for UI
+    /// </summary>
     public class ListView : MonoBehaviour
     {
         [SerializeField] private RectTransform _listView;

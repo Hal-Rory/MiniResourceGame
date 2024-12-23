@@ -1,10 +1,14 @@
 using System;
 using Controllers;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Utility
 {
+    /// <summary>
+    /// The tutorial display
+    /// </summary>
     public class Tutorial : MonoBehaviour
     {
         [Serializable]
@@ -122,13 +126,6 @@ namespace Utility
             _tutorialCardTMP.SetLabel(_tutorialTexts[_currentTutorial]);
             _scrollPanel.verticalNormalizedPosition = 1;
             LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollPanel.content);
-            SetAnimation(_tutorials[_currentTutorial].TutorialClipIndex);
-        }
-
-        private void SetAnimation(int index)
-        {
-            //_tutorialAnimations.SetInteger(_animationIndex, index);
-            //_tutorialAnimations.SetTrigger(_switchTrigger);
         }
     }
 }

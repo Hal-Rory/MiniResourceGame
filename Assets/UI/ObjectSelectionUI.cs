@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Controllers;
+using Town.TownManagement;
 using Town.TownObjectData;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,9 @@ using Utility;
 
 namespace UI
 {
+    /// <summary>
+    /// Handles the selection menu UI, displaying the collections, objects, and lot stats
+    /// </summary>
     public class ObjectSelectionUI : MonoBehaviour, IUIControl
     {
         private InputManager _input => GameController.Instance.Input;
@@ -37,6 +41,10 @@ namespace UI
             GameController.Instance.TownObject.OnStateChanged += OnStateChanged;
         }
 
+        /// <summary>
+        /// The response to a successful switch to placement mode
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnStateChanged(bool obj)
         {
             MenuContainer.gameObject.SetActive(false);
@@ -101,12 +109,18 @@ namespace UI
 
         #region List Display
 
+        /// <summary>
+        /// Setting placement mode
+        /// </summary>
         public void BeginPlacing()
         {
             _soundManager.PlaySelect();
             _townObject.StartPlacing(true);
         }
 
+        /// <summary>
+        /// Update the list if there are any changes/it's being opened
+        /// </summary>
         private void ModifyList()
         {
             TownLotObj[] townObjs = _townObject.GetObjectsInCollection();
@@ -178,11 +192,11 @@ namespace UI
             }
             else
             {
-                ClosetLotDescription();
+                CloseLotDescription();
             }
         }
 
-        public void ClosetLotDescription()
+        public void CloseLotDescription()
         {
             CloseScroll();
             if (!_currentSelection) return;
@@ -214,8 +228,7 @@ namespace UI
 
         #endregion
 
-        #region Collections
-
+        #region Updating Collections
         private void SetCurrentCollection()
         {
             _currentCollection.text = _townObject.GetCurrentCollectionName();

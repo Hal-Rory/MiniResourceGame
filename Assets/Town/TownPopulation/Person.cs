@@ -10,6 +10,7 @@ namespace Town.TownPopulation
     [Serializable]
     public class Person : IPopulation
     {
+        //Determines the age of each age group
         private static int[] _ageRanges => new int[]
         {
             0,
@@ -31,6 +32,9 @@ namespace Town.TownPopulation
         public string CurrentLocation;
         public int CurrentLocationID;
 
+        /// <summary>
+        /// Checks if a person is not homeless or dead
+        /// </summary>
         public bool CanWork => HouseholdIndex != -1 && AgeGroup != PersonAgeGroup.Deceased;
 
         public void Setup(string name, PersonAgeGroup ageGroup, int household, int houseID)
@@ -53,6 +57,10 @@ namespace Town.TownPopulation
             JobName = jobName;
         }
 
+        /// <summary>
+        /// On clock update, age
+        /// </summary>
+        /// <param name="tick"></param>
         public void ClockUpdate(int tick)
         {
             Happiness = 0;
@@ -60,6 +68,10 @@ namespace Town.TownPopulation
             AgeUp(ageFactor);
         }
 
+        /// <summary>
+        /// Set the location based on a lot
+        /// </summary>
+        /// <param name="lot"></param>
         public void SetLocation(TownLot lot)
         {
             CurrentLocation = lot.GetLotName();
@@ -67,6 +79,9 @@ namespace Town.TownPopulation
             Happiness += lot.GetLotHappiness();
         }
 
+        /// <summary>
+        /// Set the location to empty if a location is not found
+        /// </summary>
         public void SetLocation()
         {
             CurrentLocation = "Wandering...";
@@ -74,6 +89,11 @@ namespace Town.TownPopulation
             Happiness += 0;
         }
 
+        /// <summary>
+        /// Check with age range a person is in and update the age group
+        /// </summary>
+        /// <param name="ageFactor"></param>
+        /// <returns></returns>
         private bool AgeUp(float ageFactor)
         {
             if (AgeGroup == PersonAgeGroup.Deceased) return false;
@@ -102,6 +122,7 @@ namespace Town.TownPopulation
             Employ(-1, 0, "Unemployed");
         }
 
+        #region Helpers
         public string PrintJob()
         {
             return $"Job: {JobName}";
@@ -121,6 +142,7 @@ namespace Town.TownPopulation
         {
             return $"Happiness: {Happiness}";
         }
+        #endregion
 
         public override string ToString()
         {

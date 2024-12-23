@@ -10695,11 +10695,11 @@ PrefabInstance:
       objectReference: {fileID: 1514452913}
     - target: {fileID: 4047617543490019499, guid: b3567bb6a592ea24a99a0d7e18018b33, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ClosetLotDescription
+      value: CloseLotDescription
       objectReference: {fileID: 0}
     - target: {fileID: 4047617543490019499, guid: b3567bb6a592ea24a99a0d7e18018b33, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ClosetLotDescription
+      value: CloseLotDescription
       objectReference: {fileID: 0}
     - target: {fileID: 4047617543490019499, guid: b3567bb6a592ea24a99a0d7e18018b33, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

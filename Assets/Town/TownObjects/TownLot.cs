@@ -39,6 +39,10 @@ namespace Town.TownObjects
             return _persons.Count;
         }
 
+        #region Helpers
+
+
+
         public Sprite GetLotDepiction()
         {
             return _townLotData.ObjPreview;
@@ -58,6 +62,22 @@ namespace Town.TownObjects
         {
             return _townLotData.VisitorCapacity;
         }
+
+        public float GetLotHappiness()
+        {
+            return _townLotData.Happiness;
+        }
+
+        public string GetVisitorCriteria()
+        {
+            return _townLotData.GetVisitorCriteria();
+        }
+
+        public bool CanHaveVisitors()
+        {
+            return _townLotData.CanHaveVisitors();
+        }
+        #endregion
 
         public void SetLotID(int ID)
         {
@@ -79,21 +99,6 @@ namespace Town.TownObjects
         public virtual string GetLotName()
         {
             return _name;
-        }
-
-        public float GetLotHappiness()
-        {
-            return _townLotData.Happiness;
-        }
-
-        public string GetVisitorCriteria()
-        {
-            return _townLotData.GetVisitorCriteria();
-        }
-
-        public bool CanHaveVisitors()
-        {
-            return _townLotData.CanHaveVisitors();
         }
 
         public void RemoveVisitor(params Person[] persons)
@@ -136,7 +141,8 @@ namespace Town.TownObjects
         }
 
         /// <summary>
-        /// Fill in lot data from town lot object, such as name, sprite, and lot "size"
+        /// Fill in lot data from town lot object, such as name, sprite, animator, and lot "size"
+        /// Uses a "casing" for the components already on the gameobject
         /// </summary>
         /// <param name="lotObj"></param>
         public void Create(TownLotObj lotObj)

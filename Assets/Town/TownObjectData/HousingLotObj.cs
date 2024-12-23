@@ -1,15 +1,24 @@
-using Placement;
-using Town.TownObjectData;
 using Town.TownObjects;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New House", menuName = "Town/Create House Object")]
-public class HousingLotObj : TownLotObj
+namespace Town.TownObjectData
 {
-    public int InhabitantCapacity;
-    public override TownLot AddLotType(GameObject go)
+    /// <summary>
+    /// A lot meant to store persons
+    /// </summary>
+    [CreateAssetMenu(fileName = "New House", menuName = "Town/Create House Object")]
+    public class HousingLotObj : TownLotObj
     {
-        TownLot lot = go.gameObject.AddComponent<House>();
-        return lot;
+        public int InhabitantCapacity;
+
+        /// <inheritdoc/>
+        ///<remarks>
+        /// This adds a housing lot
+        /// </remarks>
+        public override TownLot AddLotType(GameObject go)
+        {
+            TownLot lot = go.gameObject.AddComponent<House>();
+            return lot;
+        }
     }
 }
